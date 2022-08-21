@@ -1,0 +1,69 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Fluent Security\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-21 21:54+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.2; wp-6.0.1\n"
+"X-Domain: fluent-security"
+
+#: fluent-security.php:129
+msgid ""
+"<strong>Error</strong>: The username or the password is invalid. Please try "
+"different combination."
+msgstr ""
+
+#. Name of the plugin
+#: app/Classes/AdminMenuHandler.php:25 app/Classes/AdminMenuHandler.php:26
+msgid "Fluent Security"
+msgstr ""
+
+#. Author of the plugin
+msgid "Fluent Security Team"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://fluentcrm.com"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://jewel.im"
+msgstr ""
+
+#: fluent-security.php:142
+msgid "Login Passcode is required"
+msgstr ""
+
+#: fluent-security.php:153 fluent-security.php:161
+msgid "Login Passcode verification failed"
+msgstr ""
+
+#: fluent-security.php:72
+msgid "Login security passcode which is required when you login to this site"
+msgstr ""
+
+#: fluent-security.php:67 fluent-security.php:97 fluent-security.php:99
+msgid "Security Passcode"
+msgstr ""
+
+#: app/Classes/SettingsHandler.php:29
+msgid "Settings has been updated"
+msgstr ""
+
+#. Description of the plugin
+msgid "Super Simple Security Plugin for WordPress"
+msgstr ""
+
+#: fluent-security.php:195
+#, php-format
+msgid "You are trying too much. Please try after %d minutes"
+msgstr ""
