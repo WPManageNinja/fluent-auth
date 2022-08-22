@@ -1,9 +1,8 @@
 <?php
 defined('ABSPATH') or die;
-
 /*
 Plugin Name:  Fluent Security
-Plugin URI:   https://fluentcrm.com
+Plugin URI:   https://github.com/WPManageNinja/fluent-security
 Description:  Super Simple Security Plugin for WordPress
 Version:      1.0
 Author:       Fluent Security Team
