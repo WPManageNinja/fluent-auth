@@ -27,6 +27,8 @@ class FluentSecurityPlugin
         add_action('login_form', [$this, 'pushLoginPassCodeField'], 10);
         add_filter('authenticate', [$this, 'checkLoginPassCode'], 999, 3);
 
+        add_filter('lostpassword_errors', [$this, 'maybeBlockPasswordReset'], 10, 2);
+
         // Remove Application Password Login
         remove_filter('authenticate', 'wp_authenticate_application_password', 20);
 
@@ -51,7 +53,7 @@ class FluentSecurityPlugin
 
         register_activation_hook(__FILE__, [$this, 'installDbTables']);
 
-        load_plugin_textdomain( 'fluent-security', false, dirname( plugin_basename( __FILE__ ) ) . '/language' );
+        load_plugin_textdomain('fluent-security', false, dirname(plugin_basename(__FILE__)) . '/language');
     }
 
     public function addUserMetaField($user)
@@ -386,6 +388,28 @@ class FluentSecurityPlugin
         }
 
         return $ip;
+    }
+
+    public function maybeBlockPasswordReset($errors, $userData)
+    {
+        $minutes = $this->getSetting('login_try_timing');
+        $limit = $this->getSetting('login_try_limit');
+
+        if (!$minutes || !$limit) {
+            return $errors;
+        }
+
+        global $wpdb;
+        $ip = $this->getIp();
+        $dateTime = date('Y-m-d H:i:s', current_time('timestamp') - $minutes * 60);
+        
+        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}fls_auth_logs WHERE `ip` = %s AND `created_at` > %s AND `status` IN ('failed','blocked')", $ip, $dateTime));
+
+        if (!$count || $limit >= $count) {
+            return $errors;
+        }
+
+        return new \WP_Error('blocked', sprintf(__('You are blocked for next %d minutes. Please try after that time'), $minutes));
     }
 
     protected function getConfig()
