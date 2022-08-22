@@ -6,6 +6,11 @@ class Helper
 {
     public static function getAuthSettings()
     {
+        static $settings;
+        if($settings) {
+            return $settings;
+        }
+
         $defaults = [
             'extended_auth_security_type' => 'none', // none | 2fa | pass_code
             'global_auth_code'            => '',
@@ -24,10 +29,12 @@ class Helper
 
         if (!$settings || !is_array($settings)) {
             $defaults['require_configuration'] = 'yes';
-            return $defaults;
+            $settings = $defaults;
+            return $settings;
         }
 
-        return wp_parse_args($settings, $defaults);
+        $settings = wp_parse_args($settings, $defaults);
+        return $settings;
     }
 
     public static function getAppPermission()
@@ -56,5 +63,58 @@ class Helper
 
         }
         return $formattedRoles;
+    }
+
+    public static function getGlobalLoginPassCode()
+    {
+        $settings = self::getAuthSettings();
+
+        if (self::getSetting('extended_auth_security_type') != 'pass_code') {
+            return false;
+        }
+
+        if (defined('FLUENT_SECURITY_LOGIN_CODE')) {
+            return FLUENT_SECURITY_LOGIN_CODE;
+        }
+
+        return apply_filters('fluent_security/global_login_passcode', self::getSetting('global_auth_code'));
+
+    }
+
+    public static function getSetting($key, $default = false)
+    {
+        $config = self::getAuthSettings();
+        if (isset($config[$key])) {
+            return $config[$key];
+        }
+
+        return $default;
+    }
+
+    public static function getIp($anonymize = false)
+    {
+        // Get real visitor IP behind CloudFlare network
+        // https://stackoverflow.com/questions/13646690/how-to-get-real-ip-from-visitor
+        if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+            $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+            $_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+        }
+        $client = @$_SERVER['HTTP_CLIENT_IP'];
+        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+        $remote = $_SERVER['REMOTE_ADDR'];
+
+        if (filter_var($client, FILTER_VALIDATE_IP)) {
+            $ip = $client;
+        } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
+            $ip = $forward;
+        } else {
+            $ip = $remote;
+        }
+
+        if ($anonymize) {
+            return wp_privacy_anonymize_ip($ip);
+        }
+
+        return $ip;
     }
 }
