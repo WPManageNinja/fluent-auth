@@ -39,6 +39,9 @@ export default {
                 }
             ]
         }
+    },
+    created() {
+        jQuery('.update-nag,.notice, #wpbody-content > .updated, #wpbody-content > .error').remove();
     }
 }
 </script>

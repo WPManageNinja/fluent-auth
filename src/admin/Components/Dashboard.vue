@@ -33,7 +33,7 @@
                             </div>
                             <log-table v-else-if="success_logs.length" :logs="success_logs" />
                             <div v-else style="padding: 15px">
-                                <el-empty description="Not enough data. This section will show recent failed login attempts" />
+                                <el-empty description="Not enough data. This section will show recent successful logins" />
                             </div>
                         </div>
                     </div>
