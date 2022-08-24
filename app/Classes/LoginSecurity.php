@@ -187,7 +187,7 @@ class LoginSecurity
 
         $user = get_user_by($byField, $username);
 
-        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 
         $data = [
             'username'    => $username,
@@ -223,7 +223,7 @@ class LoginSecurity
         }
         global $wpdb;
 
-        $agent = $_SERVER['HTTP_USER_AGENT'];
+        $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 
         $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
 
@@ -252,7 +252,7 @@ class LoginSecurity
     {
         global $wpdb;
 
-        $agent = $_SERVER['HTTP_USER_AGENT'];
+        $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 
         $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
 

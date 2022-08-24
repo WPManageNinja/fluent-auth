@@ -8,6 +8,16 @@ class LogsHandler
 {
     public static function getLogs(\WP_REST_Request $request)
     {
+
+        $limit = (int) $request->get_param('per_page');
+        if(!$limit) {
+            $limit = 15;
+        }
+        $page = (int) $request->get_param('page');
+        if(!$page) {
+            $page = 1;
+        }
+
         $orderByColumn = sanitize_sql_orderby($request->get_param('sortBy'));
         $orderBy = sanitize_sql_orderby($request->get_param('sortType'));
 
