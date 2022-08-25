@@ -107,13 +107,17 @@
                             </el-checkbox-group>
                         </el-form-item>
 
-                        <el-form-item v-if="settings.notification_user_roles.length">
+                        <el-form-item class="fls_switch">
+                            <el-switch v-model="settings.notify_on_blocked" active-value="yes" inactive-value="no"/>
+                            Send email notification when a user get blocked
+                        </el-form-item>
+
+                        <el-form-item v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes'">
                             <template #label>
                                 Notification Send to Email Address
                             </template>
                             <el-input type="text" v-model="settings.notification_email"></el-input>
                         </el-form-item>
-
                     </div>
 
                     <el-form-item>
@@ -194,9 +198,10 @@ export default {
                 disable_users_rest: 'yes',
                 auto_delete_logs_day: 30,
                 notification_user_roles: ['administrator', 'editor'],
-                notification_email: '{admin_email}'
+                notification_email: '{admin_email}',
+                notify_on_blocked: 'yes'
             }
-            this.$notify.success('Recommened settings has been applied. Please review and save the settings');
+            this.$notify.success('Recommended settings has been applied. Please review and save the settings');
         }
     },
     mounted() {

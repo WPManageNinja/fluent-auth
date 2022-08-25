@@ -61,7 +61,7 @@ class LoginSecurity
         if (is_wp_error($user)) {
             $errorCode = $user->get_error_code();
             if ($errorCode == 'invalid_username' || $errorCode == 'incorrect_password') {
-                return new WP_Error(
+                return new \WP_Error(
                     $errorCode,
                     __('<strong>Error</strong>: The username or the password is invalid. Please try different combination.', 'fluent-security')
                 );
@@ -221,12 +221,12 @@ class LoginSecurity
         if (!Helper::getSetting('enable_auth_logs')) {
             return;
         }
+
         global $wpdb;
 
         $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 
         $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
-
 
         $data = [
             'username'    => $user->user_login,
@@ -242,6 +242,11 @@ class LoginSecurity
         ];
 
         $wpdb->insert("{$wpdb->prefix}fls_auth_logs", $data);
+
+        do_action('fluent_security/user_login_success', $user);
+
+        $this->maybeSendSuccessEmail($user);
+
     }
 
     /**
@@ -277,6 +282,8 @@ class LoginSecurity
         $wpdb->insert("{$wpdb->prefix}fls_auth_logs", $data);
 
         $this->failedLogged = true;
+
+       $this->maybeSendBlockedEmail($user, $username);
     }
 
     private function checkLoginAttempt($user, $userName)
@@ -317,4 +324,120 @@ class LoginSecurity
     {
         return apply_filters('fluent_security/user_login_passcode', get_user_meta($user->ID, '__login_passcode', true), $user);
     }
+
+    /**
+     * @param $user \WP_User
+     * @return bool
+     */
+    private function maybeSendSuccessEmail($user)
+    {
+        $notificationUserRoles = Helper::getSetting('notification_user_roles');
+        if (!$notificationUserRoles || !array_intersect($notificationUserRoles, (array)$user->roles)) {
+            return false;
+        }
+
+        $adminEmail = Helper::getSetting('notification_email');
+        if (!$adminEmail) {
+            return false;
+        }
+
+        $adminEmail = str_replace('{admin_email}', get_bloginfo('admin_email'), $adminEmail);
+        if (!$adminEmail) {
+            return false;
+        }
+
+        $userEditLInk = add_query_arg('user_id', $user->ID, self_admin_url('user-edit.php'));
+
+        $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
+        $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+
+        $ip = Helper::getIp();
+        $infoHtml = '<ul style="padding-left: 20px; list-style: disc; line-height: 25px; font-size: 16px;">';
+        $infoHtml .= '<li><b>Site URL:</b> <a href="' . site_url() . '">' . site_url() . '</a></li>';
+        $infoHtml .= '<li><b>Username:</b> <a href="' . $userEditLInk . '">' . $user->user_login . '</a></li>';
+        $infoHtml .= '<li><b>Email:</b> ' . $user->user_email . '</li>';
+        $infoHtml .= '<li><b>Name:</b> ' . $user->first_name . ' ' . $user->last_name . '</li>';
+        $infoHtml .= '<li><b>Login IP Address:</b> <a href="https://ipinfo.io/' . $ip . '">' . $ip . '</a></li>';
+        $infoHtml .= '<li><b>Browser:</b> ' . $browserDetection->getOS($agent)['os_family'] . ' / ' . $browserDetection->getBrowser($agent)['browser_name'] . '</li>';
+        $infoHtml .= '</ul>';
+
+        $lines = [
+            '<p style="font-size: 16px; line-height: 25px;">Hello there, <br />The following user has been logged in to your site. Here is the details:</p>',
+            $infoHtml
+        ];
+
+        $siteName = get_bloginfo('name');
+        $data = [
+            'body'       => implode('', $lines),
+            'pre_header' => 'Login success at ' . $siteName
+        ];
+
+        $body = Helper::loadView('notification', $data);
+        $subject = '[' . $siteName . '] Login success for ' . $user->user_login;
+
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+
+        return wp_mail($adminEmail, $subject, $body, $headers);
+    }
+
+    /**
+     * @param $user \WP_User | \WP_Error
+     * @param $userName string
+     * @return void
+     */
+    private function maybeSendBlockedEmail($user, $userName)
+    {
+        if (Helper::getSetting('notify_on_blocked') != 'yes') {
+            return false;
+        }
+
+        $adminEmail = Helper::getSetting('notification_email');
+        if (!$adminEmail) {
+            return false;
+        }
+
+        $adminEmail = str_replace('{admin_email}', get_bloginfo('admin_email'), $adminEmail);
+        if (!$adminEmail) {
+            return false;
+        }
+
+        $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
+        $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+
+        $ip = Helper::getIp();
+        $infoHtml = '<ul style="padding-left: 20px; list-style: disc; line-height: 25px; font-size: 16px;">';
+        $infoHtml .= '<li><b>Site URL:</b> <a href="' . site_url() . '">' . site_url() . '</a></li>';
+        $infoHtml .= '<li><b>Username:</b> ' . $userName . '</li>';
+        $infoHtml .= '<li><b>Login IP Address:</b> <a href="https://ipinfo.io/' . $ip . '">' . $ip . '</a></li>';
+        $infoHtml .= '<li><b>Browser:</b> ' . $browserDetection->getOS($agent)['os_family'] . ' / ' . $browserDetection->getBrowser($agent)['browser_name'] . '</li>';
+
+        if (is_wp_error($user)) {
+            $infoHtml .= '<li>' . $user->get_error_message() . '</li>';
+        } else if($user instanceof \WP_User) {
+            $userEditLInk = add_query_arg('user_id', $user->ID, self_admin_url('user-edit.php'));
+            $infoHtml .= '<li><b>Username:</b> <a href="' . $userEditLInk . '">' . $user->user_login . '</a></li>';
+            $infoHtml .= '<li><b>Email:</b> ' . $user->user_email . '</li>';
+            $infoHtml .= '<li><b>Name:</b> ' . $user->first_name . ' ' . $user->last_name . '</li>';
+        }
+        $infoHtml .= '</ul>';
+
+        $lines = [
+            '<p style="font-size: 16px; line-height: 25px;">Hello there, <br />The following user has been blocked from logged in from your site. Here is the details:</p>',
+            $infoHtml
+        ];
+
+        $siteName = get_bloginfo('name');
+        $data = [
+            'body'       => implode('', $lines),
+            'pre_header' => 'Blocked from login ' . $siteName
+        ];
+
+        $body = Helper::loadView('notification', $data);
+        $subject = '[' . $siteName . '] Blocked from login - ' . $userName;
+
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+
+        return wp_mail($adminEmail, $subject, $body, $headers);
+    }
+
 }

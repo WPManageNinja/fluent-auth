@@ -26,9 +26,14 @@ class FluentSecurityPlugin
 
         (new \FluentSecurity\Classes\LoginSecurity())->init();
 
-        // Remove Application Password Login
-        // We have to check for settings
-        remove_filter('authenticate', 'wp_authenticate_application_password', 20);
+        // Maybe Remove Application Password Login
+        add_filter('wp_is_application_passwords_available', function ($status) {
+            if (!$status || \FluentSecurity\Helpers\Helper::getSetting('disable_app_login') == 'yes') {
+                return false;
+            }
+
+            return $status;
+        });
 
         // Disable xmlrpc
         add_filter('xmlrpc_enabled', function ($status) {

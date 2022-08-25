@@ -7,7 +7,7 @@ class Helper
     public static function getAuthSettings()
     {
         static $settings;
-        if($settings) {
+        if ($settings) {
             return $settings;
         }
 
@@ -21,6 +21,7 @@ class Helper
             'login_try_timing'            => 30,
             'disable_users_rest'          => 'no',
             'notification_user_roles'     => [],
+            'notify_on_blocked'           => 'no',
             'notification_email'          => '{admin_email}',
             'auto_delete_logs_day'        => 30, // in days
         ];
@@ -116,5 +117,17 @@ class Helper
         }
 
         return $ip;
+    }
+
+    public static function loadView($template, $data)
+    {
+        extract($data, EXTR_OVERWRITE);
+
+        $template = sanitize_file_name($template);
+
+        ob_start();
+        include FLUENT_SECURITY_PLUGIN_PATH.'app/Views/'.$template.'.php';
+
+        return ob_get_clean();
     }
 }
