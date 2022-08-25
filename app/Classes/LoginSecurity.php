@@ -412,7 +412,7 @@ class LoginSecurity
         $infoHtml .= '<li><b>Browser:</b> ' . $browserDetection->getOS($agent)['os_family'] . ' / ' . $browserDetection->getBrowser($agent)['browser_name'] . '</li>';
 
         if (is_wp_error($user)) {
-            $infoHtml .= '<li>' . $user->get_error_message() . '</li>';
+            $infoHtml .= '<li>' . wp_kses_post($user->get_error_message()) . '</li>';
         } else if($user instanceof \WP_User) {
             $userEditLInk = add_query_arg('user_id', $user->ID, self_admin_url('user-edit.php'));
             $infoHtml .= '<li><b>Username:</b> <a href="' . $userEditLInk . '">' . $user->user_login . '</a></li>';
