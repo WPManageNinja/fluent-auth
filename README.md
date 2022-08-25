@@ -2,7 +2,7 @@
 Super Simple Security Plugin for WordPress
 
 
-**What is does**
+**What It Does**
 
 - Log Login Attempts
 - Limit Login Attempts (like max 5 times in 30 minutes)
