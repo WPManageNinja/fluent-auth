@@ -20,6 +20,36 @@ class MagicLogin
                 $this->makeLogin($hash);
             }
         }, 1);
+
+        /*
+         * Programmatic Generation of the login token
+         */
+        add_filter('fluent_security/login_token_by_user_id', function ($hash, $userId, $minutes) {
+
+            if (!$this->isEnabled()) {
+                return '';
+            }
+
+            $user = get_user_by('ID', $userId);
+            if (!$user) {
+                return '';
+            }
+
+            return $this->generateHash($user, $minutes);
+
+        }, 10, 3);
+        add_filter('fluent_security/login_token_by_user_email', function ($hash, $emailId, $minutes) {
+            if (!$this->isEnabled()) {
+                return '';
+            }
+
+            $user = get_user_by('user_email', $emailId);
+            if (!$user) {
+                return '';
+            }
+
+            return $this->generateHash($user, $minutes);
+        }, 10, 3);
     }
 
     public function maybePushMagicForm()
@@ -32,7 +62,7 @@ class MagicLogin
         <div style="display: none;" id="fls_magic_login">
             <div class="fls_magic_initial">
                 <div class="fls_magic-or">
-                    <span>Or</span>
+                    <span><?php _e('Or', 'fluent-security') ?></span>
                 </div>
                 <div class="fls_magic_login_btn">
                     <button class="fls_magic_show_btn button button-primary button-large">
@@ -360,7 +390,7 @@ class MagicLogin
 
     private function getLoginRedirect($user)
     {
-        $requested_redirect_to = isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : site_url();
+        $requested_redirect_to = isset($_REQUEST['redirect_to']) ? esc_url($_REQUEST['redirect_to']) : site_url();
         return apply_filters('login_redirect', $requested_redirect_to, $requested_redirect_to, $user);
     }
 

@@ -133,4 +133,36 @@ class Helper
 
         return ob_get_clean();
     }
+
+    public static function cleanUpLogs()
+    {
+        $oldDays = self::getSetting('auto_delete_logs_day');
+
+        if (!$oldDays) {
+            return;
+        }
+
+        $dateTime = date('Y-m-d H:i:s', current_time('timestamp') - $oldDays * 86400);
+
+        flsDb()->table('fls_auth_logs')
+            ->where('created_at', '<', $dateTime)
+            ->delete();
+
+        if ($oldDays < 30) {
+            $dateTime = date('Y-m-d H:i:s', current_time('timestamp') - 30 * 86400);
+        }
+
+        flsDb()->table('fls_login_hashes')
+            ->where('valid_till', '<', current_time('mysql'))
+            ->where('status', 'issued')
+            ->update([
+                'status' => 'expired'
+            ]);
+
+        flsDb()->table('fls_login_hashes')
+            ->where('status', '!=', 'issued')
+            ->where('created_at', '<', $dateTime)
+            ->delete();
+
+    }
 }

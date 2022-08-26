@@ -1,4 +1,5 @@
 <?php
+
 defined('ABSPATH') or die;
 /*
 Plugin Name:  Fluent Security
@@ -50,6 +51,13 @@ class FluentSecurityPlugin
         register_activation_hook(__FILE__, [$this, 'installDbTables']);
 
         load_plugin_textdomain('fluent-security', false, dirname(plugin_basename(__FILE__)) . '/language');
+
+        /*
+         * Clean Up Old Logs
+         */
+        add_action('fluent_security_daily_tasks', function () {
+            \FluentSecurity\Helpers\Helper::cleanUpLogs();
+        });
     }
 
     public function installDbTables()
@@ -108,6 +116,10 @@ class FluentSecurityPlugin
                    KEY `status` (`status`(20))
 			) $charsetCollate;";
             dbDelta($sql);
+        }
+
+        if (!wp_next_scheduled('fluent_security_daily_tasks')) {
+            wp_schedule_event(time(), 'daily', 'fluent_security_daily_tasks');
         }
     }
 

@@ -21,6 +21,7 @@ class LoginSecurity
         add_action('edit_user_profile_update', [$this, 'updateUserPassCode']);
 
         add_action('wp_login_failed', [$this, 'logFailedAuth'], 10, 2);
+
     }
 
     public function pushLoginPassCodeField()
