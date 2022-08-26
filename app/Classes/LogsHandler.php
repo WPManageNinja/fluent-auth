@@ -73,11 +73,11 @@ class LogsHandler
         if (!$fromRange) {
             $fromRange = '-0 days';
         }
-        
+
         if ($fromRange == 'this_month') {
             $fromDate = date('Y-m-01 00:00:00');
         } else if ($fromRange == 'all_time') {
-            $fromDate = false;
+            $fromDate = '1970-01-01 00:00:00';
         } else {
             $fromDate = date('Y-m-d 00:00:00', strtotime($fromRange));
         }
