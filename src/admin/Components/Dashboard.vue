@@ -5,10 +5,12 @@
                 Hello {{ me.full_name }}, View your config and recent login activities
             </div>
 
+            <quick-stat-bar />
+
             <el-row :gutter="30">
                 <el-col :md="12" :sm="24">
                     <div class="box dashboard_box">
-                        <div class="box_header" style="padding: 20px 15px;font-weight: normal; font-size: 16px;">
+                        <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
                             Recent Failed & Blocked Logins
                         </div>
                         <div style="padding: 0;" class="box_body">
@@ -24,7 +26,7 @@
                 </el-col>
                 <el-col :md="12" :sm="24">
                     <div class="box dashboard_box">
-                        <div class="box_header" style="padding: 20px 15px;font-weight: normal; font-size: 16px;">
+                        <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
                             Recent Successful Logins
                         </div>
                         <div style="padding: 0;" class="box_body">
@@ -43,7 +45,7 @@
             <el-row :gutter="30">
                 <el-col :md="12" :sm="24">
                     <div class="box dashboard_box">
-                        <div class="box_header" style="padding: 20px 15px;font-weight: normal; font-size: 16px;">
+                        <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
                             Settings Overview
                             <div class="box_actions">
                                 <span @click="$router.push({ name: 'settings' })" style="cursor: pointer" title="Go to Settings" class="dashicons dashicons-admin-settings"></span>
@@ -90,11 +92,13 @@
 
 <script type="text/babel">
 import LogTable from './_LogTable';
+import QuickStatBar from './stat/_QuickStatBar';
 
 export default {
     name: 'Dashboard',
     components: {
-        LogTable
+        LogTable,
+        QuickStatBar
     },
     data() {
         return {

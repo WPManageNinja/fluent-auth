@@ -1,13 +1,23 @@
 <template>
     <div class="box_wrapper">
         <div class="box dashboard_box">
-            <div class="box_header" style="padding: 20px 15px;font-size: 16px;">
-                Login Logs
-                <el-button @click="fetchLogs()" size="small">refresh</el-button>
-            </div>
-            <div class="log_filters">
-                <div class="log_filter">
-
+            <div class="box_header" style="padding: 15px;font-size: 16px;">
+                <div style="padding-top: 5px;" class="box_head">
+                    Login Logs
+                    <el-button @click="fetchLogs()" size="small">refresh</el-button>
+                </div>
+                <div style="display: flex;" class="box_actions">
+                    <el-radio-group @change="fetchLogs()" v-model="status">
+                        <el-radio-button size="medium" label="all">All</el-radio-button>
+                        <el-radio-button size="medium" v-for="(status, statusKey) in statuses" :key="statusKey" :label="statusKey">
+                            {{ status }}
+                        </el-radio-button>
+                    </el-radio-group>
+                    <el-input clearable @keyup.native.enter="fetchLogs()" style="width: 200px; margin-left: 10px;" size="small" type="text" v-model="search" placeholder="Search">
+                        <template #append>
+                            <el-button @click="fetchLogs()" :icon="SearchIcon" />
+                        </template>
+                    </el-input>
                 </div>
             </div>
             <el-table @sort-change="handleSortChange"
@@ -29,7 +39,7 @@
                 </el-table-column>
 
                 <el-table-column sortable prop="status" label="Status" width="130"/>
-                <el-table-column min-width="200px" label="Login Username">
+                <el-table-column sortable prop="username" min-width="200px" label="Login Username">
                     <template #default="scope">
                         <pre class="sql_pre">{{ scope.row.username }}</pre>
                     </template>
@@ -44,7 +54,11 @@
                         <a target="_blank" rel="noopener nofollow" :href="'https://ipinfo.io/' + scope.row.ip">{{scope.row.ip}}</a>
                     </template>
                 </el-table-column>
-                <el-table-column sortable prop="browser" label="Browser" width="120"/>
+                <el-table-column sortable prop="browser" label="Browser" width="220">
+                    <template #default="scope">
+                        {{scope.row.device_os}} / {{scope.row.browser}}
+                    </template>
+                </el-table-column>
                 <el-table-column sortable prop="created_at" label="Date" width="190">
                     <template #default="scope">
                         {{scope.row.human_time_diff}}
@@ -53,13 +67,13 @@
 
                 <el-table-column fixed="right" label="Action" width="90">
                     <template #default="scope">
-
+                        <el-button @click="deleteLog(scope.row.id)" type="danger" plain size="small"><span style="width: 15px; height: 15px; font-size: 15px;" class="dashicons dashicons-trash"></span></el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <el-row style="margin-top: 20px;" :gutter="30">
                 <el-col :md="12" :xs="24">
-                    <el-popconfirm v-if="false"  @confirm="deleteAllLogs()" title="Are you sure to delete all the logs?">
+                    <el-popconfirm :width="200" @confirm="deleteAllLogs()" title="Are you sure to delete all the logs?">
                         <template #reference>
                             <el-button v-loading="deleting" size="small" type="danger">Delete All Logs</el-button>
                         </template>
@@ -81,20 +95,23 @@
 </template>
 
 <script type="text/babel">
+import {Search} from '@element-plus/icons-vue';
 
 export default {
     name: 'Logs',
+    components: {
+    },
     data() {
         return {
             logs: [],
+            SearchIcon: Search,
             paginate: {
                 page: 1,
                 per_page: 20,
                 total: 0
             },
-            filter: {
-                context: ''
-            },
+            search: '',
+            status: 'all',
             show_ignores: 'no',
             statuses: this.appVars.auth_statuses,
             loading: false,
@@ -110,7 +127,7 @@ export default {
         },
         deleteAllLogs() {
             this.deleting = true;
-            this.$post('logs/truncate')
+            this.$post('truncate-auth-logs')
                 .then(response => {
                     this.$notify.success(response.message);
                     this.fetchLogs();
@@ -130,28 +147,15 @@ export default {
             this.sortType = prop.order;
             this.fetchLogs();
         },
-        changeStatus(rowId, newStatus, index = false) {
-            this.$put(`logs/${rowId}`, {
-                status: newStatus
-            })
-                .then(response => {
-                    this.fetchLogs();
-                })
-                .catch((errors) => {
-                    this.$handleError(errors);
-                    this.fetchLogs();
-                });
-
-        },
         fetchLogs() {
             this.loading = true;
             this.$get('auth-logs', {
                 per_page: this.paginate.per_page,
                 page: this.paginate.page,
-                filters: this.filter,
+                statuses: [this.status],
                 sortBy: this.sortBy,
-                sortType: (this.sortType == 'descending') ? 'DESC' : 'ASC',
-                show_ignores: this.show_ignores
+                search: this.search,
+                sortType: (this.sortType == 'descending') ? 'DESC' : 'ASC'
             })
                 .then(response => {
                     this.logs = response.logs.data;
@@ -164,11 +168,22 @@ export default {
                     this.loading = false;
                 });
         },
+        deleteLog(id) {
+            this.deleting = true;
+            this.$post('delete-log/' + id)
+                .then(response => {
+                    this.$notify.success(response.message);
+                    this.fetchLogs();
+                })
+                .catch((errors) => {
+                    this.$handleError(errors);
+                })
+                .finally(() => {
+                    this.deleting = false;
+                });
+        },
         tableRowClassName({row, rowIndex}) {
-            if(row.ltime >= this.appVars.db_expensive) {
-                return 'row_expensive';
-            }
-            return '';
+            return 'fls_status_' + row.status;
         }
     },
     mounted() {

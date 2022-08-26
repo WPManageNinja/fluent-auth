@@ -12,7 +12,8 @@ class Helper
         }
 
         $defaults = [
-            'extended_auth_security_type' => 'none', // none | 2fa | pass_code
+            'extended_auth_security_type' => 'none', // none | magic_login | pass_code
+            'magic_user_roles'            => [],
             'global_auth_code'            => '',
             'disable_xmlrpc'              => 'no',
             'disable_app_login'           => 'no',
@@ -125,8 +126,10 @@ class Helper
 
         $template = sanitize_file_name($template);
 
+        $template = str_replace('.', DIRECTORY_SEPARATOR, $template);
+
         ob_start();
-        include FLUENT_SECURITY_PLUGIN_PATH.'app/Views/'.$template.'.php';
+        include FLUENT_SECURITY_PLUGIN_PATH . 'app/Views/' . $template . '.php';
 
         return ob_get_clean();
     }

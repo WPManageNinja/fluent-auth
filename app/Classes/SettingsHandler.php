@@ -70,6 +70,10 @@ class SettingsHandler
                     'required' => 'Login Timing is required'
                 ];
             }
+        } else {
+            $settings['extended_auth_security_type'] = 'none';
+            $settings['global_auth_code'] = '';
+            $settings['magic_user_roles'] = [];
         }
 
         if ($settings['extended_auth_security_type'] == 'pass_code') {
@@ -78,8 +82,6 @@ class SettingsHandler
                     'required' => 'Global Auth Code is required'
                 ];
             }
-        } else {
-            $settings['global_auth_code'] = '';
         }
 
         if ($errors) {

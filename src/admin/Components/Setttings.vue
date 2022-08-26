@@ -13,7 +13,8 @@
                         <h3>Core Security Settings</h3>
                         <el-form-item class="fls_switch">
                             <template #label>
-                                Most of the sites don't need XMLRPC. You can disable this for enhance security. Recommended:
+                                Most of the sites don't need XMLRPC. You can disable this for enhance security.
+                                Recommended:
                                 Disable
                             </template>
                             <el-radio-group v-model="settings.disable_xmlrpc" size="medium">
@@ -47,7 +48,8 @@
                             <el-switch v-model="settings.enable_auth_logs" active-value="yes" inactive-value="no"/>
                             Enable Login Security and Login Limit (recommended)
                         </el-form-item>
-                        <p v-if="settings.enable_auth_logs !== 'yes'" style="color: red;">We recommend to enable login logs
+                        <p v-if="settings.enable_auth_logs !== 'yes'" style="color: red;">We recommend to enable login
+                            logs
                             as well as set login try limit</p>
 
                         <template v-else>
@@ -65,27 +67,40 @@
                         </template>
                     </div>
 
-                    <div class="fls_login_settings">
+                    <div class="fls_login_settings" v-if="settings.enable_auth_logs == 'yes'">
                         <h3>Extended Login Security</h3>
                         <el-form-item>
                             <template #label>
-                                Extended Login Security [Only enable it if you do not have other wp users than your close
-                                circle]
+                                Extended Login Security
                             </template>
                             <el-radio-group v-model="settings.extended_auth_security_type" size="medium">
-                                <el-radio label="none">None</el-radio>
+                                <el-radio label="none">Standard</el-radio>
                                 <el-radio label="pass_code">With Login Security Code</el-radio>
+                                <el-radio label="magic_login">Magic Login</el-radio>
                             </el-radio-group>
+                            <p v-if="settings.extended_auth_security_type == 'pass_code'" style="color: red; width: 100%;">
+                                [Only use this if you do not have other wp users than your close circle]
+                            </p>
                         </el-form-item>
 
-                        <el-form-item v-if="settings.extended_auth_security_type == 'pass_code'">
+                        <el-form-item v-if="settings.extended_auth_security_type == 'magic_login'">
+                            <template #label>
+                                Which user roles can use magic login. Leave bank for all user roles
+                            </template>
+                            <el-select placeholder="Enabled for All User Roles" clearable v-model="settings.magic_user_roles" :multiple="true">
+                                <el-option  v-for="role in user_roles" :value="role.id" :label="role.title" :key="role.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item v-else-if="settings.extended_auth_security_type == 'pass_code'">
                             <template #label>
                                 Provide Login Security Pass that users need to provide when login
                             </template>
                             <el-input type="text" placeholder="Global Auth Security Code"
                                       v-model="settings.global_auth_code"/>
                             <p style="display: block; width: 100%;">
-                                A new field will be shown to provide this code to login. Users can also set their own code from profile page.</p>
+                                A new field will be shown to provide this code to login. Users can also set their own
+                                code from profile page.</p>
                         </el-form-item>
                     </div>
 
@@ -95,16 +110,16 @@
                             <template #label>
                                 Automatically delete logs older than (in days)
                             </template>
-                            <el-input v-model="settings.auto_delete_logs_day" type="number" :min="0" />
+                            <el-input v-model="settings.auto_delete_logs_day" type="number" :min="0"/>
                             <p style="display: block; width: 100%;">Use 0 if you do not delete the logs</p>
                         </el-form-item>
                         <el-form-item>
                             <template #label>
                                 Send Email notification if any of the following user roles login
                             </template>
-                            <el-checkbox-group v-model="settings.notification_user_roles">
-                                <el-checkbox v-for="role in user_roles" :label="role.id" :key="role.id">{{role.title}}</el-checkbox>
-                            </el-checkbox-group>
+                            <el-select clearable v-model="settings.notification_user_roles" :multiple="true">
+                                <el-option  v-for="role in user_roles" :value="role.id" :label="role.title" :key="role.id"></el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item class="fls_switch">
@@ -112,7 +127,8 @@
                             Send email notification when a user get blocked
                         </el-form-item>
 
-                        <el-form-item v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes'">
+                        <el-form-item
+                            v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes'">
                             <template #label>
                                 Notification Send to Email Address
                             </template>
@@ -128,7 +144,7 @@
 
                     <div class="fls_errors" v-if="errors">
                         <ul>
-                            <li v-for="(error, errorKey) in errors" :key="errorKey">{{convertToText(error)}}</li>
+                            <li v-for="(error, errorKey) in errors" :key="errorKey">{{ convertToText(error) }}</li>
                         </ul>
                     </div>
 
@@ -188,7 +204,7 @@ export default {
         },
         applyRecommended() {
             this.settings = {
-                extended_auth_security_type: 'none',
+                extended_auth_security_type: 'magic_login',
                 global_auth_code: '',
                 disable_xmlrpc: 'yes',
                 disable_app_login: 'yes',
@@ -199,7 +215,8 @@ export default {
                 auto_delete_logs_day: 30,
                 notification_user_roles: ['administrator', 'editor'],
                 notification_email: '{admin_email}',
-                notify_on_blocked: 'yes'
+                notify_on_blocked: 'yes',
+                magic_user_roles: []
             }
             this.$notify.success('Recommended settings has been applied. Please review and save the settings');
         }

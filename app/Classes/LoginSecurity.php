@@ -439,5 +439,4 @@ class LoginSecurity
 
         return wp_mail($adminEmail, $subject, $body, $headers);
     }
-
 }

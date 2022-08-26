@@ -20,6 +20,8 @@
     "@vue/compiler-sfc": "^3.2.37",
     "laravel-mix": "^6.0.49",
     "node-sass": "^7.0.1",
+    "resolve-url-loader": "^5.0.0",
+    "sass": "^1.54.5",
     "sass-loader": "^13.0.2",
     "unplugin-auto-import": "^0.11.2",
     "unplugin-vue-components": "^0.22.4",

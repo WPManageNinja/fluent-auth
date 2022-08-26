@@ -25,6 +25,7 @@ class FluentSecurityPlugin
         $this->loadDependencies();
 
         (new \FluentSecurity\Classes\LoginSecurity())->init();
+        (new \FluentSecurity\Classes\MagicLogin())->register();
 
         // Maybe Remove Application Password Login
         add_filter('wp_is_application_passwords_available', function ($status) {
@@ -54,6 +55,7 @@ class FluentSecurityPlugin
     public function installDbTables()
     {
         global $wpdb;
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         $charsetCollate = $wpdb->get_charset_collate();
         $table = $wpdb->prefix . 'fls_auth_logs';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
@@ -79,9 +81,32 @@ class FluentSecurityPlugin
                   KEY `user_id` (`user_id`),
                   KEY  `username` (`username`(192))
             ) $charsetCollate;";
+            dbDelta($sql);
+        }
 
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
+        $table_name = $wpdb->prefix . 'fls_login_hashes';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+            $sql = "CREATE TABLE $table_name (
+				id BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+				login_hash varchar(192),
+				user_id BIGINT(20) DEFAULT 0,
+				used_count INT(11) DEFAULT 0,
+				use_limit INT(11) DEFAULT 1,
+				status varchar(20) DEFAULT 'issued',
+				ip_address varchar(20) NULL,
+				redirect_intend varchar(255) NULL,
+				success_ip_address varchar(20) NULL,
+				country varchar(50) NULL,
+				city varchar(50) NULL,
+				created_by int(11) null,
+				valid_till  timestamp NULL,
+				created_at timestamp NULL,
+				updated_at timestamp NULL,
+                   KEY `created_at` (`created_at`),
+                   KEY `login_hash` (`login_hash`(192)),
+                   KEY `user_id` (`user_id`),
+                   KEY `status` (`status`(20))
+			) $charsetCollate;";
             dbDelta($sql);
         }
     }
@@ -98,6 +123,7 @@ class FluentSecurityPlugin
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/LogsHandler.php';
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/AdminMenuHandler.php';
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/LoginSecurity.php';
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/MagicLogin.php';
 
         add_action('rest_api_init', function () {
             require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/routes.php';
