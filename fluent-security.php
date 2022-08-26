@@ -19,7 +19,6 @@ define('FLUENT_SECURITY_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 class FluentSecurityPlugin
 {
-    protected $failedLogged = false;
 
     public function init()
     {
@@ -49,6 +48,10 @@ class FluentSecurityPlugin
         (new \FluentSecurity\Classes\AdminMenuHandler())->register();
 
         register_activation_hook(__FILE__, [$this, 'installDbTables']);
+
+        register_deactivation_hook(__FILE__, function () {
+            wp_clear_scheduled_hook('fluent_security_daily_tasks');
+        });
 
         load_plugin_textdomain('fluent-security', false, dirname(plugin_basename(__FILE__)) . '/language');
 
