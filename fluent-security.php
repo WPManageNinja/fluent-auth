@@ -64,7 +64,7 @@ class FluentSecurityPlugin
 
         add_action('admin_notices', function () {
             if (get_option('__fls_auth_settings') || !current_user_can('manage_options')) {
-                //return '';
+                return '';
             }
 
             $url = admin_url('options-general.php?page=fluent-security#/settings');
@@ -78,7 +78,7 @@ class FluentSecurityPlugin
         });
 
         $plugin_file = plugin_basename(__FILE__);
-        add_filter("plugin_action_links_{$plugin_file}", [$this, 'addLinks'], 10, 1);
+        add_filter("plugin_action_links_{$plugin_file}", [$this, 'addContextLinks'], 10, 1);
     }
 
     public function installDbTables()
@@ -163,7 +163,7 @@ class FluentSecurityPlugin
         });
     }
 
-    public function addLinks($actions)
+    public function addContextLinks($actions)
     {
         $actions['settings'] = sprintf(
             '<a href="%s">%s</a>',
