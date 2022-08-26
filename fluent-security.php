@@ -61,6 +61,24 @@ class FluentSecurityPlugin
         add_action('fluent_security_daily_tasks', function () {
             \FluentSecurity\Helpers\Helper::cleanUpLogs();
         });
+
+        add_action('admin_notices', function () {
+            if (get_option('__fls_auth_settings') || !current_user_can('manage_options')) {
+                //return '';
+            }
+
+            $url = admin_url('options-general.php?page=fluent-security#/settings');
+
+            ?>
+            <div style="padding-bottom: 10px;" class="notice notice-warning">
+                <p><?php echo sprintf(__('Thank you for installing %s Plugin. Please configure the security settings to enable enhanced security of your site', 'fluent-security'), '<b>Fluent Security</b>'); ?></p>
+                <a href="<?php echo esc_url($url); ?>"><?php _e('Configure Fluent Security', 'fluent-security'); ?></a>
+            </div>
+            <?php
+        });
+
+        $plugin_file = plugin_basename(__FILE__);
+        add_filter("plugin_action_links_{$plugin_file}", [$this, 'addLinks'], 10, 1);
     }
 
     public function installDbTables()
@@ -143,6 +161,23 @@ class FluentSecurityPlugin
         add_action('rest_api_init', function () {
             require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/routes.php';
         });
+    }
+
+    public function addLinks($actions)
+    {
+        $actions['settings'] = sprintf(
+            '<a href="%s">%s</a>',
+            esc_url(admin_url('options-general.php?page=fluent-security#/settings')),
+            esc_html__('Settings', 'fluent-security')
+        );
+
+        $actions['dashboard_page'] = sprintf(
+            '<a href="%s">%s</a>',
+            esc_url(admin_url('options-general.php?page=fluent-security#/')),
+            esc_html__('Dashboard', 'fluent-security')
+        );
+
+        return $actions;
     }
 }
 
