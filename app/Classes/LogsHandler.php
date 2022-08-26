@@ -2,6 +2,8 @@
 
 namespace FluentSecurity\Classes;
 
+use FluentSecurity\Helpers\Helper;
+
 class LogsHandler
 {
     public static function getLogs(\WP_REST_Request $request)
@@ -27,7 +29,7 @@ class LogsHandler
 
         if ($request->get_param('search')) {
             $search = sanitize_text_field($request->get_param('search'));
-            $query->where('username', 'LIKE', '%'.$search.'%');
+            $query->where('username', 'LIKE', '%' . $search . '%');
         }
 
         $logs = $query->paginate();
@@ -71,12 +73,11 @@ class LogsHandler
         if (!$fromRange) {
             $fromRange = '-0 days';
         }
-
+        
         if ($fromRange == 'this_month') {
             $fromDate = date('Y-m-01 00:00:00');
         } else if ($fromRange == 'all_time') {
             $fromDate = false;
-            $compare = false;
         } else {
             $fromDate = date('Y-m-d 00:00:00', strtotime($fromRange));
         }
@@ -92,15 +93,15 @@ class LogsHandler
         $items = [
             'failed'  => [
                 'count' => 0,
-                'title' => 'Failed Logins'
+                'title' => __('Failed Logins', 'fluent-security')
             ],
             'blocked' => [
                 'count' => 0,
-                'title' => 'Blocked Logins'
+                'title' => __('Blocked Logins', 'fluent-security')
             ],
             'success' => [
                 'count' => 0,
-                'title' => 'Successful Logins'
+                'title' => __('Successful Logins', 'fluent-security')
             ]
         ];
 
@@ -108,6 +109,16 @@ class LogsHandler
             if (isset($items[$countItem->status])) {
                 $items[$countItem->status]['count'] = $countItem->total;
             }
+        }
+
+        if (Helper::getSetting('extended_auth_security_type') == 'magic_login') {
+            $items['magic_login'] = [
+                'title' => __('Login via URL', 'fluent-security'),
+                'count' => wpFluent()->table('fls_login_hashes')
+                    ->where('status', 'used')
+                    ->whereBetween('created_at', $fromDate, $toDate)
+                    ->count()
+            ];
         }
 
         return [
