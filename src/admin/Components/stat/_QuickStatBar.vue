@@ -78,7 +78,7 @@ export default {
                     this.stats = response.stats
                 })
                 .catch((errors) => {
-                    this.handleError(errors);
+                    this.$handleError(errors);
                 })
                 .finally(() => {
                     this.loading = false;

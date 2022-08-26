@@ -47,7 +47,7 @@ class LogsHandler
     public static function deleteLog(\WP_REST_Request $request)
     {
         $id = $request->get_param('id');
-        wpFluent()->table('fls_auth_logs')->where('id', $id)->delete();
+        flsDb()->table('fls_auth_logs')->where('id', $id)->delete();
 
         return [
             'message' => __('Log has been deleted', 'fluent-security')
@@ -84,8 +84,8 @@ class LogsHandler
 
         $toDate = date('Y-m-d 23:59:59', current_time('timestamp'));
 
-        $counts = wpFluent()->table('fls_auth_logs')
-            ->select('status', wpFluent()->raw('count(*) as total'))
+        $counts = flsDb()->table('fls_auth_logs')
+            ->select('status', flsDb()->raw('count(*) as total'))
             ->whereBetween('created_at', $fromDate, $toDate)
             ->groupBy('status')
             ->get();
@@ -114,7 +114,7 @@ class LogsHandler
         if (Helper::getSetting('extended_auth_security_type') == 'magic_login') {
             $items['magic_login'] = [
                 'title' => __('Login via URL', 'fluent-security'),
-                'count' => wpFluent()->table('fls_login_hashes')
+                'count' => flsDb()->table('fls_login_hashes')
                     ->where('status', 'used')
                     ->whereBetween('created_at', $fromDate, $toDate)
                     ->count()
