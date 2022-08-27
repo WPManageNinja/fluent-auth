@@ -31,7 +31,7 @@ export default {
                 },
                 {
                     route: 'logs',
-                    title: 'Login Logs'
+                    title: 'Logs'
                 },
                 {
                     route: 'settings',

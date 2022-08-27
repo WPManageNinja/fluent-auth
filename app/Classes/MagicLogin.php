@@ -21,6 +21,9 @@ class MagicLogin
             }
         }, 1);
 
+
+        add_filter('login_form_bottom', [$this, 'maybeMagicFormOnLoginFunc']);
+
         /*
          * Programmatic Generation of the login token
          */
@@ -55,9 +58,9 @@ class MagicLogin
     public function maybePushMagicForm()
     {
         if (!$this->isEnabled()) {
-            return;
+            return '';
         }
-
+        $this->pushAssets();
         ?>
         <div style="display: none;" id="fls_magic_login">
             <div class="fls_magic_initial">
@@ -74,9 +77,9 @@ class MagicLogin
                 <p class="fls_magic_text">
                     <?php _e('Enter the email address or username associated with your account, and we will send a direct login url to your inbox.', 'fluent-security'); ?>
                 </p>
-                <label>
+                <label for="fls_magic_logon">
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
-                    <input id="fls_magic_logon" class="fls_magic_input" type="text"/>
+                    <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text"/>
                     <input id="fls_magic_logon_nonce" type="hidden"
                            value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
                 </label>
@@ -99,6 +102,19 @@ class MagicLogin
             </div>
         </div>
         <?php
+    }
+
+    public function maybeMagicFormOnLoginFunc($html)
+    {
+        if (!$this->isEnabled()) {
+            return $html;
+        }
+
+        ob_start();
+        $this->maybePushMagicForm();
+        $newHtml = ob_get_clean();
+
+        return $html.$newHtml;
     }
 
     public function pushAssets()

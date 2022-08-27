@@ -2,7 +2,7 @@
     <div class="dashboard box_wrapper">
         <div class="box_narrow">
             <div style="font-size: 16px; margin-bottom: 20px;">
-                Hello {{ me.full_name }}, View your config and recent login activities
+                Hello {{ me.full_name }}, view your security config and recent login activities
             </div>
 
             <quick-stat-bar />

@@ -22,6 +22,7 @@ class LoginSecurity
 
         add_action('wp_login_failed', [$this, 'logFailedAuth'], 10, 2);
 
+        add_filter('login_form_middle', [$this, 'maybeSecurityCodeOnLoginFunc']);
     }
 
     public function pushLoginPassCodeField()
@@ -38,6 +39,18 @@ class LoginSecurity
             </div>
         </div>
         <?php
+    }
+
+    public function maybeSecurityCodeOnLoginFunc($html)
+    {
+        if (!Helper::getGlobalLoginPassCode()) {
+            return $html;
+        }
+
+        ob_start();
+        $this->pushLoginPassCodeField();
+        $newHtML = ob_get_clean();
+        return $html.$newHtML;
     }
 
     /**
@@ -101,7 +114,7 @@ class LoginSecurity
 
     /**
      * @param $errors \WP_Error
-     * @param $userData array
+     * @param $userData \WP_User || false
      * @return mixed|\WP_Error
      */
     public function maybeBlockPasswordReset($errors, $userData)
@@ -117,9 +130,29 @@ class LoginSecurity
         $ip = Helper::getIp();
         $dateTime = date('Y-m-d H:i:s', current_time('timestamp') - $minutes * 60);
 
-        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}fls_auth_logs WHERE `ip` = %s AND `created_at` > %s AND `status` IN ('failed','blocked')", $ip, $dateTime));
+        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}fls_auth_logs WHERE `ip` = %s AND `created_at` > %s AND `status` IN ('failed','blocked', 'password_reset')", $ip, $dateTime));
 
         if (!$count || $limit >= $count) {
+
+            $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+
+            $userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
+
+            // Just log here
+            flsDb()->table('fls_auth_logs')
+                ->insert([
+                    'username'   => ($userData) ? $userData->user_login : '',
+                    'user_id'    => ($userData) ? $userData->ID : '',
+                    'agent'      => $userAgent,
+                    'ip'         => Helper::getIp(),
+                    'browser'    => $browserDetection->getBrowser($userAgent)['browser_name'],
+                    'device_os'  => $browserDetection->getOS($userAgent)['os_family'],
+                    'status'     => 'password_reset',
+                    'media'      => 'web',
+                    'created_at' => current_time('mysql'),
+                    'updated_at' => current_time('mysql'),
+                ]);
+
             return $errors;
         }
 
@@ -284,7 +317,7 @@ class LoginSecurity
 
         $this->failedLogged = true;
 
-       $this->maybeSendBlockedEmail($user, $username);
+        $this->maybeSendBlockedEmail($user, $username);
     }
 
     private function checkLoginAttempt($user, $userName)
@@ -414,7 +447,7 @@ class LoginSecurity
 
         if (is_wp_error($user)) {
             $infoHtml .= '<li>' . wp_kses_post($user->get_error_message()) . '</li>';
-        } else if($user instanceof \WP_User) {
+        } else if ($user instanceof \WP_User) {
             $userEditLInk = add_query_arg('user_id', $user->ID, self_admin_url('user-edit.php'));
             $infoHtml .= '<li><b>Username:</b> <a href="' . $userEditLInk . '">' . $user->user_login . '</a></li>';
             $infoHtml .= '<li><b>Email:</b> ' . $user->user_email . '</li>';

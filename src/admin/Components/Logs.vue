@@ -3,7 +3,7 @@
         <div class="box dashboard_box">
             <div class="box_header" style="padding: 15px;font-size: 16px;">
                 <div style="padding-top: 5px;" class="box_head">
-                    Login Logs
+                    Logs
                     <el-button @click="fetchLogs()" size="small">refresh</el-button>
                 </div>
                 <div style="display: flex;" class="box_actions">
