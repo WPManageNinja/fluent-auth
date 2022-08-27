@@ -46,14 +46,14 @@ class FluentSecurityPlugin
 
         // Maybe disable List Users REST
         add_filter('rest_user_query', function ($query) {
-            if(\FluentSecurity\Helpers\Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
-                $query['login'] = 'someRandomStringForThis_'.time();
+            if (\FluentSecurity\Helpers\Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
+                $query['login'] = 'someRandomStringForThis_' . time();
             }
             return $query;
         });
 
         add_filter('rest_prepare_user', function ($response, $user, $request) {
-            if(!empty($request['id']) && \FluentSecurity\Helpers\Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
+            if (!empty($request['id']) && \FluentSecurity\Helpers\Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
                 return new \WP_Error('permission_error', 'You do not have access to list users. Restriction added from fluent security');
             }
             return $user;
