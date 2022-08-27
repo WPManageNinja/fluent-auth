@@ -11,34 +11,14 @@
                 <el-form :data="settings" label-position="top">
                     <div class="fls_login_settings">
                         <h3>Core Security Settings</h3>
-                        <el-form-item class="fls_switch">
-                            <template #label>
-                                Most of the sites don't need XMLRPC. You can disable this for enhance security.
-                                Recommended:
-                                Disable
-                            </template>
-                            <el-radio-group v-model="settings.disable_xmlrpc" size="medium">
-                                <el-radio label="yes">Disable XML-RPC</el-radio>
-                                <el-radio label="no">Enable XML-RPC</el-radio>
-                            </el-radio-group>
+                        <el-form-item>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_xmlrpc">Disable XML-RPC (Most of the sites don't need XMLRPC)</el-checkbox>
                         </el-form-item>
-                        <el-form-item class="fls_switch">
-                            <template #label>
-                                Disable App Login (Rest API) for Remote Access. Recommended: Disable
-                            </template>
-                            <el-radio-group v-model="settings.disable_app_login" size="medium">
-                                <el-radio label="yes">Disable Remote App Login</el-radio>
-                                <el-radio label="no">Enable Remote App Login</el-radio>
-                            </el-radio-group>
+                        <el-form-item>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_app_login">Disable App Login (Rest API) for Remote Access. (Recommended: Disable)</el-checkbox>
                         </el-form-item>
-                        <el-form-item class="fls_switch">
-                            <template #label>
-                                REST Endpoint wp users query for public [Recommended: Disable]
-                            </template>
-                            <el-radio-group v-model="settings.disable_users_rest" size="medium">
-                                <el-radio label="yes">Disable</el-radio>
-                                <el-radio label="no">Enable</el-radio>
-                            </el-radio-group>
+                        <el-form-item>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_users_rest">Disable REST Endpoint for wp users query for public (Recommended: Disable)</el-checkbox>
                         </el-form-item>
                     </div>
 
