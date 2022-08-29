@@ -34,10 +34,15 @@ class LogsHandler
 
         $logs = $query->paginate();
 
-        $currentTimeStamp = current_time('timestamp');
-        foreach ($logs['data'] as $log) {
-            $log->human_time_diff = human_time_diff(strtotime($log->created_at, $currentTimeStamp), $currentTimeStamp) . ' ago';
-        }
+		// Moved front end
+	    // the main reason is to move to frontend is
+	    // using user resource instead of using server resource and avoid a loop
+
+        //$currentTimeStamp = current_time('timestamp');
+
+//        foreach ($logs['data'] as $log) {
+//            $log->human_time_diff = human_time_diff(strtotime($log->created_at, $currentTimeStamp), $currentTimeStamp) . ' ago';
+//        }
 
         return [
             'logs' => $logs

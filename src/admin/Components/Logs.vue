@@ -62,7 +62,8 @@
                 </el-table-column>
                 <el-table-column sortable prop="created_at" label="Date" width="190">
                     <template #default="scope">
-                        {{scope.row.human_time_diff}}
+                        {{ formatDate(scope.row.created_at) }}
+<!--                        {{scope.row.human_time_diff}}-->
                     </template>
                 </el-table-column>
 
@@ -99,6 +100,7 @@
 <script type="text/babel">
 import {Search} from '@element-plus/icons-vue';
 import { h } from 'vue'
+import { diffForHuman } from '../Bits/common';
 
 export default {
     name: 'Logs',
@@ -188,6 +190,9 @@ export default {
         },
         tableRowClassName({row, rowIndex}) {
             return 'fls_status_' + row.status;
+        },
+        formatDate(timeString){
+            return diffForHuman(timeString);
         }
     },
     mounted() {
