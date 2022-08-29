@@ -98,6 +98,7 @@
 
 <script type="text/babel">
 import {Search} from '@element-plus/icons-vue';
+import { h } from 'vue'
 
 export default {
     name: 'Logs',
@@ -106,7 +107,8 @@ export default {
     data() {
         return {
             logs: [],
-            SearchIcon: Search,
+            // Directly passing component can lead to unnecessary performance overhead,
+            SearchIcon: h(Search),
             paginate: {
                 page: 1,
                 per_page: 20,
