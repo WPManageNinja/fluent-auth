@@ -2,9 +2,9 @@
     <div class="box_wrapper">
         <div class="box dashboard_box">
             <div class="box_header" style="padding: 15px;font-size: 16px;">
-                <div style="padding-top: 5px;" class="box_head">
+                <div style="padding-top: 5px" class="box_head">
                     Logs
-                    <el-button @click="fetchLogs()" size="small">refresh</el-button>
+                    <el-button style="margin-left: 5px" @click="fetchLogs()" size="small">Refresh</el-button>
                 </div>
                 <div style="display: flex;" class="box_actions">
                     <el-radio-group @change="fetchLogs()" v-model="status">
