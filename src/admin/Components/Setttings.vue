@@ -53,7 +53,7 @@
                             <template #label>
                                 Extended Login Security
                             </template>
-                            <el-radio-group v-model="settings.extended_auth_security_type" size="medium">
+                            <el-radio-group v-model="settings.extended_auth_security_type">
                                 <el-radio label="none">Standard</el-radio>
                                 <el-radio label="pass_code">With Login Security Code</el-radio>
                                 <el-radio label="magic_login">Magic Login</el-radio>

@@ -8,8 +8,8 @@
                 </div>
                 <div style="display: flex;" class="box_actions">
                     <el-radio-group @change="fetchLogs()" v-model="status">
-                        <el-radio-button size="medium" label="all">All</el-radio-button>
-                        <el-radio-button size="medium" v-for="(status, statusKey) in statuses" :key="statusKey" :label="statusKey">
+                        <el-radio-button label="all">All</el-radio-button>
+                        <el-radio-button  v-for="(status, statusKey) in statuses" :key="statusKey" :label="statusKey">
                             {{ status }}
                         </el-radio-button>
                     </el-radio-group>
