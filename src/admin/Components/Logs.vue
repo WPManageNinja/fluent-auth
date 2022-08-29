@@ -20,7 +20,8 @@
                     </el-input>
                 </div>
             </div>
-            <el-table @sort-change="handleSortChange"
+            <div class="box_body">
+                 <el-table @sort-change="handleSortChange"
                       :default-sort="{ prop: sortBy, order: sortType }"
                       v-loading="loading"
                       :data="logs"
@@ -90,6 +91,7 @@
                     </div>
                 </el-col>
             </el-row>
+            </div>
         </div>
     </div>
 </template>
