@@ -9,7 +9,7 @@
         <el-table-column :width="90" label="IP" prop="ip" />
         <el-table-column :width="120" label="Date" prop="human_time_diff">
             <template #default="scope">
-                <span :title="scope.row.created_at" style="font-size: 11px;">{{scope.row.human_time_diff}}</span>
+                <span :title="scope.row.created_at" style="font-size: 11px;">{{ formatDate(scope.row.created_at) }}</span>
             </template>
         </el-table-column>
         <el-table-column :width="130" label="Browser" prop="browser">
@@ -21,8 +21,15 @@
 </template>
 
 <script type="text/babel">
+import { diffForHuman } from '../Bits/common';
+
 export default {
     name: 'LogTable',
-    props: ['logs']
+    props: ['logs'],
+    methods: {
+        formatDate(dateString){
+            return diffForHuman(dateString)
+        }
+    },
 }
 </script>
