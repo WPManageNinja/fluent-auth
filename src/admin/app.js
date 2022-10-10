@@ -80,16 +80,6 @@ const router = createRouter({
     history: createWebHashHistory()
 });
 
-
 window.fluentFrameworkApp = app.use(router).mount(
     '#fluent_security_app'
 );
-
-router.afterEach((to, from) => {
-    return;
-    jQuery('.fframe_menu_item').removeClass('active');
-    let active = to.meta.active;
-    if(active) {
-        jQuery('.fframe_main-menu-items').find('li[data-key='+active+']').addClass('active');
-    }
-});

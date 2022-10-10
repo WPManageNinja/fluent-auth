@@ -50,7 +50,7 @@ class LoginSecurity
         ob_start();
         $this->pushLoginPassCodeField();
         $newHtML = ob_get_clean();
-        return $html.$newHtML;
+        return $html . $newHtML;
     }
 
     /**
@@ -250,7 +250,7 @@ class LoginSecurity
      * @param $user \WP_User
      * @return void
      */
-    private function logAuthSuccess($user)
+    public function logAuthSuccess($user, $media = 'web')
     {
         if (!Helper::getSetting('enable_auth_logs')) {
             return;
@@ -271,6 +271,7 @@ class LoginSecurity
             'browser'     => $browserDetection->getBrowser($agent)['browser_name'],
             'device_os'   => $browserDetection->getOS($agent)['os_family'],
             'description' => '',
+            'media'       => $media,
             'status'      => 'success',
             'user_id'     => $user->ID
         ];
@@ -279,8 +280,7 @@ class LoginSecurity
 
         do_action('fluent_security/user_login_success', $user);
 
-        $this->maybeSendSuccessEmail($user);
-
+        $this->maybeSendSuccessEmail($user, $media);
     }
 
     /**
@@ -363,7 +363,7 @@ class LoginSecurity
      * @param $user \WP_User
      * @return bool
      */
-    private function maybeSendSuccessEmail($user)
+    private function maybeSendSuccessEmail($user, $media = '')
     {
         $notificationUserRoles = Helper::getSetting('notification_user_roles');
         if (!$notificationUserRoles || !array_intersect($notificationUserRoles, (array)$user->roles)) {
@@ -385,10 +385,18 @@ class LoginSecurity
         $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
         $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
 
+        $userRoles = (array) $user->roles;
+
+        $roleNames = implode(', ', $userRoles);
+
         $ip = Helper::getIp();
-        $infoHtml = '<ul style="padding-left: 20px; list-style: disc; line-height: 25px; font-size: 16px;">';
+        $infoHtml = '<ul style="padding-left:20px;line-height:25px;font-size: 14px;background: #f9f9f9;padding-top: 20px;padding-bottom: 20px;font-family: monospace;">';
         $infoHtml .= '<li><b>Site URL:</b> <a href="' . site_url() . '">' . site_url() . '</a></li>';
         $infoHtml .= '<li><b>Username:</b> <a href="' . $userEditLInk . '">' . $user->user_login . '</a></li>';
+        $infoHtml .= '<li><b>User Role:</b> '.$roleNames.'</li>';
+        if($media && $media != 'web') {
+            $infoHtml .= '<li><b>Media:</b> '.$media.'</li>';
+        }
         $infoHtml .= '<li><b>Email:</b> ' . $user->user_email . '</li>';
         $infoHtml .= '<li><b>Name:</b> ' . $user->first_name . ' ' . $user->last_name . '</li>';
         $infoHtml .= '<li><b>Login IP Address:</b> <a href="https://ipinfo.io/' . $ip . '">' . $ip . '</a></li>';
@@ -439,7 +447,7 @@ class LoginSecurity
         $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
 
         $ip = Helper::getIp();
-        $infoHtml = '<ul style="padding-left: 20px; list-style: disc; line-height: 25px; font-size: 16px;">';
+        $infoHtml = '<ul style="padding-left:20px;line-height:25px;font-size: 14px;background: #f9f9f9;padding-top: 20px;padding-bottom: 20px;font-family: monospace;">';
         $infoHtml .= '<li><b>Site URL:</b> <a href="' . site_url() . '">' . site_url() . '</a></li>';
         $infoHtml .= '<li><b>Username:</b> ' . $userName . '</li>';
         $infoHtml .= '<li><b>Login IP Address:</b> <a href="https://ipinfo.io/' . $ip . '">' . $ip . '</a></li>';

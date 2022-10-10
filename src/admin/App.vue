@@ -36,6 +36,10 @@ export default {
                 {
                     route: 'settings',
                     title: 'Settings'
+                },
+                {
+                    route: 'social_auth_settings',
+                    title: 'Social Login Settings'
                 }
             ]
         }

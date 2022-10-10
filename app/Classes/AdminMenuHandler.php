@@ -9,7 +9,6 @@ class AdminMenuHandler
     public function register()
     {
         add_action('admin_menu', array($this, 'addMenu'));
-
     }
 
     public function addMenu()
@@ -35,7 +34,7 @@ class AdminMenuHandler
     {
         $currentUser = wp_get_current_user();
 
-        wp_enqueue_script('fluent_security_app', FLUENT_SECURITY_PLUGIN_URL . 'dist/admin/app.js', ['jquery'], true);
+        wp_enqueue_script('fluent_security_app', FLUENT_SECURITY_PLUGIN_URL . 'dist/admin/app.js', ['jquery'], '1.0', true);
 
         wp_localize_script('fluent_security_app', 'fluentSecurityAdmin', [
             'slug'          => 'fluent-security',

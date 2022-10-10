@@ -9,4 +9,6 @@ $router->get('settings', ['\FluentSecurity\Classes\SettingsHandler', 'getSetting
     ->get('auth-logs', ['\FluentSecurity\Classes\LogsHandler', 'getLogs'], $permissions)
     ->get('quick-stats', ['\FluentSecurity\Classes\LogsHandler', 'quickStats'], $permissions)
     ->post('delete-log/{id}', ['\FluentSecurity\Classes\LogsHandler', 'deleteLog'], $permissions)
-    ->post('truncate-auth-logs', ['\FluentSecurity\Classes\LogsHandler', 'deleteAllLog'], $permissions);
+    ->post('truncate-auth-logs', ['\FluentSecurity\Classes\LogsHandler', 'deleteAllLog'], $permissions)
+    ->get('social-auth-settings', ['\FluentSecurity\Classes\SocialAuthApi', 'getSettings'], $permissions)
+    ->post('social-auth-settings', ['\FluentSecurity\Classes\SocialAuthApi', 'saveSettings'], $permissions);

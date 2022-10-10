@@ -574,3 +574,17 @@ ul.fls_listed_data {
 .fls_status_failed td {
   background-color: #ffffea;
 }
+
+
+.fls_code_instruction {
+  display: block;
+  overflow: hidden;
+  h3 {
+    font-weight: normal;
+    font-size: 17px;
+  }
+  textarea {
+    width: 100%;
+    height: 70px;
+  }
+}

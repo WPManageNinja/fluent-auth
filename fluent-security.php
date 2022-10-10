@@ -24,8 +24,16 @@ class FluentSecurityPlugin
     {
         $this->loadDependencies();
 
+        // Admin Menu Init
+        (new \FluentSecurity\Classes\AdminMenuHandler())->register();
+
         (new \FluentSecurity\Classes\LoginSecurity())->init();
         (new \FluentSecurity\Classes\MagicLogin())->register();
+
+        /*
+         * Social Auth Handler Register
+         */
+        (new \FluentSecurity\Classes\SocialAuthHandler())->register();
 
         // Maybe Remove Application Password Login
         add_filter('wp_is_application_passwords_available', function ($status) {
@@ -58,10 +66,6 @@ class FluentSecurityPlugin
             }
             return $user;
         }, 10, 3);
-
-
-        // Admin Menu Init
-        (new \FluentSecurity\Classes\AdminMenuHandler())->register();
 
         register_activation_hook(__FILE__, [$this, 'installDbTables']);
 
@@ -173,6 +177,15 @@ class FluentSecurityPlugin
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/AdminMenuHandler.php';
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/LoginSecurity.php';
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/MagicLogin.php';
+
+        /*
+         * Load Social Logins
+         */
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Services/AuthService.php';
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Services/GithubAuthService.php';
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Services/GoogleAuthService.php';
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SocialAuthApi.php';
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SocialAuthHandler.php';
 
         add_action('rest_api_init', function () {
             require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/routes.php';
