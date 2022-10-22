@@ -4,7 +4,7 @@
             <el-popover v-model:visible="stat_range_popup" placement="bottom-start" width="300px">
                 <template #reference>
                     <h3>
-                        {{ stat_ranges[stat_range]?.label || 'Select Range' }}
+                        {{ stat_ranges[stat_range]?.label || $t('Select Range') }}
                         <el-icon class="el-icon--right">
                             <ArrowDown />
                         </el-icon>
@@ -50,19 +50,19 @@ export default {
             stat_range: '-7 days',
             stat_ranges: {
                 '-0 days': {
-                    label: 'Today'
+                    label: this.$t('Today')
                 },
                 '-7 days': {
-                    label: 'Last 7 days'
+                    label: this.$t('Last 7 days')
                 },
                 '-30 days': {
-                    label: 'Last 30 days'
+                    label: this.$t('Last 30 days')
                 },
                 'this_month': {
-                    label: 'This Month'
+                    label: this.$t('This Month')
                 },
                 'all_time': {
-                    label: 'All Time'
+                    label: this.$t('All Time')
                 }
             }
         }

@@ -2,11 +2,11 @@
     <div class="dashboard box_wrapper">
         <div class="box dashboard_box box_narrow">
             <div v-loading="loading" class="box_header" style="padding: 20px 15px;font-size: 16px;">
-                Login Redirects Settings
+                {{$t('Login Redirects Settings')}}
                 <div class="box_actions">
                     <el-button size="small" v-loading="saving" :disabled="saving" @click="saveSettings()"
-                               type="success">Save
-                        Settings
+                               type="success">
+                        {{$t('Save Settings')}}
                     </el-button>
                 </div>
             </div>
@@ -15,7 +15,7 @@
 
                     <el-form-item class="fls_switch">
                         <el-switch v-model="settings.login_redirects" active-value="yes" inactive-value="no"/>
-                        Enable Custom Login Redirects
+                        {{$t('Enable Custom Login Redirects')}}
                     </el-form-item>
 
                     <template v-if="settings.login_redirects == 'yes'">
@@ -35,7 +35,7 @@
                                 </el-col>
                             </el-row>
                         </div>
-                        <h3>Advanced Redirect Rules</h3>
+                        <h3>{{$t('Advanced Redirect Rules')}}</h3>
                         <div class="fls_advanced_rules">
                             <div v-for="(rule, ruleIndex) in settings.redirect_rules" :key="ruleIndex"
                                  class="fls_rule_group">
@@ -66,14 +66,14 @@
                             </div>
                         </div>
                         <div style="margin-bottom: 20px;" class="fls_controls text-align-right">
-                            <el-button type="default" size="small" @click="addNewRule()">Add Rule</el-button>
+                            <el-button type="default" size="small" @click="addNewRule()">{{$t('Add Rule')}}</el-button>
                         </div>
                         <hr style="margin-bottom: 20px"/>
                     </template>
 
                     <el-form-item>
-                        <el-button v-loading="saving" :disabled="saving" @click="saveSettings()" type="success">Save
-                            Settings
+                        <el-button v-loading="saving" :disabled="saving" @click="saveSettings()" type="success">
+                            {{$t('Save Settings')}}
                         </el-button>
                     </el-form-item>
 
@@ -105,12 +105,12 @@ export default {
             settings: false,
             conditionProviders: {
                 user_role: {
-                    title: 'User Role',
+                    title: this.$t('User Role'),
                     type: 'role_selector',
                     is_multiple: true
                 },
                 user_capability: {
-                    title: 'User Capability',
+                    title: this.$t('User Capability'),
                     type: 'capability_selector',
                     is_multiple: true
                 }

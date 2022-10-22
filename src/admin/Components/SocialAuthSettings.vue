@@ -2,7 +2,7 @@
     <div class="dashboard box_wrapper">
         <div class="box dashboard_box box_narrow">
             <div v-loading="loading" class="box_header" style="padding: 20px 15px;font-size: 16px;">
-                Social Login/Signup Settings
+                {{ $t('social_header') }}
                 <div class="box_actions">
 
                 </div>
@@ -12,77 +12,75 @@
 
                     <el-form-item class="fls_switch">
                         <el-switch v-model="settings.enabled" active-value="yes" inactive-value="no"/>
-                        Enable Social Login / Signup
+                        {{ $t('social_auth_checkbox') }}
                     </el-form-item>
 
                     <div v-if="settings.enabled == 'yes'" class="fls_login_settings">
-                        <h3>Login with Google Settings</h3>
+                        <h3>{{ $t('login_google') }}</h3>
                         <el-form-item class="fls_switch">
                             <el-switch v-model="settings.enable_google" active-value="yes" inactive-value="no"/>
-                            Enable Login with Google
+                            {{ $t('enable_google') }}
                         </el-form-item>
                         <template v-if="settings.enable_google == 'yes'">
-                            <el-form-item label="Credential Storage Method">
+                            <el-form-item :label="$t('credential_storage')">
                                 <el-radio-group v-model="settings.google_key_method">
-                                    <el-radio-button label="db">Database</el-radio-button>
-                                    <el-radio-button label="wp_config">wp-config file (recommended)</el-radio-button>
+                                    <el-radio-button label="db">{{ $t('Database') }}</el-radio-button>
+                                    <el-radio-button label="wp_config">{{ $t('wp-config') }}</el-radio-button>
                                 </el-radio-group>
                             </el-form-item>
                             <div class="fls_code_instruction" v-if="settings.google_key_method == 'wp_config'">
-                                <h3>Please add the following code in your wp-config.php file (please replace the ***
-                                    with your app values)</h3>
+                                <h3>{{$t('wp_config_instruction')}}</h3>
                                 <textarea readonly>define('FLUENT_AUTH_GOOGLE_CLIENT_ID', '******');
 define('FLUENT_AUTH_GOOGLE_CLIENT_SECRET', '******');
                                 </textarea>
                             </div>
                             <template v-else>
-                                <el-form-item label="Google Client ID">
+                                <el-form-item :label="$t('Google Client ID')">
                                     <el-input v-model="settings.google_client_id" type="text"
-                                              placeholder="Google Client ID"/>
+                                              :placeholder="$t('Google Client ID')"/>
                                 </el-form-item>
-                                <el-form-item label="Google Client Secret">
+                                <el-form-item :label="$t('Google Client Secret')">
                                     <el-input v-model="settings.google_client_secret" type="password"
-                                              placeholder="Google Client Secret"/>
+                                              :placeholder="$t('Google Client Secret')"/>
                                 </el-form-item>
                             </template>
                         </template>
                     </div>
 
                     <div v-if="settings.enabled == 'yes'" class="fls_login_settings">
-                        <h3>Login with Github Settings</h3>
+                        <h3>{{$t('login_github')}}</h3>
                         <el-form-item class="fls_switch">
                             <el-switch v-model="settings.enable_github" active-value="yes" inactive-value="no"/>
-                            Enable Login with Github
+                            {{ $t('enable_github') }}
                         </el-form-item>
                         <template v-if="settings.enable_github == 'yes'">
                             <el-form-item label="Credential Storage Method">
                                 <el-radio-group v-model="settings.github_key_method">
-                                    <el-radio-button label="db">Database</el-radio-button>
-                                    <el-radio-button label="wp_config">wp-config file (recommended)</el-radio-button>
+                                    <el-radio-button label="db">{{ $t('Database') }}</el-radio-button>
+                                    <el-radio-button label="wp_config">{{ $t('wp-config') }}</el-radio-button>
                                 </el-radio-group>
                             </el-form-item>
                             <div class="fls_code_instruction" v-if="settings.github_key_method == 'wp_config'">
-                                <h3>Please add the following code in your wp-config.php file (please replace the ***
-                                    with your app values)</h3>
+                                <h3>{{$t('wp_config_instruction')}}</h3>
                                 <textarea readonly>define('FLUENT_AUTH_GITHUB_CLIENT_ID', '******');
 define('FLUENT_AUTH_GITHUB_CLIENT_SECRET', '******');
                                 </textarea>
                             </div>
                             <template v-else>
-                                <el-form-item label="Github Client ID">
+                                <el-form-item :label="$t('Github Client ID')">
                                     <el-input v-model="settings.github_client_id" type="text"
-                                              placeholder="Github Client ID"/>
+                                              :placeholder="$t('Github Client ID')"/>
                                 </el-form-item>
-                                <el-form-item label="Google Client Secret">
+                                <el-form-item :label="$t('Github Client Secret')">
                                     <el-input v-model="settings.github_client_secret" type="password"
-                                              placeholder="Github Client Secret"/>
+                                              :placeholder="$t('Github Client Secret')"/>
                                 </el-form-item>
                             </template>
                         </template>
                     </div>
 
                     <el-form-item>
-                        <el-button v-loading="saving" :disabled="saving" @click="saveSettings()" type="success">Save Settings</el-button>
+                        <el-button v-loading="saving" :disabled="saving" @click="saveSettings()" type="success">{{ $t('Save Settings') }}</el-button>
                     </el-form-item>
 
                     <div class="fls_errors" v-if="errors">

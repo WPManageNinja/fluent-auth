@@ -2,40 +2,38 @@
     <div class="dashboard box_wrapper">
         <div class="box dashboard_box box_narrow">
             <div v-loading="loading" class="box_header" style="padding: 20px 15px;font-size: 16px;">
-                Settings
+                {{ $t('Settings') }}
                 <div class="box_actions">
-                    <el-button @click="applyRecommended()" size="small">Apply recommended settings</el-button>
+                    <el-button @click="applyRecommended()" size="small">{{$t('apply_recommended')}}</el-button>
                 </div>
             </div>
             <div v-if="settings" class="box_body">
                 <el-form :data="settings" label-position="top">
                     <div class="fls_login_settings">
-                        <h3>Core Security Settings</h3>
+                        <h3>{{$t('Core Security Settings')}}</h3>
                         <el-form-item>
-                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_xmlrpc">Disable XML-RPC (Most of the sites don't need XMLRPC)</el-checkbox>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_xmlrpc">{{$t('disable_xmlrpc')}}</el-checkbox>
                         </el-form-item>
                         <el-form-item>
-                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_app_login">Disable App Login (Rest API) for Remote Access. (Recommended: Disable)</el-checkbox>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_app_login">{{$t('disable_app_login')}}</el-checkbox>
                         </el-form-item>
                         <el-form-item>
-                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_users_rest">Disable REST Endpoint for wp users query for public (Recommended: Disable)</el-checkbox>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_users_rest">{{$t('disable_rest_user')}}</el-checkbox>
                         </el-form-item>
                     </div>
 
                     <div class="fls_login_settings">
-                        <h3>Login Security Settings</h3>
+                        <h3>{{$t('Login Security Settings')}}</h3>
                         <el-form-item class="fls_switch">
                             <el-switch v-model="settings.enable_auth_logs" active-value="yes" inactive-value="no"/>
-                            Enable Login Security and Login Limit (recommended)
+                            {{$t('enable_login_security')}}
                         </el-form-item>
-                        <p v-if="settings.enable_auth_logs !== 'yes'" style="color: red;">We recommend to enable login
-                            logs
-                            as well as set login try limit</p>
+                        <p v-if="settings.enable_auth_logs !== 'yes'" style="color: red;">{{ $t('login_logs_recommendation') }}</p>
 
                         <template v-else>
                             <el-form-item label="Login Try Limit per IP address in certain defined minutes">
                                 <el-input type="number" v-model="settings.login_try_limit"/>
-                                <p>How many times user can try login in {{ settings.login_try_timing }} minutes</p>
+                                <p>{{$t('login_how_many')}} {{ settings.login_try_timing }} minutes</p>
                             </el-form-item>
 
                             <el-form-item label="Time limit for login try in minutes">
@@ -48,24 +46,24 @@
                     </div>
 
                     <div class="fls_login_settings" v-if="settings.enable_auth_logs == 'yes'">
-                        <h3>Extended Login Security</h3>
+                        <h3>{{$t('Extended Login Security')}}</h3>
                         <el-form-item>
                             <template #label>
-                                Extended Login Security
+                                {{$t('Extended Login Security')}}
                             </template>
-                            <el-radio-group v-model="settings.extended_auth_security_type" size="medium">
-                                <el-radio label="none">Standard</el-radio>
-                                <el-radio label="pass_code">With Login Security Code</el-radio>
-                                <el-radio label="magic_login">Magic Login</el-radio>
+                            <el-radio-group v-model="settings.extended_auth_security_type" size="default">
+                                <el-radio label="none">{{$t('Standard')}}</el-radio>
+                                <el-radio label="pass_code">{{$t('With Login Security Code')}}</el-radio>
+                                <el-radio label="magic_login">{{$t('Magic Login')}}</el-radio>
                             </el-radio-group>
                             <p v-if="settings.extended_auth_security_type == 'pass_code'" style="color: red; width: 100%;">
-                                [Only use this if you do not have other wp users than your close circle]
+                                {{$t('pass_code_desc')}}
                             </p>
                         </el-form-item>
 
                         <el-form-item v-if="settings.extended_auth_security_type == 'magic_login'">
                             <template #label>
-                                Which user roles can use magic login. Leave bank for all user roles
+                                {{$t('user_role_magic')}}
                             </template>
                             <el-select placeholder="Enabled for All User Roles" clearable v-model="settings.magic_user_roles" :multiple="true">
                                 <el-option  v-for="role in user_roles" :value="role.id" :label="role.title" :key="role.id"></el-option>
@@ -74,28 +72,26 @@
 
                         <el-form-item v-else-if="settings.extended_auth_security_type == 'pass_code'">
                             <template #label>
-                                Provide Login Security Pass that users need to provide when login
+                                {{$t('security_pass_label')}}
                             </template>
                             <el-input type="text" placeholder="Global Auth Security Code"
                                       v-model="settings.global_auth_code"/>
-                            <p style="display: block; width: 100%;">
-                                A new field will be shown to provide this code to login. Users can also set their own
-                                code from profile page.</p>
+                            <p style="display: block; width: 100%;">{{$t('security_pass_desc')}}</p>
                         </el-form-item>
                     </div>
 
                     <div class="fls_login_settings">
-                        <h3>Other Settings</h3>
+                        <h3>{{$t('Other Settings')}}</h3>
                         <el-form-item>
                             <template #label>
-                                Automatically delete logs older than (in days)
+                                {{$t('delete_logs_label')}}
                             </template>
                             <el-input v-model="settings.auto_delete_logs_day" type="number" :min="0"/>
-                            <p style="display: block; width: 100%;">Use 0 if you do not delete the logs</p>
+                            <p style="display: block; width: 100%;">{{$t('delete_logs_desc')}}</p>
                         </el-form-item>
                         <el-form-item>
                             <template #label>
-                                Send Email notification if any of the following user roles login
+                                {{$t('login_notification_label')}}
                             </template>
                             <el-select clearable v-model="settings.notification_user_roles" :multiple="true">
                                 <el-option  v-for="role in user_roles" :value="role.id" :label="role.title" :key="role.id"></el-option>
@@ -104,13 +100,13 @@
 
                         <el-form-item class="fls_switch">
                             <el-switch v-model="settings.notify_on_blocked" active-value="yes" inactive-value="no"/>
-                            Send email notification when a user get blocked
+                            {{$t('notification_blocked')}}
                         </el-form-item>
 
                         <el-form-item
                             v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes'">
                             <template #label>
-                                Notification Send to Email Address
+                                {{$t('notification_email')}}
                             </template>
                             <el-input type="text" v-model="settings.notification_email"></el-input>
                         </el-form-item>
@@ -118,7 +114,8 @@
 
                     <el-form-item>
                         <el-button size="large" @click="saveSettings()" :disabled="saving" v-loading="saving"
-                                   type="success">Save Settings
+                                   type="success">
+                            {{$t('Save Settings')}}
                         </el-button>
                     </el-form-item>
 

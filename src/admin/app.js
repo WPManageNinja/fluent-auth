@@ -4,7 +4,6 @@ import {routes} from './routes';
 import Rest from './Bits/Rest.js';
 import {ElNotification, ElLoading, ElMessageBox} from 'element-plus'
 import Storage from '@/Bits/Storage';
-import GlobalNotice from "./Components/GlobalNotice";
 import App from './App.vue';
 
 require('./app.scss');
@@ -32,8 +31,6 @@ const app = createApp(App);
 app.use(ElLoading);
 
 app.config.globalProperties.appVars = window.fluentSecurityAdmin;
-
-app.component('global-notice', GlobalNotice);
 
 app.mixin({
     data() {
@@ -68,7 +65,10 @@ app.mixin({
                 dangerouslyUseHTMLString: true
             });
         },
-        convertToText
+        convertToText,
+        $t(string) {
+            return window.fluentSecurityAdmin.i18n[string] || string;
+        }
     }
 });
 
@@ -87,5 +87,5 @@ window.fluentFrameworkApp = app.use(router).mount(
 jQuery('.toplevel_page_fluent-security a').on('click', function () {
     jQuery('.toplevel_page_fluent-security li').removeClass('current');
     jQuery(this).parent().addClass('current');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({top: 0, behavior: 'smooth'});
 });

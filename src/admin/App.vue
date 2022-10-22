@@ -27,27 +27,27 @@ export default {
             menuItems: [
                 {
                     route: 'dashboard',
-                    title: 'Dashboard'
+                    title: this.$t('Dashboard')
                 },
                 {
                     route: 'logs',
-                    title: 'Logs'
+                    title: this.$t('Logs')
                 },
                 {
                     route: 'settings',
-                    title: 'Settings'
+                    title: this.$t('Settings')
                 },
                 {
                     route: 'social_auth_settings',
-                    title: 'Social Login'
+                    title: this.$t('Social Login')
                 },
                 {
                     route: 'auth_shortcodes',
-                    title: 'Login/Signup Forms'
+                    title: this.$t('Login/Signup Forms')
                 },
                 {
                     route: 'login_redirects',
-                    title: 'Login Redirects'
+                    title: this.$t('Login Redirects')
                 }
             ]
         }

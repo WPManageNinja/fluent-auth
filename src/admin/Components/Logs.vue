@@ -3,13 +3,13 @@
         <div class="box dashboard_box">
             <div class="box_header" style="padding: 15px;font-size: 16px;">
                 <div style="padding-top: 5px;" class="box_head">
-                    Logs
-                    <el-button @click="fetchLogs()" size="small">refresh</el-button>
+                    {{ $t('Logs') }}
+                    <el-button @click="fetchLogs()" size="small">{{$t('refresh')}}</el-button>
                 </div>
                 <div style="display: flex;" class="box_actions">
                     <el-radio-group @change="fetchLogs()" v-model="status">
-                        <el-radio-button size="medium" label="all">All</el-radio-button>
-                        <el-radio-button size="medium" v-for="(status, statusKey) in statuses" :key="statusKey"
+                        <el-radio-button size="default" label="all">{{$t('All')}}</el-radio-button>
+                        <el-radio-button size="default" v-for="(status, statusKey) in statuses" :key="statusKey"
                                          :label="statusKey">
                             {{ status }}
                         </el-radio-button>
@@ -33,45 +33,45 @@
                     <el-table-column type="expand">
                         <template #default="props">
                             <div style="padding: 10px 25px;">
-                                <b>Description</b>
+                                <b>{{$t('Description')}}</b>
                                 <div class="sql_pre" v-html="props.row.description"></div>
-                                <b>User Agent</b>
+                                <b>{{$t('User Agent')}}</b>
                                 <div class="sql_pre">{{ props.row.agent }}</div>
                             </div>
                         </template>
                     </el-table-column>
 
-                    <el-table-column sortable prop="status" label="Status" width="130"/>
-                    <el-table-column sortable prop="username" min-width="200px" label="Login Username">
+                    <el-table-column sortable prop="status" :label="$t('Status')" width="130"/>
+                    <el-table-column sortable prop="username" min-width="200px" :label="$t('Login Username')">
                         <template #default="scope">
                             <pre class="sql_pre">{{ scope.row.username }}</pre>
                         </template>
                     </el-table-column>
-                    <el-table-column sortable prop="user_id" label="User ID" width="130">
+                    <el-table-column sortable prop="user_id" :label="$t('User ID')" width="130">
                         <template #default="scope">
                             <span style="font-size:12px; line-height: 12px;">{{ scope.row.user_id }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="media" label="Media" width="130"/>
+                    <el-table-column prop="media" :label="$t('Media')" width="130"/>
 
-                    <el-table-column sortable prop="ip" label="IP" width="120">
+                    <el-table-column sortable prop="ip" :label="$t('IP')" width="120">
                         <template #default="scope">
                             <a target="_blank" rel="noopener nofollow"
                                :href="'https://ipinfo.io/' + scope.row.ip">{{ scope.row.ip }}</a>
                         </template>
                     </el-table-column>
-                    <el-table-column sortable prop="browser" label="Browser" width="220">
+                    <el-table-column sortable prop="browser" :label="$t('Browser')" width="220">
                         <template #default="scope">
                             {{ scope.row.device_os }} / {{ scope.row.browser }}
                         </template>
                     </el-table-column>
-                    <el-table-column sortable prop="created_at" label="Date" width="190">
+                    <el-table-column sortable prop="created_at" :label="$t('Date')" width="190">
                         <template #default="scope">
                             {{ scope.row.human_time_diff }}
                         </template>
                     </el-table-column>
 
-                    <el-table-column fixed="right" label="Action" width="90">
+                    <el-table-column fixed="right" :label="$t('Action')" width="90">
                         <template #default="scope">
                             <el-button @click="deleteLog(scope.row.id)" type="danger" plain size="small"><span
                                 style="width: 15px; height: 15px; font-size: 15px;"
@@ -82,9 +82,9 @@
                 <el-row style="margin-top: 20px;" :gutter="30">
                     <el-col :md="12" :xs="24">
                         <el-popconfirm :width="200" @confirm="deleteAllLogs()"
-                                       title="Are you sure to delete all the logs?">
+                                       :title="$t('confirm_log_delete')">
                             <template #reference>
-                                <el-button v-loading="deleting" size="small" type="danger">Delete All Logs</el-button>
+                                <el-button v-loading="deleting" size="small" type="danger">{{$t('Delete All Logs')}}</el-button>
                             </template>
                         </el-popconfirm>
                     </el-col>
@@ -106,6 +106,7 @@
 
 <script type="text/babel">
 import {Search} from '@element-plus/icons-vue';
+import {markRaw} from 'vue';
 
 export default {
     name: 'Logs',
@@ -113,7 +114,7 @@ export default {
     data() {
         return {
             logs: [],
-            SearchIcon: Search,
+            SearchIcon: markRaw(Search),
             paginate: {
                 page: 1,
                 per_page: 20,

@@ -2,7 +2,7 @@
     <div class="dashboard box_wrapper">
         <div class="box_narrow">
             <div style="font-size: 16px; margin-bottom: 20px;">
-                Hello {{ me.full_name }}, view your security config and recent login activities
+                Hello {{ me.full_name }}, {{$t('dashboard_message')}}
             </div>
 
             <quick-stat-bar />
@@ -11,7 +11,7 @@
                 <el-col :md="12" :sm="24">
                     <div class="box dashboard_box">
                         <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
-                            Recent Failed & Blocked Logins
+                            {{$t('dashboard_recent_failed')}}
                         </div>
                         <div style="padding: 0;" class="box_body">
                             <div style="padding: 15px;" v-if="fetching_failed_logs">
@@ -19,13 +19,13 @@
                             </div>
                             <log-table v-else-if="failed_logs.length" :logs="failed_logs" />
                             <div v-else style="padding: 15px">
-                                <el-empty description="Not enough data. This section will show recent failed login attempts" />
+                                <el-empty :description="$t('not_enough_failed')" />
                             </div>
                         </div>
                     </div>
                     <div class="box dashboard_box">
                         <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
-                            Settings Overview
+                            {{$t('Settings Overview')}}
                             <div class="box_actions">
                                 <span @click="$router.push({ name: 'settings' })" style="cursor: pointer" title="Go to Settings" class="dashicons dashicons-admin-settings"></span>
                             </div>
@@ -33,27 +33,27 @@
                         <div style="padding: 0;" class="box_body">
                             <ul class="fls_listed_data">
                                 <li>
-                                    <span class="fls_label">Disable XML-RPC Requests</span>
+                                    <span class="fls_label">{{$t('disable_xml_heading')}}</span>
                                     <span class="fls_value">{{settings.disable_xmlrpc}}</span>
                                 </li>
                                 <li>
-                                    <span class="fls_label">Disable Rest Remote App Login</span>
+                                    <span class="fls_label">{{$t('disable_rest_heading')}}</span>
                                     <span class="fls_value">{{settings.disable_app_login}}</span>
                                 </li>
                                 <li>
-                                    <span class="fls_label">Log Login Logs</span>
+                                    <span class="fls_label">{{$t('Log Login Logs')}}</span>
                                     <span class="fls_value">{{settings.enable_auth_logs}}</span>
                                 </li>
                                 <li>
-                                    <span class="fls_label">Disable Public User Indexing</span>
+                                    <span class="fls_label">{{$t('Disable Public User Indexing')}}</span>
                                     <span class="fls_value">{{settings.disable_users_rest}}</span>
                                 </li>
                                 <li>
-                                    <span class="fls_label">Extended Login Type</span>
+                                    <span class="fls_label">{{$t('Extended Login Type')}}</span>
                                     <span class="fls_value">{{settings.extended_auth_security_type}}</span>
                                 </li>
                                 <li>
-                                    <span class="fls_label">Login Notifications</span>
+                                    <span class="fls_label">{{$t('Login Notifications')}}</span>
                                     <span class="fls_value">{{(settings.notification_user_roles.length && settings.notification_email) ? 'yes' : 'no'}}</span>
                                 </li>
                             </ul>
@@ -63,7 +63,7 @@
                 <el-col :md="12" :sm="24">
                     <div class="box dashboard_box">
                         <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
-                            Recent Successful Logins
+                            {{$t('Recent Successful Logins')}}
                         </div>
                         <div style="padding: 0;" class="box_body">
                             <div style="padding: 15px;" v-if="fetching_failed_logs">
@@ -71,7 +71,7 @@
                             </div>
                             <log-table v-else-if="success_logs.length" :logs="success_logs" />
                             <div v-else style="padding: 15px">
-                                <el-empty description="Not enough data. This section will show recent successful logins" />
+                                <el-empty :description="$t('not_enough_success_logs')" />
                             </div>
                         </div>
                     </div>

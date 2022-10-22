@@ -2,9 +2,11 @@
     <div class="dashboard box_wrapper">
         <div class="box dashboard_box box_narrow">
             <div v-loading="loading" class="box_header" style="padding: 20px 15px;font-size: 16px;">
-                Login or Signup Forms and Login Redirects
+                {{$t('auth_short_heading')}}
                 <div class="box_actions">
-
+                    <el-button size="small" v-loading="saving" :disabled="saving" @click="saveSettings()" type="success">
+                        {{$t('Save Settings')}}
+                    </el-button>
                 </div>
             </div>
             <div v-if="settings" class="box_body">
@@ -12,35 +14,35 @@
 
                     <el-form-item class="fls_switch">
                         <el-switch v-model="settings.enabled" active-value="yes" inactive-value="no"/>
-                        Enable Custom Login / Signup Shortcodes
+                        {{$t('enable_short_check')}}
                     </el-form-item>
 
                     <div v-if="settings.enabled == 'yes'" class="fls_login_settings">
                         <div class="fls_shortcode_section">
-                            <h3>Full Authentication Flow ShortCode (includes Login Form, Registration Form and Password Reset Form)</h3>
+                            <h3>{{$t('full_auth_short')}}</h3>
                             <textarea readonly>[fluent_security_auth]</textarea>
                             <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_security_auth redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
-                            <h3>Only Registration Form ShortCode</h3>
+                            <h3>{{$t('regi_short')}}</h3>
                             <textarea readonly>[fluent_security_signup]</textarea>
                             <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_security_signup redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
-                            <h3>Only Login Form ShortCode</h3>
+                            <h3>{{$t('login_short')}}</h3>
                             <textarea readonly>[fluent_security_login]</textarea>
                             <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_security_login redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
-                            <h3>Password Reset Form ShortCode</h3>
+                            <h3>{{$t('pass_reset_short')}}</h3>
                             <textarea readonly>[fluent_security_reset_password]</textarea>
                             <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_security_reset_password redirect_to="your_URL"]</code></p>
                         </div>
                     </div>
 
                     <el-form-item>
-                        <el-button v-loading="saving" :disabled="saving" @click="saveSettings()" type="success">Save
-                            Settings
+                        <el-button v-loading="saving" :disabled="saving" @click="saveSettings()" type="success">
+                            {{$t('Save Settings')}}
                         </el-button>
                     </el-form-item>
 
