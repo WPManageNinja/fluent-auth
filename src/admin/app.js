@@ -83,3 +83,9 @@ const router = createRouter({
 window.fluentFrameworkApp = app.use(router).mount(
     '#fluent_security_app'
 );
+
+jQuery('.toplevel_page_fluent-security a').on('click', function () {
+    jQuery('.toplevel_page_fluent-security li').removeClass('current');
+    jQuery(this).parent().addClass('current');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});

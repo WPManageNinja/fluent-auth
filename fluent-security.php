@@ -16,6 +16,7 @@ Domain Path:  /language/
 
 define('FLUENT_SECURITY_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('FLUENT_SECURITY_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('FLUENT_SECURITY_VERSION', '1.0');
 
 class FluentSecurityPlugin
 {
@@ -34,6 +35,7 @@ class FluentSecurityPlugin
          * Social Auth Handler Register
          */
         (new \FluentSecurity\Classes\SocialAuthHandler())->register();
+        (new \FluentSecurity\Classes\CustomAuthHandler())->register();
 
         // Maybe Remove Application Password Login
         add_filter('wp_is_application_passwords_available', function ($status) {
@@ -186,6 +188,7 @@ class FluentSecurityPlugin
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Services/GoogleAuthService.php';
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SocialAuthApi.php';
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SocialAuthHandler.php';
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/CustomAuthHandler.php';
 
         add_action('rest_api_init', function () {
             require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/routes.php';
@@ -196,13 +199,13 @@ class FluentSecurityPlugin
     {
         $actions['settings'] = sprintf(
             '<a href="%s">%s</a>',
-            esc_url(admin_url('options-general.php?page=fluent-security#/settings')),
+            esc_url(admin_url('admin.php?page=fluent-security#/settings')),
             esc_html__('Settings', 'fluent-security')
         );
 
         $actions['dashboard_page'] = sprintf(
             '<a href="%s">%s</a>',
-            esc_url(admin_url('options-general.php?page=fluent-security#/')),
+            esc_url(admin_url('admin.php?page=fluent-security#/')),
             esc_html__('Dashboard', 'fluent-security')
         );
 

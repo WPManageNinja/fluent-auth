@@ -23,27 +23,6 @@
                             </div>
                         </div>
                     </div>
-                </el-col>
-                <el-col :md="12" :sm="24">
-                    <div class="box dashboard_box">
-                        <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
-                            Recent Successful Logins
-                        </div>
-                        <div style="padding: 0;" class="box_body">
-                            <div style="padding: 15px;" v-if="fetching_failed_logs">
-                                <el-skeleton :animated="true"></el-skeleton>
-                            </div>
-                            <log-table v-else-if="success_logs.length" :logs="success_logs" />
-                            <div v-else style="padding: 15px">
-                                <el-empty description="Not enough data. This section will show recent successful logins" />
-                            </div>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-
-            <el-row :gutter="30">
-                <el-col :md="12" :sm="24">
                     <div class="box dashboard_box">
                         <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
                             Settings Overview
@@ -82,7 +61,20 @@
                     </div>
                 </el-col>
                 <el-col :md="12" :sm="24">
-
+                    <div class="box dashboard_box">
+                        <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
+                            Recent Successful Logins
+                        </div>
+                        <div style="padding: 0;" class="box_body">
+                            <div style="padding: 15px;" v-if="fetching_failed_logs">
+                                <el-skeleton :animated="true"></el-skeleton>
+                            </div>
+                            <log-table v-else-if="success_logs.length" :logs="success_logs" />
+                            <div v-else style="padding: 15px">
+                                <el-empty description="Not enough data. This section will show recent successful logins" />
+                            </div>
+                        </div>
+                    </div>
                 </el-col>
             </el-row>
 

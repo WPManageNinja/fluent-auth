@@ -21,7 +21,6 @@ class MagicLogin
             }
         }, 1);
 
-
         add_filter('login_form_bottom', [$this, 'maybeMagicFormOnLoginFunc']);
 
         /*

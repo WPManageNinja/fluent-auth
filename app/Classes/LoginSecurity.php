@@ -411,7 +411,8 @@ class LoginSecurity
         $siteName = get_bloginfo('name');
         $data = [
             'body'       => implode('', $lines),
-            'pre_header' => 'Login success at ' . $siteName
+            'pre_header' => 'Login success at ' . $siteName,
+            'show_footer' => true
         ];
 
         $body = Helper::loadView('notification', $data);
@@ -471,7 +472,8 @@ class LoginSecurity
         $siteName = get_bloginfo('name');
         $data = [
             'body'       => implode('', $lines),
-            'pre_header' => 'Blocked from login ' . $siteName
+            'pre_header' => 'Blocked from login ' . $siteName,
+            'show_footer' => true
         ];
 
         $body = Helper::loadView('notification', $data);

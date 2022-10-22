@@ -95,22 +95,37 @@ class Helper
 
     public static function getIp($anonymize = false)
     {
-        // Get real visitor IP behind CloudFlare network
-        // https://stackoverflow.com/questions/13646690/how-to-get-real-ip-from-visitor
-        if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
-            $_SERVER['REMOTE_ADDR'] = sanitize_text_field($_SERVER["HTTP_CF_CONNECTING_IP"]);
-            $_SERVER['HTTP_CLIENT_IP'] = sanitize_text_field($_SERVER["HTTP_CF_CONNECTING_IP"]);
-        }
-        $client = sanitize_text_field(@$_SERVER['HTTP_CLIENT_IP']);
-        $forward = sanitize_text_field(@$_SERVER['HTTP_X_FORWARDED_FOR']);
-        $remote = sanitize_text_field($_SERVER['REMOTE_ADDR']);
+        $ip = '';
 
-        if (filter_var($client, FILTER_VALIDATE_IP)) {
-            $ip = $client;
-        } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
-            $ip = $forward;
-        } else {
-            $ip = $remote;
+        if ( isset( $_SERVER['HTTP_X_REAL_IP'] ) ) {
+            $ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) );
+        } else if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+            // Proxy servers can send through this header like this: X-Forwarded-For: client1, proxy1, proxy2
+            // Make sure we always only send through the first IP in the list which should always be the client IP.
+            $ip = (string) rest_is_ip_address( trim( current( preg_split( '/,/', sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) ) ) ) );
+        } elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+            $ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+        }
+
+
+        if(!$ip || $ip == '127.0.0.1') {
+            // Get real visitor IP behind CloudFlare network
+            // https://stackoverflow.com/questions/13646690/how-to-get-real-ip-from-visitor
+            if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+                $_SERVER['REMOTE_ADDR'] = sanitize_text_field($_SERVER["HTTP_CF_CONNECTING_IP"]);
+                $_SERVER['HTTP_CLIENT_IP'] = sanitize_text_field($_SERVER["HTTP_CF_CONNECTING_IP"]);
+            }
+            $client = sanitize_text_field(@$_SERVER['HTTP_CLIENT_IP']);
+            $forward = sanitize_text_field(@$_SERVER['HTTP_X_FORWARDED_FOR']);
+            $remote = sanitize_text_field($_SERVER['REMOTE_ADDR']);
+
+            if (filter_var($client, FILTER_VALIDATE_IP)) {
+                $ip = $client;
+            } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
+                $ip = $forward;
+            } else {
+                $ip = $remote;
+            }
         }
 
         if ($anonymize) {
@@ -195,17 +210,36 @@ class Helper
         $settings = wp_parse_args($settings, $defaults);
 
         if ($context == 'edit') {
-            if($settings['google_key_method'] == 'wp_config') {
+            if ($settings['google_key_method'] == 'wp_config') {
                 $settings['google_client_id'] = (defined('FLUENT_AUTH_GOOGLE_CLIENT_ID')) ? FLUENT_AUTH_GOOGLE_CLIENT_ID : '';
                 $settings['google_client_secret'] = (defined('FLUENT_AUTH_GOOGLE_CLIENT_SECRET')) ? FLUENT_AUTH_GOOGLE_CLIENT_SECRET : '';
             }
 
-            if($settings['github_key_method'] == 'wp_config') {
+            if ($settings['github_key_method'] == 'wp_config') {
                 $settings['github_client_id'] = (defined('FLUENT_AUTH_GITHUB_CLIENT_ID')) ? FLUENT_AUTH_GITHUB_CLIENT_ID : '';
                 $settings['github_client_secret'] = (defined('FLUENT_AUTH_GITHUB_CLIENT_SECRET')) ? FLUENT_AUTH_GITHUB_CLIENT_SECRET : '';
             }
         }
 
         return $settings;
+    }
+
+    public static function getAuthFormsSettings()
+    {
+        $settingsDefault = [
+            'enabled'                 => 'no',
+            'login_redirects'         => 'no',
+            'default_login_redirect'  => '',
+            'default_logout_redirect' => '',
+            'redirect_rules'          => []
+        ];
+
+        $settings = get_option('__fls_auth_forms_settings', []);
+
+        if (!$settings) {
+            return $settingsDefault;
+        }
+
+        return wp_parse_args($settings, $settingsDefault);
     }
 }

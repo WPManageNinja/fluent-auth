@@ -19,15 +19,61 @@ class AdminMenuHandler
             return;
         }
 
-        add_submenu_page(
-            'options-general.php',
-            __('Fluent Security', 'fluent-security'),
-            __('Fluent Security', 'fluent-security'),
+        add_menu_page(
+            __('Fluent Login & Security', 'fluent-security'),
+            __('Fluent Login', 'fluent-security'),
             $permission,
             'fluent-security',
             array($this, 'render'),
-            100
+            $this->getMenuIcon(),
+            120
         );
+
+        add_submenu_page(
+            'fluent-security',
+            __('Dashboard', 'fluent-support'),
+            __('Dashboard', 'fluent-support'),
+            $permission,
+            'fluent-security',
+            array($this, 'render')
+        );
+
+        add_submenu_page(
+            'fluent-security',
+            __('Security Settings', 'fluent-support'),
+            __('Security Settings', 'fluent-support'),
+            $permission,
+            'fluent-security#/settings',
+            array($this, 'render')
+        );
+
+        add_submenu_page(
+            'fluent-security',
+            __('Social Login', 'fluent-support'),
+            __('Social Login', 'fluent-support'),
+            $permission,
+            'fluent-security#/social-login-settings',
+            array($this, 'render')
+        );
+
+        add_submenu_page(
+            'fluent-security',
+            __('Login Redirects', 'fluent-support'),
+            __('Login Redirects', 'fluent-support'),
+            $permission,
+            'fluent-security#/login-redirects',
+            array($this, 'render')
+        );
+
+        add_submenu_page(
+            'fluent-security',
+            __('Logs', 'fluent-support'),
+            __('Logs', 'fluent-support'),
+            $permission,
+            'fluent-security#/logs',
+            array($this, 'render')
+        );
+
     }
 
     public function render()
@@ -65,6 +111,6 @@ class AdminMenuHandler
 
     private function getMenuIcon()
     {
-        return 'dashicons-shield';
+        return 'dashicons-shield-alt';
     }
 }

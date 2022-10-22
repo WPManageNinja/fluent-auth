@@ -1,0 +1,201 @@
+.fls_login_wrapper{
+    max-width: 500px;
+    form#loginform >p {
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    form#loginform label {
+        display: block;
+        font-weight: 500;
+    }
+
+    form#loginform .input {
+        padding: 10px;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    form#loginform {
+        display: block;
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    input#wp-submit {
+        width: 100%;
+        padding: 15px;
+        background: #0275ff;
+        color: white;
+        border: 0;
+        border-radius: 5px;
+    }
+}
+
+.fls_registration_wrapper {
+    max-width: 500px;
+
+    .fls_registration_form {
+        display: grid;
+
+        .fls_field_group {
+            display: block;
+            margin-bottom: 15px;
+
+            .fls_field_label {
+                &.is-required {
+                    label:after {
+                        content: " *";
+                        color: #f56c6c;
+                        margin-left: 3px;
+                    }
+                }
+            }
+
+            &.is-error {
+                input {
+                    border-color: #f56c6c;
+                }
+            }
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #fls_submit {
+            width: 100%;
+            padding: 15px;
+            background: #0275ff;
+            color: white;
+            border: 0;
+            border-radius: 5px;
+
+            span {
+                transition: all 1s;
+                opacity: 1;
+            }
+
+            svg {
+                display: none;
+                margin: 0 auto;
+                transition: all 1s;
+
+                path, rect {
+                    fill: white;
+                    transition: initial;
+                }
+            }
+
+            &.loading {
+                background: #0275ff91;
+
+                span {
+                    display: none;
+                    opacity: 0;
+                }
+
+                svg {
+                    display: block;
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+
+.fls_reset_pass_wrapper {
+    max-width: 500px;
+    .fls_reset_pass_form {
+        display: grid;
+
+        .fls_field_group {
+            display: block;
+            margin-bottom: 15px;
+
+            .fls_field_label {
+                &.is-required {
+                    label:after {
+                        content: " *";
+                        color: #f56c6c;
+                        margin-left: 3px;
+                    }
+                }
+            }
+
+            &.is-error {
+                input {
+                    border-color: #f56c6c;
+                }
+            }
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #fls_reset_pass {
+            width: 100%;
+            padding: 15px;
+            background: #0275ff;
+            color: white;
+            border: 0;
+            border-radius: 5px;
+
+            span {
+                transition: all 1s;
+                opacity: 1;
+            }
+
+            svg {
+                display: none;
+                margin: 0 auto;
+                transition: all 1s;
+
+                path, rect {
+                    fill: white;
+                    transition: initial;
+                }
+            }
+
+            &.loading {
+                background: #0275ff91;
+
+                span {
+                    display: none;
+                    opacity: 0;
+                }
+
+                svg {
+                    display: block;
+                    opacity: 1;
+                }
+            }
+        }
+    }
+    .success.text-success {
+        margin-top: 15px;
+        text-align: center;
+    }
+}
+
+.error.text-danger {
+    font-size: 12px;
+    margin-top: 4px;
+    color: #f56c6c;
+}
+
+.fls_auth_wrapper {
+    .hide {
+        display: none;
+    }
+
+    #fls_submit {
+        margin-bottom: 15px;
+    }
+}

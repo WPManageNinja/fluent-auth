@@ -35,10 +35,15 @@ div#fls_magic_login {
   cursor: pointer;
   display: block;
   width: 100%;
+  padding: 15px;
+  color: white;
+  border: 0;
+  border-radius: 5px;
 }
 
 .fls_magic_show_btn:hover, #fls_magic_submit:hover {
   background: #006799;
+  border-radius: 5px;
 }
 
 #loginform.showing_magic_form > {
@@ -83,6 +88,7 @@ p.fls_magic_text {
   border: 1px solid gray;
   cursor: pointer;
   color: black;
+  border-radius: 5px;
   &:hover {
     background: #4b5d73;
     color: white;
