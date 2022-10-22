@@ -1,4 +1,4 @@
-=== Fluent Security ===
+=== Fluent Login & Security ===
 Contributors: techjewel
 Tags: Login limit, disable xml-rpc, login logs
 Requires at least: 5.0
@@ -19,5 +19,11 @@ Super simple login security plugin for WordPress
 - Limit Login Attempts
 - Disable xml-rpc requests
 - Disable REST-API Remote Authentications
-- View Detailed Audit Logs for Logins
+- View Detailed Audit Logs for Logins/Signups
 - Get email when high-level user role login
+- Social Login/Signup with GitHub
+- Social Login/Signup with Google
+- Custom Login Form Shortcode
+- Custom Registration Form Shortcode
+- Custom Reset password Form Shortcode
+- Login Redirects rules based on user role or capabilities
