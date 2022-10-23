@@ -47,10 +47,10 @@ class AuthService
         $setRole = apply_filters('fluent_auth/user_role', $defaultRole);
 
         $userId = self::registerNewUser($createUserData['username'], $createUserData['password'], $createUserData['email'], [
-            'role'       => $setRole,
-            'first_name' => Arr::get($userData, 'first_name'),
-            'last_name'  => Arr::get($userData, 'last_name'),
-            'user_url' => Arr::get($userData, 'user_url'),
+            'role'        => $setRole,
+            'first_name'  => Arr::get($userData, 'first_name'),
+            'last_name'   => Arr::get($userData, 'last_name'),
+            'user_url'    => Arr::get($userData, 'user_url'),
             'description' => Arr::get($userData, 'description'),
         ]);
 
@@ -113,7 +113,7 @@ class AuthService
         do_action('wp_login', $user->user_login, $user);
 
         $user = get_user_by('ID', $user->ID);
-        if($user) {
+        if ($user) {
             (new LoginSecurity())->logAuthSuccess($user, $provider);
         }
 
@@ -204,6 +204,18 @@ class AuthService
             $data['last_name'] = sanitize_text_field($extraData['last_name']);
         }
 
+        if (!empty($extraData['full_name']) && empty($extraData['first_name']) && empty($extraData['last_name'])) {
+            $extraData['full_name'] = sanitize_text_field($extraData['full_name']);
+            // extract the names
+            $fullNameArray = explode(' ', $extraData['full_name']);
+            $data['first_name'] = array_shift($fullNameArray);
+            if ($fullNameArray) {
+                $data['last_name'] = implode(' ', $fullNameArray);
+            } else {
+                $data['last_name'] = '';
+            }
+        }
+
         if (!empty($extraData['description'])) {
             $data['description'] = sanitize_textarea_field($extraData['description']);
         }
@@ -215,7 +227,7 @@ class AuthService
         if (!empty($extraData['role'])) {
             $data['role'] = $extraData['role'];
         }
-
+        
         $user_id = wp_insert_user($data);
 
         if (!$user_id || is_wp_error($user_id)) {
