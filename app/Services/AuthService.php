@@ -60,9 +60,7 @@ class AuthService
 
         $user = get_user_by('ID', $userId);
 
-        self::makeLogin($user, $provider);
-
-        return get_user_by('ID', $userId);
+        return self::makeLogin($user, $provider);
     }
 
     private static function maybeUpdateUser($user, $userData)
@@ -107,12 +105,19 @@ class AuthService
 
     public static function makeLogin($user, $provider = '')
     {
+        $canLogin = apply_filters('fluent_security/can_user_login', false, $user, $provider);
+
+        if ($provider && is_wp_error($canLogin)) {
+            return $canLogin;
+        }
+
         wp_clear_auth_cookie();
         wp_set_current_user($user->ID, $user->user_login);
         wp_set_auth_cookie($user->ID, true, is_ssl());
         do_action('wp_login', $user->user_login, $user);
 
         $user = get_user_by('ID', $user->ID);
+
         if ($user) {
             (new LoginSecurity())->logAuthSuccess($user, $provider);
         }
@@ -227,7 +232,7 @@ class AuthService
         if (!empty($extraData['role'])) {
             $data['role'] = $extraData['role'];
         }
-        
+
         $user_id = wp_insert_user($data);
 
         if (!$user_id || is_wp_error($user_id)) {
