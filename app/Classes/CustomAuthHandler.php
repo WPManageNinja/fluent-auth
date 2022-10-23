@@ -4,6 +4,7 @@ namespace FluentSecurity\Classes;
 
 use FluentSecurity\Helpers\Arr;
 use FluentSecurity\Helpers\Helper;
+use FluentSecurity\Services\AuthService;
 
 class CustomAuthHandler
 {
@@ -772,7 +773,7 @@ class CustomAuthHandler
             $formData['username'] = sanitize_user($formData['email']);
         }
 
-        $userId = $this->registerNewUser($formData['username'], $formData['email'], $formData['password'], [
+        $userId = AuthService::registerNewUser($formData['username'], $formData['email'], $formData['password'], [
             'role'       => apply_filters('fluent_security/signup_default_role', get_option('default_role'), $formData),
             'first_name' => Arr::get($formData, 'first_name'),
             'last_name'  => Arr::get($formData, 'last_name'),
@@ -983,102 +984,6 @@ class CustomAuthHandler
         }
 
         return $errors;
-    }
-
-    /**
-     * Handles registering a new user.
-     *
-     * @param string $user_login User's username for logging in
-     * @param string $user_email User's email address to send password and add
-     * @return int|\WP_Error Either user's ID or error on failure.
-     * @since 2.5.0
-     *
-     */
-    public function registerNewUser($user_login, $user_email, $user_pass = '', $extraData = [])
-    {
-        $errors = new \WP_Error();
-
-        $sanitized_user_login = sanitize_user($user_login);
-
-        $user_email = apply_filters('user_registration_email', $user_email);
-
-        // Check the username.
-        if ('' === $sanitized_user_login) {
-            $errors->add('empty_username', __('<strong>Error</strong>: Please enter a username.', 'fluent-security'));
-        } elseif (!validate_username($user_login)) {
-            $errors->add('invalid_username', __('<strong>Error</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.', 'fluent-security'));
-            $sanitized_user_login = '';
-        } elseif (username_exists($sanitized_user_login)) {
-            $errors->add('username_exists', __('<strong>Error</strong>: This username is already registered. Please choose another one.', 'fluent-security'));
-        } else {
-            /** This filter is documented in wp-includes/user.php */
-            $illegal_user_logins = (array)apply_filters('illegal_user_logins', array());
-            if (in_array(strtolower($sanitized_user_login), array_map('strtolower', $illegal_user_logins), true)) {
-                $errors->add('invalid_username', __('<strong>Error</strong>: Sorry, that username is not allowed.', 'fluent-security'));
-            }
-        }
-
-        // Check the email address.
-        if ('' === $user_email) {
-            $errors->add('empty_email', __('<strong>Error</strong>: Please type your email address.', 'fluent-security'));
-        } elseif (!is_email($user_email)) {
-            $errors->add('invalid_email', __('<strong>Error</strong>: The email address is not correct.', 'fluent-security'));
-            $user_email = '';
-        } elseif (email_exists($user_email)) {
-            $errors->add(
-                'email_exists',
-                __('<strong>Error:</strong> This email address is already registered. Please login or try reset password', 'fluent-security')
-            );
-        }
-
-        do_action('register_post', $sanitized_user_login, $user_email, $errors);
-
-        $errors = apply_filters('registration_errors', $errors, $sanitized_user_login, $user_email);
-
-        if ($errors->has_errors()) {
-            return $errors;
-        }
-
-        if (!$user_pass) {
-            $user_pass = wp_generate_password(8, false);
-        }
-
-        $data = [
-            'user_login' => wp_slash($sanitized_user_login),
-            'user_email' => wp_slash($user_email),
-            'user_pass'  => $user_pass
-        ];
-
-        if (!empty($extraData['first_name'])) {
-            $data['first_name'] = sanitize_text_field($extraData['first_name']);
-        }
-
-        if (!empty($extraData['last_name'])) {
-            $data['last_name'] = sanitize_text_field($extraData['last_name']);
-        }
-
-        if (!empty($extraData['role'])) {
-            $data['role'] = $extraData['role'];
-        }
-
-        $user_id = wp_insert_user($data);
-
-        if (!$user_id || is_wp_error($user_id)) {
-            $errors->add('registerfail', __('<strong>Error</strong>: Could not register you. Please contact the site admin!', 'fluent-security')
-            );
-            return $errors;
-        }
-
-        if (!empty($_COOKIE['wp_lang'])) {
-            $wp_lang = sanitize_text_field($_COOKIE['wp_lang']);
-            if (in_array($wp_lang, get_available_languages(), true)) {
-                update_user_meta($user_id, 'locale', $wp_lang); // Set user locale if defined on registration.
-            }
-        }
-
-        do_action('register_new_user', $user_id);
-
-        return $user_id;
     }
 
     protected function login($userId)
