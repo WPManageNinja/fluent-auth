@@ -20,7 +20,7 @@ class SocialAuthHandler
         add_action('login_form', [$this, 'pushLoginWithButtons']);
         add_action('register_form', [$this, 'pushRegisterWithButtons']);
         add_shortcode('fs_auth_buttons', [$this, 'socialAuthShortcode']);
-        
+
         add_filter('login_form_bottom', [$this, 'maybePushToCustomForm']);
 
         add_filter('fluent_support/before_registration_form_close', [$this, 'maybePushRegistrationField']);
@@ -45,7 +45,7 @@ class SocialAuthHandler
         if (isset($_GET['intent_redirect_to'])) {
             setcookie('fs_intent_redirect', sanitize_url($_GET['intent_redirect_to']), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);  /* expire in 1 hour */
         }
-
+        
         $provider = Arr::get($_GET, 'fs_auth', $provider);
 
         if ($provider === 'github') {
@@ -132,6 +132,8 @@ class SocialAuthHandler
             }
         }
 
+        update_user_meta($user->ID, '_fls_login_github', 1);
+
         $redirect_to = apply_filters('login_redirect', $redirect_to, $intentRedirectTo, $user);
 
         wp_redirect($redirect_to);
@@ -170,6 +172,8 @@ class SocialAuthHandler
                 $redirect_to = admin_url();
             }
         }
+
+        update_user_meta($user->ID, '_fls_login_google', 1);
 
         $redirect_to = apply_filters('login_redirect', $redirect_to, $intentRedirectTo, $user);
 
