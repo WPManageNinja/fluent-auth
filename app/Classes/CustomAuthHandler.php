@@ -460,7 +460,7 @@ class CustomAuthHandler
         $this->loaded = true;
     }
 
-    public function getSettings(\WP_REST_Request $request)
+    public static function getSettings(\WP_REST_Request $request)
     {
         if (!function_exists('get_editable_roles')) {
             require_once ABSPATH . 'wp-admin/includes/user.php';
@@ -482,7 +482,7 @@ class CustomAuthHandler
         ];
     }
 
-    public function saveSettings(\WP_REST_Request $request)
+    public static function saveSettings(\WP_REST_Request $request)
     {
         $oldSettings = Helper::getAuthFormsSettings();
         $settings = $request->get_param('settings');
@@ -500,7 +500,7 @@ class CustomAuthHandler
                 $oldSettings['default_logout_redirect'] = sanitize_url($settings['default_logout_redirect']);
             }
 
-            $redirectRules = (array)$settings['redirect_rules'];
+            $redirectRules = Arr::get($settings, 'redirect_rules', []);
 
             $sanitizedRules = [];
 

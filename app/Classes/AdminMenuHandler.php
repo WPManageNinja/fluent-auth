@@ -194,7 +194,8 @@ class AdminMenuHandler
                 'Last 30 days'                  => __('Last 30 days', 'fluent-security'),
                 'This Month'                    => __('This Month', 'fluent-security'),
                 'All Time'                      => __('All Time', 'fluent-security'),
-                'Login/Signup Forms' => __('Login/Signup Forms', 'fluent-security')
+                'Login/Signup Forms'            => __('Login/Signup Forms', 'fluent-security'),
+                'pass_code_desc'                => __('Users can only login with the extended security code. Enable only if only internal team login to the site to manage', 'fluent-security')
             ]
         ]);
 
