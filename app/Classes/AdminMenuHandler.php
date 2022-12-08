@@ -20,30 +20,39 @@ class AdminMenuHandler
         }
 
         add_menu_page(
-            __('Fluent Login & Security', 'fluent-security'),
-            __('Fluent Login', 'fluent-security'),
+            __('Fluent Auth Settings', 'fluent-security'),
+            __('Fluent Auth', 'fluent-security'),
             $permission,
-            'fluent-security',
+            'fluent-auth',
             array($this, 'render'),
             $this->getMenuIcon(),
             120
         );
 
         add_submenu_page(
-            'fluent-security',
+            'fluent-auth',
             __('Dashboard', 'fluent-support'),
             __('Dashboard', 'fluent-support'),
             $permission,
-            'fluent-security',
+            'fluent-auth',
             array($this, 'render')
         );
 
         add_submenu_page(
-            'fluent-security',
+            'fluent-auth',
             __('Security Settings', 'fluent-support'),
             __('Security Settings', 'fluent-support'),
             $permission,
-            'fluent-security#/settings',
+            'fluent-auth#/settings',
+            array($this, 'render')
+        );
+
+        add_submenu_page(
+            'fluent-auth',
+            __('Social Login', 'fluent-support'),
+            __('Social Login', 'fluent-support'),
+            $permission,
+            'fluent-auth#/social-login-settings',
             array($this, 'render')
         );
 
@@ -52,25 +61,25 @@ class AdminMenuHandler
             __('Social Login', 'fluent-support'),
             __('Social Login', 'fluent-support'),
             $permission,
-            'fluent-security#/social-login-settings',
+            'fluent-auth#/social-login-settings',
             array($this, 'render')
         );
 
         add_submenu_page(
-            'fluent-security',
+            'fluent-auth',
             __('Login Redirects', 'fluent-support'),
             __('Login Redirects', 'fluent-support'),
             $permission,
-            'fluent-security#/login-redirects',
+            'fluent-auth#/login-redirects',
             array($this, 'render')
         );
 
         add_submenu_page(
-            'fluent-security',
+            'fluent-auth',
             __('Logs', 'fluent-support'),
             __('Logs', 'fluent-support'),
             $permission,
-            'fluent-security#/logs',
+            'fluent-auth#/logs',
             array($this, 'render')
         );
 
@@ -140,7 +149,7 @@ class AdminMenuHandler
                 'With Login Security Code'      => __('With Login Security Code', 'fluent-security'),
                 'Magic Login'                   => __('Magic Login', 'fluent-security'),
                 'passcode_desc'                 => __('[Only use this if you do not have other wp users than your close circle]', 'fluent-security'),
-                'user_role_magic'               => __('Which user roles can use magic login. Leave bank for all user roles', 'fluent-security'),
+                'user_role_magic_disable'       => __('Disable Magic Login for specific user roles (Leave blank to enable magic login for all users)', 'fluent-security'),
                 'security_pass_label'           => __('Provide Login Security Pass that users need to provide when login', 'fluent-security'),
                 'security_pass_desc'            => __('A new field will be shown to provide this code to login. Users can also set their own code from profile page.', 'fluent-security'),
                 'Other Settings'                => __('Other Settings', 'fluent-security'),

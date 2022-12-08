@@ -1,7 +1,7 @@
-<?php namespace WpFluent;
+<?php namespace FluentSecurityDb;
 
-use WpFluent\QueryBuilder\QueryBuilderHandler;
-use WpFluent\QueryBuilder\Raw;
+use FluentSecurityDb\QueryBuilder\QueryBuilderHandler;
+use FluentSecurityDb\QueryBuilder\Raw;
 
 class EventHandler
 {

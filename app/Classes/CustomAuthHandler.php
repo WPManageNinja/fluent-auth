@@ -27,6 +27,7 @@ class CustomAuthHandler
         add_action('wp_ajax_nopriv_fluent_security_login', array($this, 'handleLoginAjax'));
         add_action('wp_ajax_nopriv_fluent_security_signup', array($this, 'handleSignupAjax'));
         add_action('wp_ajax_nopriv_fluent_security_rp', array($this, 'handlePasswordResentAjax'));
+        add_action('fls_load_login_helper', array($this, 'loadAssets'));
     }
 
     public function alterLoginRedirectUrl($redirect_to, $intentRedirectTo, $user)
@@ -462,23 +463,13 @@ class CustomAuthHandler
 
     public static function getSettings(\WP_REST_Request $request)
     {
-        if (!function_exists('get_editable_roles')) {
-            require_once ABSPATH . 'wp-admin/includes/user.php';
-        }
 
         $settings = Helper::getAuthFormsSettings();
 
-        $roles = get_editable_roles();
-
-        $formattedRoles = [];
-
-        foreach ($roles as $key => $role) {
-            $formattedRoles[$key] = $role['name'];
-        }
-
         return [
             'settings' => $settings,
-            'roles'    => $formattedRoles
+            'roles'    => Helper::getUserRoles(true),
+            'user_capabilities' => Helper::getWpPermissions(true)
         ];
     }
 

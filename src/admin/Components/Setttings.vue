@@ -4,36 +4,43 @@
             <div v-loading="loading" class="box_header" style="padding: 20px 15px;font-size: 16px;">
                 {{ $t('Settings') }}
                 <div class="box_actions">
-                    <el-button @click="applyRecommended()" size="small">{{$t('apply_recommended')}}</el-button>
+                    <el-button @click="applyRecommended()" size="small">{{ $t('apply_recommended') }}</el-button>
                 </div>
             </div>
             <div v-if="settings" class="box_body">
                 <el-form :data="settings" label-position="top">
                     <div class="fls_login_settings">
-                        <h3>{{$t('Core Security Settings')}}</h3>
+                        <h3>{{ $t('Core Security Settings') }}</h3>
                         <el-form-item>
-                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_xmlrpc">{{$t('disable_xmlrpc')}}</el-checkbox>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_xmlrpc">
+                                {{ $t('disable_xmlrpc') }}
+                            </el-checkbox>
                         </el-form-item>
                         <el-form-item>
-                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_app_login">{{$t('disable_app_login')}}</el-checkbox>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_app_login">
+                                {{ $t('disable_app_login') }}
+                            </el-checkbox>
                         </el-form-item>
                         <el-form-item>
-                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_users_rest">{{$t('disable_rest_user')}}</el-checkbox>
+                            <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_users_rest">
+                                {{ $t('disable_rest_user') }}
+                            </el-checkbox>
                         </el-form-item>
                     </div>
 
                     <div class="fls_login_settings">
-                        <h3>{{$t('Login Security Settings')}}</h3>
+                        <h3>{{ $t('Login Security Settings') }}</h3>
                         <el-form-item class="fls_switch">
                             <el-switch v-model="settings.enable_auth_logs" active-value="yes" inactive-value="no"/>
-                            {{$t('enable_login_security')}}
+                            {{ $t('enable_login_security') }}
                         </el-form-item>
-                        <p v-if="settings.enable_auth_logs !== 'yes'" style="color: red;">{{ $t('login_logs_recommendation') }}</p>
+                        <p v-if="settings.enable_auth_logs !== 'yes'" style="color: red;">
+                            {{ $t('login_logs_recommendation') }}</p>
 
                         <template v-else>
                             <el-form-item label="Login Try Limit per IP address in certain defined minutes">
                                 <el-input type="number" v-model="settings.login_try_limit"/>
-                                <p>{{$t('login_how_many')}} {{ settings.login_try_timing }} minutes</p>
+                                <p>{{ $t('login_how_many') }} {{ settings.login_try_timing }} minutes</p>
                             </el-form-item>
 
                             <el-form-item label="Time limit for login try in minutes">
@@ -46,76 +53,79 @@
                     </div>
 
                     <div class="fls_login_settings" v-if="settings.enable_auth_logs == 'yes'">
-                        <h3>{{$t('Extended Login Security')}}</h3>
-                        <el-form-item>
-                            <template #label>
-                                {{$t('Extended Login Security')}}
-                            </template>
-                            <el-radio-group v-model="settings.extended_auth_security_type" size="default">
-                                <el-radio label="none">{{$t('Standard')}}</el-radio>
-                                <el-radio label="pass_code">{{$t('With Login Security Code')}}</el-radio>
-                                <el-radio label="magic_login">{{$t('Magic Login')}}</el-radio>
-                            </el-radio-group>
-                            <p v-if="settings.extended_auth_security_type == 'pass_code'" style="color: red; width: 100%;">
-                                {{$t('pass_code_desc')}}
-                            </p>
-                        </el-form-item>
+                        <h3>{{ $t('Extended Login Options') }}</h3>
 
-                        <el-form-item v-if="settings.extended_auth_security_type == 'magic_login'">
-                            <template #label>
-                                {{$t('user_role_magic')}}
-                            </template>
-                            <el-select placeholder="Enabled for All User Roles" clearable v-model="settings.magic_user_roles" :multiple="true">
-                                <el-option  v-for="role in user_roles" :value="role.id" :label="role.title" :key="role.id"></el-option>
-                            </el-select>
-                        </el-form-item>
+                        <div class="fls_inner_group" :class="'fls_inner_group_' + settings.magic_login">
+                            <el-form-item>
+                                <el-checkbox v-model="settings.magic_login" true-label="yes" false-label="no">
+                                    {{$t('Enable Magic Login (User can login via url sent to email)')}}
+                                </el-checkbox>
+                            </el-form-item>
+                            <el-form-item style="background: white; padding: 10px 20px;" v-if="settings.magic_login == 'yes'">
+                                <template #label>
+                                    {{ $t('user_role_magic_disable') }}
+                                </template>
+                                <el-select placeholder="Select disable roles" clearable
+                                           v-model="settings.magic_restricted_roles" :multiple="true">
+                                    <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
+                                               :key="role.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </div>
 
-                        <el-form-item v-else-if="settings.extended_auth_security_type == 'pass_code'">
-                            <template #label>
-                                {{$t('security_pass_label')}}
-                            </template>
-                            <el-input type="text" placeholder="Global Auth Security Code"
-                                      v-model="settings.global_auth_code"/>
-                            <p style="display: block; width: 100%;">{{$t('security_pass_desc')}}</p>
-                        </el-form-item>
+                        <div class="fls_inner_group" :class="'fls_inner_group_' + settings.email2fa">
+                            <el-form-item>
+                                <el-checkbox v-model="settings.email2fa" true-label="yes" false-label="no">
+                                    Enable Two-Factor Authentication via Email (If enable then user have to provide authentication code sent via email)
+                                </el-checkbox>
+                            </el-form-item>
+                            <el-form-item style="background: white; padding: 10px 20px;" v-if="settings.email2fa == 'yes'">
+                                <template #label>
+                                    Select Roles that requires Two-Factor Authentication
+                                </template>
+                                <el-select placeholder="Enabled for All User Roles" clearable v-model="settings.email2fa_roles" :multiple="true">
+                                    <el-option v-for="role in user_roles" :value="role.id" :label="role.title" :key="role.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </div>
                     </div>
 
                     <div class="fls_login_settings">
-                        <h3>{{$t('Other Settings')}}</h3>
+                        <h3>{{ $t('Other Settings') }}</h3>
                         <el-form-item>
                             <template #label>
-                                {{$t('delete_logs_label')}}
+                                {{ $t('delete_logs_label') }}
                             </template>
                             <el-input v-model="settings.auto_delete_logs_day" type="number" :min="0"/>
-                            <p style="display: block; width: 100%;">{{$t('delete_logs_desc')}}</p>
+                            <p style="display: block; width: 100%;">{{ $t('delete_logs_desc') }}</p>
                         </el-form-item>
                         <el-form-item>
                             <template #label>
-                                {{$t('login_notification_label')}}
+                                {{ $t('login_notification_label') }}
                             </template>
                             <el-select clearable v-model="settings.notification_user_roles" :multiple="true">
-                                <el-option  v-for="role in user_roles" :value="role.id" :label="role.title" :key="role.id"></el-option>
+                                <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
+                                           :key="role.id"></el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item class="fls_switch">
                             <el-switch v-model="settings.notify_on_blocked" active-value="yes" inactive-value="no"/>
-                            {{$t('notification_blocked')}}
+                            {{ $t('notification_blocked') }}
                         </el-form-item>
 
                         <el-form-item
                             v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes'">
                             <template #label>
-                                {{$t('notification_email')}}
+                                {{ $t('notification_email') }}
                             </template>
                             <el-input type="text" v-model="settings.notification_email"></el-input>
                         </el-form-item>
                     </div>
 
                     <el-form-item>
-                        <el-button size="large" @click="saveSettings()" :disabled="saving" v-loading="saving"
-                                   type="success">
-                            {{$t('Save Settings')}}
+                        <el-button size="large" @click="saveSettings()" :disabled="saving" v-loading="saving" type="success">
+                            {{ $t('Save Settings') }}
                         </el-button>
                     </el-form-item>
 
@@ -181,8 +191,6 @@ export default {
         },
         applyRecommended() {
             this.settings = {
-                extended_auth_security_type: 'magic_login',
-                global_auth_code: '',
                 disable_xmlrpc: 'yes',
                 disable_app_login: 'yes',
                 enable_auth_logs: 'yes',
@@ -190,10 +198,13 @@ export default {
                 login_try_timing: 30,
                 disable_users_rest: 'yes',
                 auto_delete_logs_day: 30,
-                notification_user_roles: ['administrator', 'editor'],
+                notification_user_roles: ['administrator', 'editor', 'author'],
                 notification_email: '{admin_email}',
                 notify_on_blocked: 'yes',
-                magic_user_roles: []
+                magic_login: 'no',
+                magic_restricted_roles: [],
+                email2fa: 'no',
+                email2fa_roles: ['administrator', 'editor', 'author']
             }
             this.$notify.success('Recommended settings has been applied. Please review and save the settings');
         }

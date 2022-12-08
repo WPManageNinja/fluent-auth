@@ -1,28 +1,24 @@
 <?php defined('ABSPATH') or die;
 
+// Autoload plugin.
+require_once(__DIR__.'/autoload.php');
+
 if (! function_exists('flsDb')) {
     /**
-     * @return \WpFluent\QueryBuilder\QueryBuilderHandler
+     * @return \FluentSecurityDb\QueryBuilder\QueryBuilderHandler
      */
     function flsDb()
     {
-        if(function_exists('wpFluent')) {
-            return wpFluent();
-        }
+        static $FluentSecurityDb;
 
-        static $wpFluent;
-
-        if (! $wpFluent) {
-
-            require_once(__DIR__.'/autoload.php');
-
+        if (! $FluentSecurityDb) {
             global $wpdb;
 
-            $connection = new \WpFluent\Connection($wpdb, ['prefix' => $wpdb->prefix]);
+            $connection = new \FluentSecurityDb\Connection($wpdb, ['prefix' => $wpdb->prefix]);
 
-            $wpFluent = new \WpFluent\QueryBuilder\QueryBuilderHandler($connection);
+            $FluentSecurityDb = new \FluentSecurityDb\QueryBuilder\QueryBuilderHandler($connection);
         }
 
-        return $wpFluent;
+        return $FluentSecurityDb;
     }
 }

@@ -1,13 +1,13 @@
-<?php namespace WpFluent;
+<?php namespace FluentSecurityDb;
 
-use WpFluent\QueryBuilder\QueryBuilderHandler;
+use FluentSecurityDb\QueryBuilder\QueryBuilderHandler;
 
 /**
  * This class gives the ability to access non-static methods statically
  *
  * Class AliasFacade
  *
- * @package WpFluent
+ * @package FluentSecurityDb
  */
 class AliasFacade
 {

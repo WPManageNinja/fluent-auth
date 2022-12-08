@@ -78,10 +78,10 @@ class MagicLogin
                 </p>
                 <label for="fls_magic_logon">
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
-                    <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text"/>
-                    <input id="fls_magic_logon_nonce" type="hidden"
-                           value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
                 </label>
+                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text"/>
+                <input id="fls_magic_logon_nonce" type="hidden"
+                       value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
                 <div class="fls_magic_submit_wrapper">
                     <button class="button button-primary button-large" id="fls_magic_submit">
                         <?php _e('Get Login URL', 'fluent-security'); ?>
@@ -136,7 +136,7 @@ class MagicLogin
 
     private function isEnabled()
     {
-        return Helper::getSetting('extended_auth_security_type') == 'magic_login';
+        return Helper::getSetting('magic_login') === 'yes';
     }
 
     public function handleMagicLoginAjax()
@@ -338,6 +338,7 @@ class MagicLogin
 
         $row = flsDb()->table('fls_login_hashes')
             ->where('login_hash', $hash)
+            ->where('use_type', 'magic_login')
             ->where('status', 'issued')
             ->first();
 
@@ -382,13 +383,15 @@ class MagicLogin
                         'updated_at'         => current_time('mysql')
                     ]);
 
-                if (isset($_GET['force_redirect']) && $_GET['force_redirect'] == 'yes') {
-                    if ($row->redirect_intend) {
-                        wp_safe_redirect($row->redirect_intend);
-                    } else {
-                        wp_safe_redirect($this->getLoginRedirect($user));
+                if(!wp_doing_ajax()) {
+                    if (isset($_GET['force_redirect']) && $_GET['force_redirect'] == 'yes') {
+                        if ($row->redirect_intend) {
+                            wp_safe_redirect($row->redirect_intend);
+                        } else {
+                            wp_safe_redirect($this->getLoginRedirect($user));
+                        }
+                        exit();
                     }
-                    exit();
                 }
 
                 return true;
@@ -419,13 +422,13 @@ class MagicLogin
             return false;
         }
 
-        $roles = Helper::getSetting('magic_user_roles');
+        $restrictedRoles = Helper::getSetting('magic_restricted_roles');
 
-        if (!$roles) {
+        if (!$restrictedRoles) {
             return true;
         }
 
-        return !!array_intersect($roles, (array)$user->roles);
+        return !array_intersect($restrictedRoles, array_values($user->roles));
     }
 
 }

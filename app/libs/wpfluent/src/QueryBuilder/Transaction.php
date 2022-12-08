@@ -1,6 +1,6 @@
 <?php
 
-namespace WpFluent\QueryBuilder;
+namespace FluentSecurityDb\QueryBuilder;
 
 class Transaction extends QueryBuilderHandler
 {

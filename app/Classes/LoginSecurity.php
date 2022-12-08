@@ -2,6 +2,7 @@
 
 namespace FluentSecurity\Classes;
 
+use FluentSecurity\Helpers\Arr;
 use FluentSecurity\Helpers\Helper;
 
 class LoginSecurity
@@ -10,47 +11,10 @@ class LoginSecurity
 
     public function init()
     {
-        add_action('login_form', [$this, 'pushLoginPassCodeField'], 10);
-        add_filter('authenticate', [$this, 'checkLoginPassCode'], 999, 3);
+        add_filter('authenticate', [$this, 'maybeCheckLoginAttempts'], 999, 3);
         add_filter('lostpassword_errors', [$this, 'maybeBlockPasswordReset'], 10, 2);
 
-        add_action('show_user_profile', [$this, 'addUserMetaField'], 10, 1);
-        add_action('edit_user_profile', [$this, 'addUserMetaField'], 10, 1);
-
-        add_action('personal_options_update', [$this, 'updateUserPassCode']);
-        add_action('edit_user_profile_update', [$this, 'updateUserPassCode']);
-
         add_action('wp_login_failed', [$this, 'logFailedAuth'], 10, 2);
-
-        add_filter('login_form_middle', [$this, 'maybeSecurityCodeOnLoginFunc']);
-    }
-
-    public function pushLoginPassCodeField()
-    {
-        if (!Helper::getGlobalLoginPassCode()) {
-            return;
-        }
-        ?>
-        <div class="user-pass-wrap">
-            <label for="login_passcode"><?php echo __('Security Passcode', 'fluent-security'); ?></label>
-            <div class="wp-pwd">
-                <input style="font-size: 14px;" placeholder="<?php echo __('Security Passcode', 'fluent-security'); ?>"
-                       type="password" name="login_passcode" id="login_passcode" class="input" value="" size="20"/>
-            </div>
-        </div>
-        <?php
-    }
-
-    public function maybeSecurityCodeOnLoginFunc($html)
-    {
-        if (!Helper::getGlobalLoginPassCode()) {
-            return $html;
-        }
-
-        ob_start();
-        $this->pushLoginPassCodeField();
-        $newHtML = ob_get_clean();
-        return $html . $newHtML;
     }
 
     /**
@@ -59,7 +23,7 @@ class LoginSecurity
      * @param $password
      * @return bool|mixed|\WP_Error
      */
-    public function checkLoginPassCode($user, $username, $password)
+    public function maybeCheckLoginAttempts($user, $username, $password)
     {
         if (empty($_POST) && !$username) {
             return $user;
@@ -83,33 +47,9 @@ class LoginSecurity
             return $user;
         }
 
-        $globalPasscode = Helper::getGlobalLoginPassCode();
-        if (!$globalPasscode) {
-            $this->logAuthSuccess($user);
-            return $user;
-        }
+        do_action('fluent_security/login_attempts_checked', $user);
 
-        if (empty($_POST['login_passcode'])) {
-            return new \WP_Error('invalid_passcode', __('Login Passcode is required', 'fluent-security'));
-        }
-
-        $secureCode = sanitize_text_field($_POST['login_passcode']);
-        $userPasscode = $this->getUserLoginPassCode($user);
-
-        if ($userPasscode) {
-            if ($userPasscode === $secureCode) {
-                $this->logAuthSuccess($user);
-                return $user;
-            }
-            return new \WP_Error('invalid_passcode', __('Login Passcode verification failed', 'fluent-security'));
-        }
-
-        if ($globalPasscode === $secureCode) {
-            $this->logAuthSuccess($user);
-            return $user;
-        }
-
-        return new \WP_Error('invalid_passcode', __('Login Passcode verification failed', 'fluent-security'));
+        return $user;
     }
 
     /**
@@ -157,46 +97,6 @@ class LoginSecurity
         }
 
         return new \WP_Error('blocked', sprintf(__('You are blocked for next %d minutes. Please try after that time'), $minutes));
-    }
-
-    /**
-     * @param $user \WP_User
-     * @return void
-     */
-    public function addUserMetaField($user)
-    {
-        if (!Helper::getGlobalLoginPassCode()) {
-            return;
-        }
-        $passCode = get_user_meta($user->ID, '__login_passcode', true);;
-        ?>
-        <div style="margin-top: 20px;" class="form-field">
-            <label style="font-weight: bold;"
-                   for="fluent_security_passcode"><?php echo __('Security Passcode', 'fluent-security'); ?></label>
-            <input style="max-width: 300px; display: block;" type="text" size="30" required
-                   id="fluent_security_passcode" value="<?php echo esc_attr($passCode); ?>"
-                   name="fluent_security_passcode" class="input" aria-required="true">
-            <p class="description" id="fluent_security_passcode">
-                <?php echo __('Login security passcode which is required when you login to this site', 'fluent-security'); ?>
-            </p>
-        </div>
-        <?php
-    }
-
-    /**
-     * @param $userId int
-     * @return void
-     */
-    public function updateUserPassCode($userId)
-    {
-        if (!Helper::getGlobalLoginPassCode()) {
-            return;
-        }
-
-        if (isset($_POST['fluent_security_passcode'])) {
-            $passCode = sanitize_text_field($_POST['fluent_security_passcode']);
-            update_user_meta($userId, '__login_passcode', $passCode);
-        }
     }
 
     /**
@@ -385,7 +285,7 @@ class LoginSecurity
         $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
         $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
 
-        $userRoles = (array) $user->roles;
+        $userRoles = (array)$user->roles;
 
         $roleNames = implode(', ', $userRoles);
 
@@ -393,9 +293,9 @@ class LoginSecurity
         $infoHtml = '<ul style="padding-left:20px;line-height:25px;font-size: 14px;background: #f9f9f9;padding-top: 20px;padding-bottom: 20px;font-family: monospace;">';
         $infoHtml .= '<li><b>Site URL:</b> <a href="' . site_url() . '">' . site_url() . '</a></li>';
         $infoHtml .= '<li><b>Username:</b> <a href="' . $userEditLInk . '">' . $user->user_login . '</a></li>';
-        $infoHtml .= '<li><b>User Role:</b> '.$roleNames.'</li>';
-        if($media && $media != 'web') {
-            $infoHtml .= '<li><b>Media:</b> '.$media.'</li>';
+        $infoHtml .= '<li><b>User Role:</b> ' . $roleNames . '</li>';
+        if ($media && $media != 'web') {
+            $infoHtml .= '<li><b>Media:</b> ' . $media . '</li>';
         }
         $infoHtml .= '<li><b>Email:</b> ' . $user->user_email . '</li>';
         $infoHtml .= '<li><b>Name:</b> ' . $user->first_name . ' ' . $user->last_name . '</li>';
@@ -410,8 +310,8 @@ class LoginSecurity
 
         $siteName = get_bloginfo('name');
         $data = [
-            'body'       => implode('', $lines),
-            'pre_header' => 'Login success at ' . $siteName,
+            'body'        => implode('', $lines),
+            'pre_header'  => 'Login success at ' . $siteName,
             'show_footer' => true
         ];
 
@@ -471,8 +371,8 @@ class LoginSecurity
 
         $siteName = get_bloginfo('name');
         $data = [
-            'body'       => implode('', $lines),
-            'pre_header' => 'Blocked from login ' . $siteName,
+            'body'        => implode('', $lines),
+            'pre_header'  => 'Blocked from login ' . $siteName,
             'show_footer' => true
         ];
 

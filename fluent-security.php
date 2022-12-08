@@ -30,6 +30,7 @@ class FluentSecurityPlugin
 
         (new \FluentSecurity\Classes\LoginSecurity())->init();
         (new \FluentSecurity\Classes\MagicLogin())->register();
+        (new \FluentSecurity\Classes\TwoFaHandler())->register();
 
         /*
          * Social Auth Handler Register
@@ -51,6 +52,7 @@ class FluentSecurityPlugin
             if (!$status || \FluentSecurity\Helpers\Helper::getSetting('disable_xmlrpc') == 'yes') {
                 return false;
             }
+
             return $status;
         });
 
@@ -135,6 +137,26 @@ class FluentSecurityPlugin
             dbDelta($sql);
         }
 
+        $socialAccountMapsTable = $wpdb->prefix . 'fls_social_accounts';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$socialAccountMapsTable'") != $socialAccountMapsTable) {
+            $sql = "CREATE TABLE $socialAccountMapsTable (
+                `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                `user_id` BIGINT UNSIGNED NOT NULL,
+                `auth_provider` VARCHAR(192) NULL,
+                `provider_username` VARCHAR(192) NULL,
+                `provider_email` VARCHAR(192) NULL,
+                `status` varchar(50) DEFAULT 'active',
+                `is_primary` TINYINT(1) DEFAULT 1,
+                `created_at` TIMESTAMP NULL,
+                `updated_at` TIMESTAMP NULL,
+                  KEY `user_id` (`user_id`),
+                  KEY `auth_provider` (`auth_provider`),
+                  KEY  `provider_email` (`provider_email`)
+            ) $charsetCollate;";
+            dbDelta($sql);
+        }
+
         $table_name = $wpdb->prefix . 'fls_login_hashes';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
             $sql = "CREATE TABLE $table_name (
@@ -144,9 +166,11 @@ class FluentSecurityPlugin
 				used_count INT(11) DEFAULT 0,
 				use_limit INT(11) DEFAULT 1,
 				status varchar(20) DEFAULT 'issued',
+				use_type varchar(20) DEFAULT 'magic_login',
+				two_fa_code varchar(20) DEFAULT '',
 				ip_address varchar(20) NULL,
 				redirect_intend varchar(255) NULL,
-				success_ip_address varchar(20) NULL,
+				success_ip_address varchar(50) NULL,
 				country varchar(50) NULL,
 				city varchar(50) NULL,
 				created_by int(11) null,
@@ -157,6 +181,7 @@ class FluentSecurityPlugin
                    KEY `login_hash` (`login_hash`(192)),
                    KEY `user_id` (`user_id`),
                    KEY `status` (`status`(20))
+                   KEY `use_type` (`use_type`(20))
 			) $charsetCollate;";
             dbDelta($sql);
         }
@@ -189,6 +214,7 @@ class FluentSecurityPlugin
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SocialAuthApi.php';
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SocialAuthHandler.php';
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/CustomAuthHandler.php';
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/TwoFaHandler.php';
 
         add_action('rest_api_init', function () {
             require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/routes.php';

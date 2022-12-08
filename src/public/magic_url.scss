@@ -31,14 +31,19 @@ div#fls_magic_login {
   }
 }
 
+
+
 .fls_magic_show_btn, #fls_magic_submit {
   cursor: pointer;
   display: block;
   width: 100%;
-  padding: 15px;
+  padding: 5px 15px;
   color: white;
   border: 0;
   border-radius: 5px;
+}
+.fls_magic_show_btn, {
+  padding: 10px 15px;
 }
 
 .fls_magic_show_btn:hover, #fls_magic_submit:hover {
@@ -95,11 +100,16 @@ p.fls_magic_text {
   }
 }
 
-
 #fls_magic_logon {
   display: block;
   width: 100%;
-  margin-bottom: 15px;
+  margin: 10px 0px;
+  font-size: 14px;
+}
+
+.fls_magic_submit_wrapper {
+  display: block;
+  overflow: hidden;
 }
 
 #fls_magic_login {

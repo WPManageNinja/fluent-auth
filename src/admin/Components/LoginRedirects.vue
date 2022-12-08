@@ -47,6 +47,7 @@
                                                :rule="ruleItem"
                                                :providers="conditionProviders"
                                                :roles="roles"
+                                               :capabilities="user_capabilities"
                                                :key="ruleItemIndex"/>
                                 <div class="fls_then_arrow">then</div>
                                 <el-row style="margin-top: 20px;" :gutter="20">
@@ -117,7 +118,8 @@ export default {
             },
             saving: false,
             errors: false,
-            roles: {}
+            roles: {},
+            user_capabilities: {}
         }
     },
     methods: {
@@ -144,6 +146,7 @@ export default {
                 .then(response => {
                     this.settings = response.settings
                     this.roles = response.roles
+                    this.user_capabilities = response.user_capabilities
                 })
                 .catch((errors) => {
                     this.$handleError(errors)

@@ -41,6 +41,7 @@ class SettingsHandler
         $settings = Arr::only($settings, array_keys($oldSettings));
 
         $numericTypes = [
+            'auto_delete_logs_day',
             'login_try_limit',
             'login_try_timing'
         ];
@@ -59,6 +60,7 @@ class SettingsHandler
 
         $errors = [];
 
+
         if ($settings['enable_auth_logs'] == 'yes') {
             if (!$settings['login_try_limit']) {
                 $errors['login_try_limit'] = [
@@ -70,19 +72,18 @@ class SettingsHandler
                     'required' => 'Login Timing is required'
                 ];
             }
-        } else {
-            $settings['extended_auth_security_type'] = 'none';
-            $settings['global_auth_code'] = '';
-            $settings['magic_user_roles'] = [];
-        }
 
-        if ($settings['extended_auth_security_type'] == 'pass_code') {
-            if (empty($settings['global_auth_code'])) {
-                $errors['global_auth_code'] = [
-                    'required' => 'Global Auth Code is required'
+            if( $settings['email2fa'] == 'yes' && empty($settings['email2fa_roles'])) {
+                $errors['email2fa_roles'] = [
+                    'required' => 'Two-Factor Authentication roles is required'
                 ];
             }
+
+        } else {
+            $settings['magic_login'] = 'no';
+            $settings['email2fa'] = 'no';
         }
+
 
         if ($errors) {
             return new \WP_Error('validation_error', 'Form Validation failed', $errors);

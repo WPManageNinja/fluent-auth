@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const registrationForm = document.getElementById('flsRegistrationForm');
     const resetPasswordForm = document.getElementById('flsResetPasswordForm');
     const loginForm = document.getElementById('loginform');
+    const twoFaForm = document.getElementById('fls_2fa_form');
 
     function toggleLoading(submitBtn) {
         submitBtn.classList.toggle('loading');
@@ -27,6 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', (event) => {
             event.preventDefault();
             handleFormSubmission(loginForm, 'fls_login_form', 'fluent_security_login');
+        });
+    }
+
+    if (twoFaForm) {
+        twoFaForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            handleFormSubmission(twoFaForm, 'fls_2fa_form', 'fluent_security_2fa_email');
         });
     }
 
@@ -61,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         data.append('action', action);
         data.append('_nonce', window.fluentSecurityPublic.fls_login_nonce);
+        data.append('_is_fls_form', 'yes');
 
         const request = new XMLHttpRequest();
 

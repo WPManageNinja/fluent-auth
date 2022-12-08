@@ -12,19 +12,20 @@ class Helper
         }
 
         $defaults = [
-            'extended_auth_security_type' => 'none', // none | magic_login | pass_code
-            'magic_user_roles'            => [],
-            'global_auth_code'            => '',
-            'disable_xmlrpc'              => 'no',
-            'disable_app_login'           => 'no',
-            'enable_auth_logs'            => 'yes',
-            'login_try_limit'             => 5,
-            'login_try_timing'            => 30,
-            'disable_users_rest'          => 'no',
-            'notification_user_roles'     => [],
-            'notify_on_blocked'           => 'no',
-            'notification_email'          => '{admin_email}',
-            'auto_delete_logs_day'        => 30, // in days
+            'disable_xmlrpc'          => 'no',
+            'disable_app_login'       => 'no',
+            'enable_auth_logs'        => 'yes',
+            'login_try_limit'         => 5,
+            'login_try_timing'        => 30,
+            'disable_users_rest'      => 'no',
+            'notification_user_roles' => [],
+            'notify_on_blocked'       => 'no',
+            'notification_email'      => '{admin_email}',
+            'auto_delete_logs_day'    => 30, // in days
+            'magic_login'             => 'no',
+            'magic_restricted_roles'  => [],
+            'email2fa'                => 'no',
+            'email2fa_roles'          => ['administrator', 'editor', 'author']
         ];
 
         $settings = get_option('__fls_auth_settings');
@@ -53,7 +54,6 @@ class Helper
         $roles = \get_editable_roles();
         $formattedRoles = [];
         foreach ($roles as $roleKey => $role) {
-
             if ($keyed) {
                 $formattedRoles[$roleKey] = $role['name'];
             } else {
@@ -62,9 +62,38 @@ class Helper
                     'title' => $role['name']
                 ];
             }
-
         }
         return $formattedRoles;
+    }
+
+    public static function getWpPermissions($keyed = false)
+    {
+        $allCaps = [];
+        if (!function_exists('get_editable_roles')) {
+            require_once(ABSPATH . '/wp-admin/includes/user.php');
+        }
+
+        $roles = \get_editable_roles();
+        foreach ($roles as $role) {
+            $allCaps = array_merge((array)$allCaps, (array)$role['capabilities']);
+        }
+
+        $formattedCaps = [];
+        foreach ($allCaps as $capName => $cap) {
+            if (!$capName) {
+                continue;
+            }
+            if ($keyed) {
+                $formattedCaps[$capName] = $capName;
+            } else {
+                $formattedCaps[] = [
+                    'id'    => $capName,
+                    'title' => $capName
+                ];
+            }
+        }
+
+        return $formattedCaps;
     }
 
     public static function getGlobalLoginPassCode()
@@ -80,7 +109,6 @@ class Helper
         }
 
         return apply_filters('fluent_security/global_login_passcode', self::getSetting('global_auth_code'));
-
     }
 
     public static function getSetting($key, $default = false)
@@ -97,18 +125,18 @@ class Helper
     {
         $ip = '';
 
-        if ( isset( $_SERVER['HTTP_X_REAL_IP'] ) ) {
-            $ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) );
-        } else if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+        if (isset($_SERVER['HTTP_X_REAL_IP'])) {
+            $ip = sanitize_text_field(wp_unslash($_SERVER['HTTP_X_REAL_IP']));
+        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             // Proxy servers can send through this header like this: X-Forwarded-For: client1, proxy1, proxy2
             // Make sure we always only send through the first IP in the list which should always be the client IP.
-            $ip = (string) rest_is_ip_address( trim( current( preg_split( '/,/', sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) ) ) ) );
-        } elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
-            $ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+            $ip = (string)rest_is_ip_address(trim(current(preg_split('/,/', sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']))))));
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            $ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
         }
 
 
-        if(!$ip || $ip == '127.0.0.1') {
+        if (!$ip || $ip == '127.0.0.1') {
             // Get real visitor IP behind CloudFlare network
             // https://stackoverflow.com/questions/13646690/how-to-get-real-ip-from-visitor
             if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
@@ -145,7 +173,6 @@ class Helper
 
         ob_start();
         include FLUENT_SECURITY_PLUGIN_PATH . 'app/Views/' . $template . '.php';
-
         return ob_get_clean();
     }
 

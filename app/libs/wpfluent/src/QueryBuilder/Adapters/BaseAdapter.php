@@ -1,18 +1,18 @@
-<?php namespace WpFluent\QueryBuilder\Adapters;
+<?php namespace FluentSecurityDb\QueryBuilder\Adapters;
 
-use WpFluent\Connection;
-use WpFluent\Exception;
-use WpFluent\QueryBuilder\Raw;
+use FluentSecurityDb\Connection;
+use FluentSecurityDb\Exception;
+use FluentSecurityDb\QueryBuilder\Raw;
 
 abstract class BaseAdapter
 {
     /**
-     * @var \WpFluent\Connection
+     * @var \FluentSecurityDb\Connection
      */
     protected $connection;
 
     /**
-     * @var \Viocon\Container
+     * @var \FluentSecurityDb\Viocon\Container
      */
     protected $container;
 
@@ -380,7 +380,7 @@ abstract class BaseAdapter
                 // Build a new NestedCriteria class, keep it by reference so any changes made
                 // in the closure should reflect here
                 $nestedCriteria = $this->container->build(
-                    '\\WpFluent\\QueryBuilder\\NestedCriteria',
+                    '\\FluentSecurityDb\\QueryBuilder\\NestedCriteria',
                     array($this->connection)
                 );
 
@@ -466,7 +466,7 @@ abstract class BaseAdapter
 
         foreach ($valueArr as $key => $subValue) {
             // Don't wrap if we have *, which is not a usual field
-            $valueArr[$key] = trim($subValue) == '*' ? $subValue : $this->sanitizer . str_replace('`', '``', $subValue) . $this->sanitizer;
+            $valueArr[$key] = trim($subValue) == '*' ? $subValue : $this->sanitizer . $subValue . $this->sanitizer;
         }
 
         // Join these back with "." and return

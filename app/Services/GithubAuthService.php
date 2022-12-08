@@ -62,7 +62,6 @@ class GithubAuthService
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
 
-
         return [
             'full_name' => Arr::get($data, 'name'),
             'user_url' => Arr::get($data, 'blog'),
