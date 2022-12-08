@@ -2,7 +2,6 @@
 
 namespace FluentSecurity\App\Hooks\Handlers;
 
-use FluentSecurity\App\Helpers\Arr;
 use FluentSecurity\App\Helpers\Helper;
 
 class LoginSecurityHandler
@@ -13,8 +12,8 @@ class LoginSecurityHandler
     {
         add_filter('authenticate', [$this, 'maybeCheckLoginAttempts'], 999, 3);
         add_filter('lostpassword_errors', [$this, 'maybeBlockPasswordReset'], 10, 2);
-
         add_action('wp_login_failed', [$this, 'logFailedAuth'], 10, 2);
+        add_action('wp_login', [$this, 'logAuthSuccess'], 10, 2);
     }
 
     /**
@@ -74,7 +73,7 @@ class LoginSecurityHandler
 
         if (!$count || $limit >= $count) {
 
-            $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+            $browserDetection = new \FluentSecurity\App\Helpers\BrowserDetection();
 
             $userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 
@@ -117,7 +116,7 @@ class LoginSecurityHandler
             $byField = 'email';
         }
 
-        $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+        $browserDetection = new \FluentSecurity\App\Helpers\BrowserDetection();
 
         $user = get_user_by($byField, $username);
 
@@ -150,17 +149,19 @@ class LoginSecurityHandler
      * @param $user \WP_User
      * @return void
      */
-    public function logAuthSuccess($user, $media = 'web')
+    public function logAuthSuccess($userName, $user)
     {
         if (!Helper::getSetting('enable_auth_logs')) {
             return;
         }
 
+        $media = Helper::getLoginMedia();
+
         global $wpdb;
 
         $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 
-        $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+        $browserDetection = new \FluentSecurity\App\Helpers\BrowserDetection();
 
         $data = [
             'username'    => $user->user_login,
@@ -193,7 +194,7 @@ class LoginSecurityHandler
 
         $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
 
-        $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+        $browserDetection = new \FluentSecurity\App\Helpers\BrowserDetection();
 
         $data = [
             'username'    => $username,
@@ -283,7 +284,7 @@ class LoginSecurityHandler
         $userEditLInk = add_query_arg('user_id', $user->ID, self_admin_url('user-edit.php'));
 
         $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
-        $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+        $browserDetection = new \FluentSecurity\App\Helpers\BrowserDetection();
 
         $userRoles = (array)$user->roles;
 
@@ -345,7 +346,7 @@ class LoginSecurityHandler
         }
 
         $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
-        $browserDetection = new \FluentSecurity\Helpers\BrowserDetection();
+        $browserDetection = new \FluentSecurity\App\Helpers\BrowserDetection();
 
         $ip = Helper::getIp();
         $infoHtml = '<ul style="padding-left:20px;line-height:25px;font-size: 14px;background: #f9f9f9;padding-top: 20px;padding-bottom: 20px;font-family: monospace;">';

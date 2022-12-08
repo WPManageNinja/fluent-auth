@@ -4,6 +4,8 @@ namespace FluentSecurity\App\Helpers;
 
 class Helper
 {
+    private static $loginMedia = 'web';
+
     public static function getAuthSettings()
     {
         static $settings;
@@ -253,5 +255,19 @@ class Helper
         }
 
         return wp_parse_args($settings, $settingsDefault);
+    }
+
+    public static function setLoginMedia($media)
+    {
+        self::$loginMedia = $media;
+    }
+
+    public static function getLoginMedia()
+    {
+        if (self::$loginMedia) {
+            return self::$loginMedia;
+        }
+
+        return 'web';
     }
 }

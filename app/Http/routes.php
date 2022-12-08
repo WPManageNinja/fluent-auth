@@ -1,6 +1,6 @@
 <?php
 
-$router = new \FluentSecurity\App\Classes\Router('fluent-security');
+$router = new \FluentSecurity\App\Services\Router('fluent-security');
 
 $permissions = ['manage_options'];
 

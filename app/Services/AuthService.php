@@ -3,6 +3,7 @@
 namespace FluentSecurity\App\Services;
 
 use FluentSecurity\App\Helpers\Arr;
+use FluentSecurity\App\Helpers\Helper;
 
 class AuthService
 {
@@ -15,6 +16,8 @@ class AuthService
         if (empty($userData['email']) || !is_email($userData['email'])) {
             return new \WP_Error('invalid_email', 'Valid Email address is required');
         }
+
+        Helper::setLoginMedia($provider);
 
         $email = $userData['email'];
 
