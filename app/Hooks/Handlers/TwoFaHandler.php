@@ -123,6 +123,7 @@ class TwoFaHandler
 
     public function verify2FaEmailCode()
     {
+
         $code = sanitize_text_field(Arr::get($_REQUEST, 'login_passcode'));
         $hash = sanitize_text_field(Arr::get($_REQUEST, 'login_hash'));
 
@@ -168,7 +169,7 @@ class TwoFaHandler
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
         $user = wp_signon(array('user_login' => $user->user_login));
         remove_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);
-
+        
         if ($user instanceof \WP_User) {
             wp_set_current_user($user->ID, $user->user_login);
             if (is_user_logged_in()) {
@@ -183,6 +184,8 @@ class TwoFaHandler
                 if (!$redirectTo) {
                     $redirectTo = admin_url();
                 }
+
+                Helper::setLoginMedia('two_factor_email');
 
                 do_action( 'wp_login', $user->user_login, $user );
 

@@ -383,6 +383,8 @@ class MagicLoginHandler
                         'updated_at'         => current_time('mysql')
                     ]);
 
+                Helper::setLoginMedia('magic_login');
+
                 do_action( 'wp_login', $user->user_login, $user );
 
                 if(!wp_doing_ajax()) {
