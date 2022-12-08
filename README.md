@@ -1,5 +1,5 @@
-## Fluent Security
-Super Simple Security Plugin for WordPress
+## Fluent Auth
+Super Simple Auth Security Plugin for WordPress
 
 
 **What It Does**

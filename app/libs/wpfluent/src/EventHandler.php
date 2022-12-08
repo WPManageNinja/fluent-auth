@@ -1,7 +1,7 @@
-<?php namespace FluentSecurityDb;
+<?php namespace FluentAuthDb;
 
-use FluentSecurityDb\QueryBuilder\QueryBuilderHandler;
-use FluentSecurityDb\QueryBuilder\Raw;
+use FluentAuthDb\QueryBuilder\QueryBuilderHandler;
+use FluentAuthDb\QueryBuilder\Raw;
 
 class EventHandler
 {

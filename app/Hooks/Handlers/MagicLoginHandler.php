@@ -1,8 +1,8 @@
 <?php
 
-namespace FluentSecurity\App\Hooks\Handlers;
+namespace FluentAuth\App\Hooks\Handlers;
 
-use FluentSecurity\App\Helpers\Helper;
+use FluentAuth\App\Helpers\Helper;
 
 class MagicLoginHandler
 {
@@ -26,7 +26,7 @@ class MagicLoginHandler
         /*
          * Programmatic Generation of the login token
          */
-        add_filter('fluent_security/login_token_by_user_id', function ($hash, $userId, $minutes) {
+        add_filter('fluent_auth/login_token_by_user_id', function ($hash, $userId, $minutes) {
 
             if (!$this->isEnabled()) {
                 return '';
@@ -40,7 +40,7 @@ class MagicLoginHandler
             return $this->generateHash($user, $minutes);
 
         }, 10, 3);
-        add_filter('fluent_security/login_token_by_user_email', function ($hash, $emailId, $minutes) {
+        add_filter('fluent_auth/login_token_by_user_email', function ($hash, $emailId, $minutes) {
             if (!$this->isEnabled()) {
                 return '';
             }
@@ -122,11 +122,11 @@ class MagicLoginHandler
             return;
         }
 
-        wp_enqueue_script('fls_magic_url', FLUENT_SECURITY_PLUGIN_URL . 'dist/public/fls_login.js', array('jquery'), null, true);
+        wp_enqueue_script('fls_magic_url', FLUENT_AUTH_PLUGIN_URL . 'dist/public/fls_login.js', array('jquery'), null, true);
 
         wp_localize_script('fls_magic_url', 'fls_magic_login_vars', [
             'ajaxurl'      => admin_url('admin-ajax.php'),
-            'success_icon' => FLUENT_SECURITY_PLUGIN_URL . 'dist/images/success.png',
+            'success_icon' => FLUENT_AUTH_PLUGIN_URL . 'dist/images/success.png',
             'empty_text'   => __('Please provide username / email to get magic login link', 'ninja_magic_login'),
             'wait_text'    => __('Please Wait...', 'ninja_magic_login'),
         ]);
@@ -180,7 +180,7 @@ class MagicLoginHandler
             $user = get_user_by('login', $username);
         }
 
-        $canUseMagicLogin = apply_filters('fluent_security/magic_login_can_use', $this->canUseMagic($user), $user);
+        $canUseMagicLogin = apply_filters('fluent_auth/magic_login_can_use', $this->canUseMagic($user), $user);
 
         if (!$canUseMagicLogin) {
             wp_send_json_error(array(
@@ -189,7 +189,7 @@ class MagicLoginHandler
         }
 
         // Now we have a valid user and let's send the email
-        $validity = apply_filters('fluent_security/default_token_validity', 10, $user);
+        $validity = apply_filters('fluent_auth/default_token_validity', 10, $user);
 
         $redirect_to = $this->getLoginRedirect($user);
 
@@ -364,7 +364,7 @@ class MagicLoginHandler
         $userId = $row->user_id;
         $user = get_user_by('ID', $userId);
 
-        if (!apply_filters('fluent_security/magic_login_can_use', $this->canUseMagic($user), $user)) {
+        if (!apply_filters('fluent_auth/magic_login_can_use', $this->canUseMagic($user), $user)) {
             return false;
         }
 

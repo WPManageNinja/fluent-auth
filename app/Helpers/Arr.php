@@ -1,6 +1,6 @@
 <?php
 
-namespace FluentSecurity\App\Helpers;
+namespace FluentAuth\App\Helpers;
 
 use Closure;
 use ArrayAccess;

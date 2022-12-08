@@ -1,6 +1,6 @@
 <?php
 
-namespace FluentSecurity\App\Helpers;
+namespace FluentAuth\App\Helpers;
 
 class Helper
 {
@@ -159,7 +159,7 @@ class Helper
         $template = str_replace('.', DIRECTORY_SEPARATOR, $template);
 
         ob_start();
-        include FLUENT_SECURITY_PLUGIN_PATH . 'app/Views/' . $template . '.php';
+        include FLUENT_AUTH_PLUGIN_PATH . 'app/Views/' . $template . '.php';
         return ob_get_clean();
     }
 

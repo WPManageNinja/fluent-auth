@@ -20,23 +20,23 @@
                     <div v-if="settings.enabled == 'yes'" class="fls_login_settings">
                         <div class="fls_shortcode_section">
                             <h3>{{$t('full_auth_short')}}</h3>
-                            <textarea readonly>[fluent_security_auth]</textarea>
-                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_security_auth redirect_to="your_URL"]</code></p>
+                            <textarea readonly>[fluent_auth]</textarea>
+                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_auth redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
                             <h3>{{$t('regi_short')}}</h3>
-                            <textarea readonly>[fluent_security_signup]</textarea>
-                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_security_signup redirect_to="your_URL"]</code></p>
+                            <textarea readonly>[fluent_auth_signup]</textarea>
+                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_auth_signup redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
                             <h3>{{$t('login_short')}}</h3>
-                            <textarea readonly>[fluent_security_login]</textarea>
-                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_security_login redirect_to="your_URL"]</code></p>
+                            <textarea readonly>[fluent_auth_login]</textarea>
+                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_auth_login redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
                             <h3>{{$t('pass_reset_short')}}</h3>
-                            <textarea readonly>[fluent_security_reset_password]</textarea>
-                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_security_reset_password redirect_to="your_URL"]</code></p>
+                            <textarea readonly>[fluent_auth_reset_password]</textarea>
+                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_auth_reset_password redirect_to="your_URL"]</code></p>
                         </div>
                     </div>
 

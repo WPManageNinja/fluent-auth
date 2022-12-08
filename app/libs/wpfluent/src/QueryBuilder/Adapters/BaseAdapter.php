@@ -1,18 +1,18 @@
-<?php namespace FluentSecurityDb\QueryBuilder\Adapters;
+<?php namespace FluentAuthDb\QueryBuilder\Adapters;
 
-use FluentSecurityDb\Connection;
-use FluentSecurityDb\Exception;
-use FluentSecurityDb\QueryBuilder\Raw;
+use FluentAuthDb\Connection;
+use FluentAuthDb\Exception;
+use FluentAuthDb\QueryBuilder\Raw;
 
 abstract class BaseAdapter
 {
     /**
-     * @var \FluentSecurityDb\Connection
+     * @var \FluentAuthDb\Connection
      */
     protected $connection;
 
     /**
-     * @var \FluentSecurityDb\Viocon\Container
+     * @var \FluentAuthDb\Viocon\Container
      */
     protected $container;
 
@@ -380,7 +380,7 @@ abstract class BaseAdapter
                 // Build a new NestedCriteria class, keep it by reference so any changes made
                 // in the closure should reflect here
                 $nestedCriteria = $this->container->build(
-                    '\\FluentSecurityDb\\QueryBuilder\\NestedCriteria',
+                    '\\FluentAuthDb\\QueryBuilder\\NestedCriteria',
                     array($this->connection)
                 );
 

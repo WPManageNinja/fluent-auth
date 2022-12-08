@@ -4,7 +4,7 @@
 
 spl_autoload_register(function ($class) {
 
-    $namespace = 'FluentSecurityDb';
+    $namespace = 'FluentAuthDb';
 
     if (!preg_match("/\b{$namespace}\b/", $class)) {
         return;

@@ -1,6 +1,6 @@
 <?php
 
-namespace FluentSecurity\App\Helpers;
+namespace FluentAuth\App\Helpers;
 
 class Activator
 {
@@ -33,8 +33,8 @@ class Activator
         self::migrateHashesTable();
         self::migrateSocialConnectTable();
 
-        if (!wp_next_scheduled('fluent_security_daily_tasks')) {
-            wp_schedule_event(time(), 'daily', 'fluent_security_daily_tasks');
+        if (!wp_next_scheduled('fluent_auth_daily_tasks')) {
+            wp_schedule_event(time(), 'daily', 'fluent_auth_daily_tasks');
         }
     }
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace FluentSecurity\App\Hooks\Handlers;
+namespace FluentAuth\App\Hooks\Handlers;
 
-use FluentSecurity\App\Helpers\Helper;
-use FluentSecurity\App\Services\AuthService;
-use FluentSecurity\App\Services\GithubAuthService;
-use FluentSecurity\App\Services\GoogleAuthService;
-use FluentSecurity\App\Helpers\Arr;
+use FluentAuth\App\Helpers\Helper;
+use FluentAuth\App\Services\AuthService;
+use FluentAuth\App\Services\GithubAuthService;
+use FluentAuth\App\Services\GoogleAuthService;
+use FluentAuth\App\Helpers\Arr;
 
 class SocialAuthHandler
 {
@@ -23,7 +23,7 @@ class SocialAuthHandler
         add_filter('login_form_bottom', [$this, 'maybePushToCustomForm']);
 
         add_filter('fluent_support/before_registration_form_close', [$this, 'maybePushRegistrationField']);
-        add_filter('fluent_security/after_registration_form_close', [$this, 'maybePushRegistrationField']);
+        add_filter('fluent_auth/after_registration_form_close', [$this, 'maybePushRegistrationField']);
     }
 
     public function maybeSocialAuth()

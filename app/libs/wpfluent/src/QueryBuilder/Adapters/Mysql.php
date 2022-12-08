@@ -1,4 +1,4 @@
-<?php namespace FluentSecurityDb\QueryBuilder\Adapters;
+<?php namespace FluentAuthDb\QueryBuilder\Adapters;
 
 class Mysql extends BaseAdapter
 {

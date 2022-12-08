@@ -5,20 +5,20 @@ require_once(__DIR__.'/autoload.php');
 
 if (! function_exists('flsDb')) {
     /**
-     * @return \FluentSecurityDb\QueryBuilder\QueryBuilderHandler
+     * @return \FluentAuthDb\QueryBuilder\QueryBuilderHandler
      */
     function flsDb()
     {
-        static $FluentSecurityDb;
+        static $FluentAuthDb;
 
-        if (! $FluentSecurityDb) {
+        if (! $FluentAuthDb) {
             global $wpdb;
 
-            $connection = new \FluentSecurityDb\Connection($wpdb, ['prefix' => $wpdb->prefix]);
+            $connection = new \FluentAuthDb\Connection($wpdb, ['prefix' => $wpdb->prefix]);
 
-            $FluentSecurityDb = new \FluentSecurityDb\QueryBuilder\QueryBuilderHandler($connection);
+            $FluentAuthDb = new \FluentAuthDb\QueryBuilder\QueryBuilderHandler($connection);
         }
 
-        return $FluentSecurityDb;
+        return $FluentAuthDb;
     }
 }

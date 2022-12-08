@@ -1,8 +1,8 @@
 <?php
 
-namespace FluentSecurity\App\Hooks\Handlers;
+namespace FluentAuth\App\Hooks\Handlers;
 
-use FluentSecurity\App\Helpers\Helper;
+use FluentAuth\App\Helpers\Helper;
 
 class AdminMenuHandler
 {
@@ -89,9 +89,9 @@ class AdminMenuHandler
     {
         $currentUser = wp_get_current_user();
 
-        wp_enqueue_script('fluent_security_app', FLUENT_SECURITY_PLUGIN_URL . 'dist/admin/app.js', ['jquery'], '1.0', true);
+        wp_enqueue_script('fluent_auth_app', FLUENT_AUTH_PLUGIN_URL . 'dist/admin/app.js', ['jquery'], '1.0', true);
 
-        wp_localize_script('fluent_security_app', 'fluentSecurityAdmin', [
+        wp_localize_script('fluent_auth_app', 'fluentAuthAdmin', [
             'slug'          => 'fluent-security',
             'nonce'         => wp_create_nonce('fluent-security'),
             'rest'          => [
@@ -107,7 +107,7 @@ class AdminMenuHandler
                 'success' => __('Successful', 'fluent-security')
             ],
             'auth_settings' => Helper::getAuthSettings(),
-            'asset_url'     => FLUENT_SECURITY_PLUGIN_URL . 'dist/',
+            'asset_url'     => FLUENT_AUTH_PLUGIN_URL . 'dist/',
             'me'            => [
                 'id'        => $currentUser->ID,
                 'full_name' => trim($currentUser->first_name . ' ' . $currentUser->last_name),
@@ -186,7 +186,6 @@ class AdminMenuHandler
                 'disable_rest_heading'          => __('Disable Rest Remote App Login', 'fluent-security'),
                 'Log Login Logs'                => __('Log Login Logs', 'fluent-security'),
                 'Disable Public User Indexing'  => __('Disable Public User Indexing', 'fluent-security'),
-                'Extended Login Type'           => __('Extended Login Type', 'fluent-security'),
                 'Login Notifications'           => __('Login Notifications', 'fluent-security'),
                 'Recent Successful Logins'      => __('Recent Successful Logins', 'fluent-security'),
                 'not_enough_success_logs'       => __('Not enough data. This section will show recent successful logins', 'fluent-security'),
@@ -208,7 +207,7 @@ class AdminMenuHandler
             ]
         ]);
 
-        echo '<div id="fluent_security_app"><h3 style="text-align: center; margin-top: 100px;">Loading Settings..</h3></div>';
+        echo '<div id="fluent_auth_app"><h3 style="text-align: center; margin-top: 100px;">Loading Settings..</h3></div>';
     }
 
     private function getMenuIcon()

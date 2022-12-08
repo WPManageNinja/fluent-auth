@@ -30,7 +30,7 @@
  * @link https://github.com/foroco/php-browser-detection
  */
 
-namespace FluentSecurity\App\Helpers;
+namespace FluentAuth\App\Helpers;
 
 class BrowserDetection
 {

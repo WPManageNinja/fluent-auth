@@ -3,11 +3,11 @@
 /*
  * Init Direct Classes Here
  */
-(new \FluentSecurity\App\Hooks\Handlers\AdminMenuHandler())->register();
-(new \FluentSecurity\App\Hooks\Handlers\CustomAuthHandler())->register();
-(new \FluentSecurity\App\Hooks\Handlers\LoginSecurityHandler())->register();
-(new \FluentSecurity\App\Hooks\Handlers\MagicLoginHandler())->register();
-(new \FluentSecurity\App\Hooks\Handlers\SocialAuthHandler())->register();
-(new \FluentSecurity\App\Hooks\Handlers\TwoFaHandler())->register();
-(new \FluentSecurity\App\Hooks\Handlers\BasicTasksHandler())->register();
+(new \FluentAuth\App\Hooks\Handlers\AdminMenuHandler())->register();
+(new \FluentAuth\App\Hooks\Handlers\CustomAuthHandler())->register();
+(new \FluentAuth\App\Hooks\Handlers\LoginSecurityHandler())->register();
+(new \FluentAuth\App\Hooks\Handlers\MagicLoginHandler())->register();
+(new \FluentAuth\App\Hooks\Handlers\SocialAuthHandler())->register();
+(new \FluentAuth\App\Hooks\Handlers\TwoFaHandler())->register();
+(new \FluentAuth\App\Hooks\Handlers\BasicTasksHandler())->register();
 

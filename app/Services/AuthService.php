@@ -1,9 +1,9 @@
 <?php
 
-namespace FluentSecurity\App\Services;
+namespace FluentAuth\App\Services;
 
-use FluentSecurity\App\Helpers\Arr;
-use FluentSecurity\App\Helpers\Helper;
+use FluentAuth\App\Helpers\Arr;
+use FluentAuth\App\Helpers\Helper;
 
 class AuthService
 {
@@ -107,7 +107,7 @@ class AuthService
 
     public static function makeLogin($user, $provider = '')
     {
-        $canLogin = apply_filters('fluent_security/can_user_login', false, $user, $provider);
+        $canLogin = apply_filters('fluent_auth/can_user_login', false, $user, $provider);
 
         if ($provider && is_wp_error($canLogin)) {
             return $canLogin;

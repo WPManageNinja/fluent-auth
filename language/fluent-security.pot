@@ -1,7 +1,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Fluent Security\n"
+"Project-Id-Version: Fluent Auth\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-22 14:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -292,10 +292,6 @@ msgstr ""
 
 #: app/Classes/AdminMenuHandler.php:138
 msgid "Extended Login Security"
-msgstr ""
-
-#: app/Classes/AdminMenuHandler.php:180
-msgid "Extended Login Type"
 msgstr ""
 
 #: app/Classes/AdminMenuHandler.php:96

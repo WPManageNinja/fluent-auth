@@ -1,17 +1,17 @@
 <?php
 
-namespace FluentSecurity\App\Hooks\Handlers;
+namespace FluentAuth\App\Hooks\Handlers;
 
-use FluentSecurity\App\Helpers\Arr;
-use FluentSecurity\App\Helpers\Helper;
+use FluentAuth\App\Helpers\Arr;
+use FluentAuth\App\Helpers\Helper;
 
 class TwoFaHandler
 {
     public function register()
     {
-        add_action('fluent_security/login_attempts_checked', [$this, 'maybe2FaRedirect'], 1, 1);
+        add_action('fluent_auth/login_attempts_checked', [$this, 'maybe2FaRedirect'], 1, 1);
         add_action('login_form_fls_2fa_email', [$this, 'render2FaForm'], 1);
-        add_action('wp_ajax_nopriv_fluent_security_2fa_email', [$this, 'verify2FaEmailCode']);
+        add_action('wp_ajax_nopriv_fluent_auth_2fa_email', [$this, 'verify2FaEmailCode']);
     }
 
     public function render2FaForm()
@@ -164,12 +164,12 @@ class TwoFaHandler
             ], 423);
         }
 
-        remove_action('fluent_security/login_attempts_checked', [$this, 'maybe2FaRedirect'], 1);
+        remove_action('fluent_auth/login_attempts_checked', [$this, 'maybe2FaRedirect'], 1);
 
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
         $user = wp_signon(array('user_login' => $user->user_login));
         remove_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);
-        
+
         if ($user instanceof \WP_User) {
             wp_set_current_user($user->ID, $user->user_login);
             if (is_user_logged_in()) {

@@ -13,28 +13,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registrationForm) {
         registrationForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            handleFormSubmission(registrationForm, 'fls_submit', 'fluent_security_signup');
+            handleFormSubmission(registrationForm, 'fls_submit', 'fluent_auth_signup');
         });
     }
 
     if (resetPasswordForm) {
         resetPasswordForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            handleFormSubmission(resetPasswordForm, 'fls_reset_pass', 'fluent_security_rp');
+            handleFormSubmission(resetPasswordForm, 'fls_reset_pass', 'fluent_auth_rp');
         });
     }
 
     if (loginForm) {
         loginForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            handleFormSubmission(loginForm, 'fls_login_form', 'fluent_security_login');
+            handleFormSubmission(loginForm, 'fls_login_form', 'fluent_auth_login');
         });
     }
 
     if (twoFaForm) {
         twoFaForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            handleFormSubmission(twoFaForm, 'fls_2fa_form', 'fluent_security_2fa_email');
+            handleFormSubmission(twoFaForm, 'fls_2fa_form', 'fluent_auth_2fa_email');
         });
     }
 
@@ -68,12 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = new FormData(form);
 
         data.append('action', action);
-        data.append('_nonce', window.fluentSecurityPublic.fls_login_nonce);
+        data.append('_nonce', window.fluentAuthPublic.fls_login_nonce);
         data.append('_is_fls_form', 'yes');
 
         const request = new XMLHttpRequest();
 
-        const reqUrl = window.fluentSecurityPublic.ajax_url;
+        const reqUrl = window.fluentAuthPublic.ajax_url;
 
         request.open('POST', reqUrl, true);
         request.responseType = 'json';

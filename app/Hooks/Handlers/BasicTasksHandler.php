@@ -1,8 +1,8 @@
 <?php
 
-namespace FluentSecurity\App\Hooks\Handlers;
+namespace FluentAuth\App\Hooks\Handlers;
 
-use FluentSecurity\App\Helpers\Helper;
+use FluentAuth\App\Helpers\Helper;
 
 class BasicTasksHandler
 {
@@ -26,8 +26,8 @@ class BasicTasksHandler
         /*
          * Clean Up Old Logs
          */
-        add_action('fluent_security_daily_tasks', function () {
-            \FluentSecurity\App\Helpers\Helper::cleanUpLogs();
+        add_action('fluent_auth_daily_tasks', function () {
+            \FluentAuth\App\Helpers\Helper::cleanUpLogs();
         });
 
     }
@@ -75,8 +75,8 @@ class BasicTasksHandler
 
         ?>
         <div style="padding-bottom: 10px;" class="notice notice-warning">
-            <p><?php echo sprintf(__('Thank you for installing %s Plugin. Please configure the security settings to enable enhanced security of your site', 'fluent-security'), '<b>Fluent Security</b>'); ?></p>
-            <a href="<?php echo esc_url($url); ?>"><?php _e('Configure Fluent Security', 'fluent-security'); ?></a>
+            <p><?php echo sprintf(__('Thank you for installing %s Plugin. Please configure the security settings to enable enhanced security of your site', 'fluent-security'), '<b>Fluent Auth</b>'); ?></p>
+            <a href="<?php echo esc_url($url); ?>"><?php _e('Configure Fluent Auth', 'fluent-security'); ?></a>
         </div>
         <?php
     }

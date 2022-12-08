@@ -49,10 +49,6 @@
                                     <span class="fls_value">{{settings.disable_users_rest}}</span>
                                 </li>
                                 <li>
-                                    <span class="fls_label">{{$t('Extended Login Type')}}</span>
-                                    <span class="fls_value">{{settings.extended_auth_security_type}}</span>
-                                </li>
-                                <li>
                                     <span class="fls_label">{{$t('Login Notifications')}}</span>
                                     <span class="fls_value">{{(settings.notification_user_roles.length && settings.notification_email) ? 'yes' : 'no'}}</span>
                                 </li>

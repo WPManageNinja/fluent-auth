@@ -1,4 +1,4 @@
-<?php namespace FluentSecurityDb\Viocon;
+<?php namespace FluentAuthDb\Viocon;
 
 class Container
 {
@@ -18,7 +18,7 @@ class Container
     {
         if ($alias) {
             AliasFacade::setVioconInstance($this);
-            class_alias('\\FluentSecurityDb\\FluentSecurityDb\\Viocon\\AliasFacade', $alias);
+            class_alias('\\FluentAuthDb\\Viocon\\AliasFacade', $alias);
         }
     }
 

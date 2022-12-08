@@ -21,7 +21,7 @@
 
 <script type="text/babel">
 export default {
-    name: 'FluentSecurityApp',
+    name: 'FluentAuthApp',
     data() {
         return {
             menuItems: [

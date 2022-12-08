@@ -1,4 +1,4 @@
-<?php namespace FluentSecurityDb;
+<?php namespace FluentAuthDb;
 
 class Exception extends \Exception
 {

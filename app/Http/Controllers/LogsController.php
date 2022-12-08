@@ -1,8 +1,8 @@
 <?php
 
-namespace FluentSecurity\App\Http\Controllers;
+namespace FluentAuth\App\Http\Controllers;
 
-use FluentSecurity\App\Helpers\Helper;
+use FluentAuth\App\Helpers\Helper;
 
 class LogsController
 {

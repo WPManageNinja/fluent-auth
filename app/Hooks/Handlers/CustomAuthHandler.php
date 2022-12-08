@@ -1,10 +1,10 @@
 <?php
 
-namespace FluentSecurity\App\Hooks\Handlers;
+namespace FluentAuth\App\Hooks\Handlers;
 
-use FluentSecurity\App\Helpers\Arr;
-use FluentSecurity\App\Helpers\Helper;
-use FluentSecurity\App\Services\AuthService;
+use FluentAuth\App\Helpers\Arr;
+use FluentAuth\App\Helpers\Helper;
+use FluentAuth\App\Services\AuthService;
 
 class CustomAuthHandler
 {
@@ -13,10 +13,10 @@ class CustomAuthHandler
 
     public function register()
     {
-        add_shortcode('fluent_security_login', array($this, 'loginForm'));
-        add_shortcode('fluent_security_signup', array($this, 'registrationForm'));
-        add_shortcode('fluent_security_auth', array($this, 'authForm'));
-        add_shortcode('fluent_security_reset_password', array($this, 'restPasswordForm'));
+        add_shortcode('fluent_auth_login', array($this, 'loginForm'));
+        add_shortcode('fluent_auth_signup', array($this, 'registrationForm'));
+        add_shortcode('fluent_auth', array($this, 'authForm'));
+        add_shortcode('fluent_auth_reset_password', array($this, 'restPasswordForm'));
 
         /*
          * Alter Login And Logout Redirect URLs
@@ -24,9 +24,9 @@ class CustomAuthHandler
         add_filter('login_redirect', array($this, 'alterLoginRedirectUrl'), 999, 3);
         add_filter('logout_redirect', array($this, 'alterLogoutRedirectUrl'), 999, 3);
 
-        add_action('wp_ajax_nopriv_fluent_security_login', array($this, 'handleLoginAjax'));
-        add_action('wp_ajax_nopriv_fluent_security_signup', array($this, 'handleSignupAjax'));
-        add_action('wp_ajax_nopriv_fluent_security_rp', array($this, 'handlePasswordResentAjax'));
+        add_action('wp_ajax_nopriv_fluent_auth_login', array($this, 'handleLoginAjax'));
+        add_action('wp_ajax_nopriv_fluent_auth_signup', array($this, 'handleSignupAjax'));
+        add_action('wp_ajax_nopriv_fluent_auth_rp', array($this, 'handlePasswordResentAjax'));
         add_action('fls_load_login_helper', array($this, 'loadAssets'));
     }
 
@@ -36,7 +36,7 @@ class CustomAuthHandler
             return $redirect_to;
         }
 
-        if (apply_filters('fluent_security/respect_front_login_url', true) && strpos($redirect_to, '/wp-admin') === false) {
+        if (apply_filters('fluent_auth/respect_front_login_url', true) && strpos($redirect_to, '/wp-admin') === false) {
             return $redirect_to; // it's a frontend URl so let's not alter that
         }
 
@@ -95,7 +95,7 @@ class CustomAuthHandler
          *
          * @param array $loginArgs
          */
-        $loginArgs = apply_filters('fluent_security/login_form_args', [
+        $loginArgs = apply_filters('fluent_auth/login_form_args', [
             'echo'           => false,
             'redirect'       => $redirect,
             'remember'       => true,
@@ -164,12 +164,12 @@ class CustomAuthHandler
         }
 
         $registrationForm .= '<input type="hidden" name="__redirect_to" value="' . esc_url($attributes['redirect_to']) . '">';
-        $registrationForm .= '<input type="hidden" name="_fls_signup_nonce" value="' . wp_create_nonce('fluent_security_signup_nonce') . '">';
+        $registrationForm .= '<input type="hidden" name="_fls_signup_nonce" value="' . wp_create_nonce('fluent_auth_signup_nonce') . '">';
         $registrationForm .= '<button type="submit" id="fls_submit">' . $this->submitBtnLoadingSvg() . '<span>' . __('Signup', 'fluent-security') . '</span></button>';
 
         $registrationForm .= '</form>';
 
-        $registrationForm .= apply_filters('fluent_security/after_registration_form_close', '', $registrationFields, $attributes);
+        $registrationForm .= apply_filters('fluent_auth/after_registration_form_close', '', $registrationFields, $attributes);
 
         if ($hide) {
             $registrationForm .= '<p style="text-align: center">'
@@ -215,7 +215,7 @@ class CustomAuthHandler
         }
 
         $restePasswordForm .= '<input type="hidden" name="__redirect_to" value="' . $attributes['redirect_to'] . '">';
-        $restePasswordForm .= '<input type="hidden" name="_fls_reset_pass_nonce" value="' . wp_create_nonce('fluent_security_reset_pass_nonce') . '">';
+        $restePasswordForm .= '<input type="hidden" name="_fls_reset_pass_nonce" value="' . wp_create_nonce('fluent_auth_reset_pass_nonce') . '">';
         $restePasswordForm .= '<button type="submit" id="fls_reset_pass">' . $this->submitBtnLoadingSvg() . '<span>' . __('Reset Password', 'fluent-security') . '</span></button>';
 
         $restePasswordForm .= '</form>';
@@ -240,13 +240,13 @@ class CustomAuthHandler
 
         $authForm = '<div class="fls_auth_wrapper">';
 
-        $authForm .= do_shortcode('[fluent_security_login redirect_to="' . esc_url($atts['redirect_to']) . '" show-signup=true show-reset-password=true]');
+        $authForm .= do_shortcode('[fluent_auth_login redirect_to="' . esc_url($atts['redirect_to']) . '" show-signup=true show-reset-password=true]');
 
         if (get_option('users_can_register')) {
-            $authForm .= do_shortcode('[fluent_security_signup redirect_to="' . esc_url($atts['redirect_to']) . '" hide=true]');
+            $authForm .= do_shortcode('[fluent_auth_signup redirect_to="' . esc_url($atts['redirect_to']) . '" hide=true]');
         }
 
-        $authForm .= do_shortcode('[fluent_security_reset_password redirect_to="' . esc_url($atts['redirect_to']) . '" hide=true]');
+        $authForm .= do_shortcode('[fluent_auth_reset_password redirect_to="' . esc_url($atts['redirect_to']) . '" hide=true]');
 
         $authForm .= '</div>';
 
@@ -392,7 +392,7 @@ class CustomAuthHandler
          *
          * @param string $loadingIcon this accepts html element
          */
-        return apply_filters('fluent_security/signup_loading_icon', $loadingIcon);
+        return apply_filters('fluent_auth/signup_loading_icon', $loadingIcon);
     }
 
     protected function getShortcodes($attributes)
@@ -404,7 +404,7 @@ class CustomAuthHandler
          *
          * @param array $shortCodeDefaults
          */
-        $shortCodeDefaults = apply_filters('fluent_security/auth_shortcode_defaults', [
+        $shortCodeDefaults = apply_filters('fluent_auth/auth_shortcode_defaults', [
             'auto-redirect'       => false,
             'redirect_to'         => '',
             'hide'                => false,
@@ -448,9 +448,9 @@ class CustomAuthHandler
             return false;
         }
 
-        wp_enqueue_script('fluent_security_login_helper', FLUENT_SECURITY_PLUGIN_URL . 'dist/public/login_helper.js', [], FLUENT_SECURITY_VERSION);
+        wp_enqueue_script('fluent_auth_login_helper', FLUENT_AUTH_PLUGIN_URL . 'dist/public/login_helper.js', [], FLUENT_AUTH_VERSION);
 
-        wp_localize_script('fluent_security_login_helper', 'fluentSecurityPublic', [
+        wp_localize_script('fluent_auth_login_helper', 'fluentAuthPublic', [
             'hide'              => $hide,
             'redirect_fallback' => site_url(),
             'fls_login_nonce'   => wp_create_nonce('fsecurity_login_nonce'),
@@ -650,7 +650,7 @@ class CustomAuthHandler
             ], 423);
         }
 
-        if (!wp_verify_nonce(Arr::get($_REQUEST, '_fls_signup_nonce'), 'fluent_security_signup_nonce')) {
+        if (!wp_verify_nonce(Arr::get($_REQUEST, '_fls_signup_nonce'), 'fluent_auth_signup_nonce')) {
             wp_send_json([
                 'message' => __('Security verification failed. Please try again', 'fluent-security')
             ], 423);
@@ -662,7 +662,7 @@ class CustomAuthHandler
          * @since v1.0.0
          * @param array $formData
          */
-        $formData = apply_filters('fluent_security/signup_form_data', $_REQUEST);
+        $formData = apply_filters('fluent_auth/signup_form_data', $_REQUEST);
 
         /*
          * Action before validate user signup
@@ -670,7 +670,7 @@ class CustomAuthHandler
          * @since v1.0.0
          * @param array $formData
          */
-        do_action('fluent_security/before_signup_validation', $formData);
+        do_action('fluent_auth/before_signup_validation', $formData);
 
         $errors = $this->validateSignUpData($formData);
 
@@ -687,14 +687,14 @@ class CustomAuthHandler
          * @since v1.0.0
          * @param array $formData
          */
-        do_action('fluent_security/after_signup_validation', $formData);
+        do_action('fluent_auth/after_signup_validation', $formData);
 
         if (empty($formData['username'])) {
             $formData['username'] = sanitize_user($formData['email']);
         }
 
         $userId = AuthService::registerNewUser($formData['username'], $formData['email'], $formData['password'], [
-            'role'       => apply_filters('fluent_security/signup_default_role', get_option('default_role'), $formData),
+            'role'       => apply_filters('fluent_auth/signup_default_role', get_option('default_role'), $formData),
             'first_name' => Arr::get($formData, 'first_name'),
             'last_name'  => Arr::get($formData, 'last_name'),
         ]);
@@ -711,11 +711,11 @@ class CustomAuthHandler
          * @since v1.0.0
          * @param array $formData
          */
-        do_action('fluent_security/after_creating_user', $userId, $formData);
+        do_action('fluent_auth/after_creating_user', $userId, $formData);
 
         $user = get_user_by('ID', $userId);
 
-        $isAutoLogin = apply_filters('fluent_security/auto_login_after_signup', true, $user);
+        $isAutoLogin = apply_filters('fluent_auth/auto_login_after_signup', true, $user);
 
         $message = __('Registration has been completed. Please login now', 'fluent-security');
 
@@ -741,7 +741,7 @@ class CustomAuthHandler
          * @since v1.0.0
          * @param array $response
          */
-        $response = apply_filters('fluent_security/signup_complete_response', $response, $user);
+        $response = apply_filters('fluent_auth/signup_complete_response', $response, $user);
 
         wp_send_json($response, 200);
     }
@@ -756,7 +756,7 @@ class CustomAuthHandler
 
         $errors = new \WP_Error();
 
-        if (!wp_verify_nonce(Arr::get($_REQUEST, '_fls_reset_pass_nonce'), 'fluent_security_reset_pass_nonce')) {
+        if (!wp_verify_nonce(Arr::get($_REQUEST, '_fls_reset_pass_nonce'), 'fluent_auth_reset_pass_nonce')) {
 
             wp_send_json([
                 'message' => __('Security verification failed. Please try again', 'fluent-security')
@@ -834,7 +834,7 @@ class CustomAuthHandler
          * @since v1.5.7
          * @param string $linkText
          */
-        $linkText = apply_filters("fluent_security/reset_password_link", sprintf(__('Reset your password for %s', 'fluent-security'), get_bloginfo('name')));
+        $linkText = apply_filters("fluent_auth/reset_password_link", sprintf(__('Reset your password for %s', 'fluent-security'), get_bloginfo('name')));
 
         $resetUrl = add_query_arg([
             'action' => 'rp',
@@ -850,7 +850,7 @@ class CustomAuthHandler
          * @since v1.5.7
          * @param string $mailSubject
          */
-        $mailSubject = apply_filters("fluent_security/reset_password_mail_subject", sprintf(__('Reset your password for %s', 'fluent-security'), get_bloginfo('name')));
+        $mailSubject = apply_filters("fluent_auth/reset_password_mail_subject", sprintf(__('Reset your password for %s', 'fluent-security'), get_bloginfo('name')));
 
         $message = sprintf(__('<p>Hi %s,</p>', 'fluent-security'), $user_data->first_name) .
             __('<p>Someone has requested a new password for the following account on WordPress:</p>', 'fluent-security') .
@@ -866,7 +866,7 @@ class CustomAuthHandler
          * @param object $user
          * @param string $resetLink
          */
-        $message = apply_filters('fluent_security/reset_password_message', $message, $user_data, $resetLink);
+        $message = apply_filters('fluent_auth/reset_password_message', $message, $user_data, $resetLink);
 
         $data = [
             'body'        => $message,
@@ -914,7 +914,7 @@ class CustomAuthHandler
          * @since v1.0.0
          * @param integer $userId
          */
-        do_action('fluent_security/before_logging_in_user', $userId);
+        do_action('fluent_auth/before_logging_in_user', $userId);
 
         wp_clear_auth_cookie();
         wp_set_current_user($userId);
@@ -926,6 +926,6 @@ class CustomAuthHandler
          * @since v1.0.0
          * @param integer $userId
          */
-        do_action('fluent_security/after_logging_in_user', $userId);
+        do_action('fluent_auth/after_logging_in_user', $userId);
     }
 }

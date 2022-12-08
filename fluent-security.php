@@ -1,11 +1,11 @@
 <?php
 defined('ABSPATH') or die;
 /*
-Plugin Name:  Fluent Security
+Plugin Name:  Fluent Auth
 Plugin URI:   https://github.com/WPManageNinja/fluent-security
-Description:  Super Simple Security Plugin for WordPress
+Description:  Super Simple Login & Signup Security and Social Login Plugin for WordPress
 Version:      1.0
-Author:       Fluent Security Team
+Author:       Fluent Auth Team
 Author URI:   https://jewel.im
 License:      GPLv2 or later
 License URI:  https://www.gnu.org/licenses/gpl-2.0.html
@@ -13,11 +13,11 @@ Text Domain:  fluent-security
 Domain Path:  /language/
 */
 
-define('FLUENT_SECURITY_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('FLUENT_SECURITY_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('FLUENT_SECURITY_VERSION', '1.0');
+define('FLUENT_AUTH_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('FLUENT_AUTH_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('FLUENT_AUTH_VERSION', '1.0');
 
-class FluentSecurityPlugin
+class FluentAuthPlugin
 {
     public function init()
     {
@@ -34,20 +34,20 @@ class FluentSecurityPlugin
 
     public function activatePlugin($siteWide = false)
     {
-        \FluentSecurity\App\Helpers\Activator::activate($siteWide);
+        \FluentAuth\App\Helpers\Activator::activate($siteWide);
     }
 
     public function deactivatePlugin()
     {
-        wp_clear_scheduled_hook('fluent_security_daily_tasks');
+        wp_clear_scheduled_hook('fluent_auth_daily_tasks');
     }
 
     private function autoLoad()
     {
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/libs/wpfluent/wpfluent.php';
+        require_once FLUENT_AUTH_PLUGIN_PATH . 'app/libs/wpfluent/wpfluent.php';
 
         spl_autoload_register(function($class) {
-            $match = 'FluentSecurity';
+            $match = 'FluentAuth';
 
             if (!preg_match("/\b{$match}\b/", $class)) {
                 return;
@@ -56,7 +56,7 @@ class FluentSecurityPlugin
             $path = plugin_dir_path(__FILE__);
 
             $file = str_replace(
-                ['FluentSecurity', '\\', '/App/'],
+                ['FluentAuth', '\\', '/App/'],
                 ['', DIRECTORY_SEPARATOR, 'app/'],
                 $class
             );
@@ -65,10 +65,10 @@ class FluentSecurityPlugin
         });
 
         add_action('rest_api_init', function () {
-            require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Http/routes.php';
+            require_once FLUENT_AUTH_PLUGIN_PATH . 'app/Http/routes.php';
         });
 
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Hooks/hooks.php';
+        require_once FLUENT_AUTH_PLUGIN_PATH . 'app/Hooks/hooks.php';
     }
 
     public function addContextLinks($actions)
@@ -89,4 +89,4 @@ class FluentSecurityPlugin
     }
 }
 
-(new FluentSecurityPlugin())->init();
+(new FluentAuthPlugin())->init();

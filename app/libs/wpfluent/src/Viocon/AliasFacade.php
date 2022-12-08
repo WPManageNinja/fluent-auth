@@ -1,4 +1,4 @@
-<?php namespace FluentSecurityDb\Viocon;
+<?php namespace FluentAuthDb\Viocon;
 
 /**
  * This class gives the ability to access non-static methods statically

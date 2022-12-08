@@ -1,7 +1,7 @@
 const request = function (method, route, data = {}) {
-    const url = `${window.fluentSecurityAdmin.rest.url}/${route}`;
+    const url = `${window.fluentAuthAdmin.rest.url}/${route}`;
 
-    const headers = {'X-WP-Nonce': window.fluentSecurityAdmin.rest.nonce};
+    const headers = {'X-WP-Nonce': window.fluentAuthAdmin.rest.nonce};
 
     if (['PUT', 'PATCH', 'DELETE'].indexOf(method.toUpperCase()) !== -1) {
         headers['X-HTTP-Method-Override'] = method;
@@ -43,6 +43,6 @@ export default {
 jQuery(document).ajaxSuccess((event, xhr, settings) => {
     const nonce = xhr.getResponseHeader('X-WP-Nonce');
     if (nonce) {
-        window.fluentSecurityAdmin.rest_nonce = nonce;
+        window.fluentAuthAdmin.rest_nonce = nonce;
     }
 });

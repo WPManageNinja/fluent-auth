@@ -30,7 +30,7 @@ function convertToText(obj) {
 const app = createApp(App);
 app.use(ElLoading);
 
-app.config.globalProperties.appVars = window.fluentSecurityAdmin;
+app.config.globalProperties.appVars = window.fluentAuthAdmin;
 
 app.mixin({
     data() {
@@ -44,7 +44,7 @@ app.mixin({
         $put: Rest.put,
         $del: Rest.delete,
         changeTitle(title) {
-            jQuery('head title').text(title + ' - Fluent Security');
+            jQuery('head title').text(title + ' - Fluent Auth');
         },
         $handleError(response) {
             let errorMessage = '';
@@ -67,7 +67,7 @@ app.mixin({
         },
         convertToText,
         $t(string) {
-            return window.fluentSecurityAdmin.i18n[string] || string;
+            return window.fluentAuthAdmin.i18n[string] || string;
         }
     }
 });
@@ -81,7 +81,7 @@ const router = createRouter({
 });
 
 window.fluentFrameworkApp = app.use(router).mount(
-    '#fluent_security_app'
+    '#fluent_auth_app'
 );
 
 jQuery('.toplevel_page_fluent-security a').on('click', function () {

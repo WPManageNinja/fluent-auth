@@ -1,9 +1,9 @@
 <?php
 
-namespace FluentSecurity\App\Services;
+namespace FluentAuth\App\Services;
 
-use FluentSecurity\App\Helpers\Arr;
-use FluentSecurity\App\Helpers\Helper;
+use FluentAuth\App\Helpers\Arr;
+use FluentAuth\App\Helpers\Helper;
 
 class GithubAuthService
 {

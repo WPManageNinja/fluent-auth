@@ -1,13 +1,13 @@
-<?php namespace FluentSecurityDb;
+<?php namespace FluentAuthDb;
 
-use FluentSecurityDb\QueryBuilder\QueryBuilderHandler;
+use FluentAuthDb\QueryBuilder\QueryBuilderHandler;
 
 /**
  * This class gives the ability to access non-static methods statically
  *
  * Class AliasFacade
  *
- * @package FluentSecurityDb
+ * @package FluentAuthDb
  */
 class AliasFacade
 {
