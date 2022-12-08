@@ -1,15 +1,15 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Hooks\Handlers;
 
-use FluentSecurity\Helpers\Arr;
-use FluentSecurity\Helpers\Helper;
+use FluentSecurity\App\Helpers\Arr;
+use FluentSecurity\App\Helpers\Helper;
 
-class LoginSecurity
+class LoginSecurityHandler
 {
     private $failedLogged = false;
 
-    public function init()
+    public function register()
     {
         add_filter('authenticate', [$this, 'maybeCheckLoginAttempts'], 999, 3);
         add_filter('lostpassword_errors', [$this, 'maybeBlockPasswordReset'], 10, 2);
@@ -320,7 +320,7 @@ class LoginSecurity
 
         $headers = array('Content-Type: text/html; charset=UTF-8');
 
-        return wp_mail($adminEmail, $subject, $body, $headers);
+        return \wp_mail($adminEmail, $subject, $body, $headers);
     }
 
     /**
@@ -330,7 +330,7 @@ class LoginSecurity
      */
     private function maybeSendBlockedEmail($user, $userName)
     {
-        if (Helper::getSetting('notify_on_blocked') != 'yes') {
+        if (Helper::getSetting('notify_on_blocked') !== 'yes') {
             return false;
         }
 
@@ -381,6 +381,6 @@ class LoginSecurity
 
         $headers = array('Content-Type: text/html; charset=UTF-8');
 
-        return wp_mail($adminEmail, $subject, $body, $headers);
+        return \wp_mail($adminEmail, $subject, $body, $headers);
     }
 }

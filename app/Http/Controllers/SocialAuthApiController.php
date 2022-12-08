@@ -1,11 +1,11 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Http\Controllers;
 
-use FluentSecurity\Helpers\Arr;
-use FluentSecurity\Helpers\Helper;
+use FluentSecurity\App\Helpers\Arr;
+use FluentSecurity\App\Helpers\Helper;
 
-class SocialAuthApi
+class SocialAuthApiController
 {
     public static function getSettings(\WP_REST_Request $request)
     {

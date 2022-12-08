@@ -1,16 +1,15 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Hooks\Handlers;
 
-use FluentSecurity\Helpers\Helper;
-use FluentSecurity\Services\AuthService;
-use FluentSecurity\Services\GithubAuthService;
-use FluentSecurity\Services\GoogleAuthService;
-use FluentSecurity\Helpers\Arr;
+use FluentSecurity\App\Helpers\Helper;
+use FluentSecurity\App\Services\AuthService;
+use FluentSecurity\App\Services\GithubAuthService;
+use FluentSecurity\App\Services\GoogleAuthService;
+use FluentSecurity\App\Helpers\Arr;
 
 class SocialAuthHandler
 {
-
     private $cssLoaded = false;
     private $redirectIntent = '';
 
@@ -43,7 +42,7 @@ class SocialAuthHandler
         }
 
         if (isset($_GET['intent_redirect_to'])) {
-            setcookie('fs_intent_redirect', sanitize_url($_GET['intent_redirect_to']), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);  /* expire in 1 hour */
+            \setcookie('fs_intent_redirect', sanitize_url($_GET['intent_redirect_to']), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);  /* expire in 1 hour */
         }
         
         $provider = Arr::get($_GET, 'fs_auth', $provider);

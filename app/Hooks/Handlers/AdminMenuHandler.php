@@ -1,8 +1,8 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Hooks\Handlers;
 
-use FluentSecurity\Helpers\Helper;
+use FluentSecurity\App\Helpers\Helper;
 
 class AdminMenuHandler
 {

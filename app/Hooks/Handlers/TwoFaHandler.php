@@ -1,9 +1,9 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Hooks\Handlers;
 
-use FluentSecurity\Helpers\Arr;
-use FluentSecurity\Helpers\Helper;
+use FluentSecurity\App\Helpers\Arr;
+use FluentSecurity\App\Helpers\Helper;
 
 class TwoFaHandler
 {
@@ -16,6 +16,10 @@ class TwoFaHandler
 
     public function render2FaForm()
     {
+        if(!$this->isEnabled()) {
+            return false;
+        }
+
         if (!isset($_GET['fls_2fa']) || $_GET['fls_2fa'] != 'email') {
             return;
         }
@@ -54,6 +58,10 @@ class TwoFaHandler
 
     public function maybe2FaRedirect($user)
     {
+        if(!$this->isEnabled($user)) {
+            return false;
+        }
+
         // If it's an ajax call and not our own ajax calls then we will just return it
         // Until we get a better work-around for other plugins
         if(wp_doing_ajax() && empty($_REQUEST['_is_fls_form'])) {
@@ -143,6 +151,12 @@ class TwoFaHandler
 
         $user = get_user_by('ID', $logHash->user_id);
 
+        if(!$this->isEnabled($user)) {
+            wp_send_json_error([
+                'message' => __('Sorry, You can not use this verification method', 'fluent-security')
+            ], 423);
+        }
+
         if (strtotime($logHash->created_at) < current_time('timestamp') - 600 || !$user || $logHash->status != 'issued' || $logHash->used_count > 5) {
             wp_send_json_error([
                 'message' => __('Sorry, your login code has been expired. Please try to login again', 'fluent-security')
@@ -170,6 +184,8 @@ class TwoFaHandler
                     $redirectTo = admin_url();
                 }
 
+                do_action( 'wp_login', $user->user_login, $user );
+
                 $redirectTo = apply_filters('login_redirect', $redirectTo, $logHash->redirect_intend, $user);
                 wp_send_json([
                     'redirect' => $redirectTo
@@ -185,13 +201,13 @@ class TwoFaHandler
 
     private function send2FaEmail($data, $user, $autoLoginUrl = false)
     {
-        $emailSubject = sprintf(__('Your Login code for %s', 'fluent-security'), get_bloginfo('name'));
+        $emailSubject = sprintf(__('Your Login code for %1s - %d', 'fluent-security'), get_bloginfo('name'), $data['two_fa_code']);
 
         $emailLines = [
             sprintf(__('Hello %s,', 'fluent-security'), $user->display_name),
             sprintf(__('Someone requested to login to %s and here is the Login code that you can use in the login form', 'fluent-security'), get_bloginfo('name')),
             '<b>' . __('Your Login Code: ', 'fluent-security') . '</b>',
-            '<p style="font-size: 22px;border: 1px dashed #555454;padding: 5px 10px;text-align: center;background: #fffaca;letter-spacing: 7px;color: #555454;display:block;">' . $data['two_fa_code'] . '</p>',
+            '<p style="font-size: 22px;border: 2px dashed #555454;padding: 5px 10px;text-align: center;background: #fffaca;letter-spacing: 7px;color: #555454;display:block;">' . $data['two_fa_code'] . '</p>',
             sprintf(__('This code will expire in %d minutes and can only be used once.', 'fluent-security'), 10),
             ' ',
             '<hr />'
@@ -233,14 +249,24 @@ class TwoFaHandler
 
         $emailBody .= Helper::loadView('magic_login.footer', []);
 
-        return wp_mail($user->user_email, $emailSubject, $emailBody, array(
+        return \wp_mail($user->user_email, $emailSubject, $emailBody, array(
             'Content-Type: text/html; charset=UTF-8'
         ));
-
     }
 
     public function allowProgrammaticLogin($user, $username, $password)
     {
         return get_user_by('login', $username);
+    }
+
+    private function isEnabled($user = false)
+    {
+        if( Helper::getSetting('email2fa') !== 'yes' ) {
+            return false;
+        }
+
+        $roles = Helper::getSetting('email2fa_roles');
+
+        return (bool) array_intersect($roles, array_values($user->roles));
     }
 }

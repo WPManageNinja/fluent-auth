@@ -1,10 +1,10 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Hooks\Handlers;
 
-use FluentSecurity\Helpers\Helper;
+use FluentSecurity\App\Helpers\Helper;
 
-class MagicLogin
+class MagicLoginHandler
 {
     private $assetLoaded = false;
 
@@ -232,7 +232,7 @@ class MagicLogin
 
         $emailBody .= Helper::loadView('magic_login.footer', []);
 
-        $result = wp_mail($user->user_email, $emailSubject, $emailBody, array(
+        $result = \wp_mail($user->user_email, $emailSubject, $emailBody, array(
             'Content-Type: text/html; charset=UTF-8'
         ));
 
@@ -382,6 +382,8 @@ class MagicLogin
                         'success_ip_address' => Helper::getIp(),
                         'updated_at'         => current_time('mysql')
                     ]);
+
+                do_action( 'wp_login', $user->user_login, $user );
 
                 if(!wp_doing_ajax()) {
                     if (isset($_GET['force_redirect']) && $_GET['force_redirect'] == 'yes') {

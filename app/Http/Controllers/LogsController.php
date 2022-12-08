@@ -1,10 +1,10 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Http\Controllers;
 
-use FluentSecurity\Helpers\Helper;
+use FluentSecurity\App\Helpers\Helper;
 
-class LogsHandler
+class LogsController
 {
     public static function getLogs(\WP_REST_Request $request)
     {
@@ -111,11 +111,12 @@ class LogsHandler
             }
         }
 
-        if (Helper::getSetting('extended_auth_security_type') == 'magic_login') {
+        if (Helper::getSetting('magic_login') === 'yes') {
             $items['magic_login'] = [
                 'title' => __('Login via URL', 'fluent-security'),
                 'count' => flsDb()->table('fls_login_hashes')
                     ->where('status', 'used')
+                    ->where('use_type', 'magic_login')
                     ->whereBetween('created_at', $fromDate, $toDate)
                     ->count()
             ];
@@ -125,5 +126,4 @@ class LogsHandler
             'stats' => $items
         ];
     }
-
 }

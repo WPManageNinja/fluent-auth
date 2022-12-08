@@ -1,9 +1,9 @@
 <?php
 
-namespace FluentSecurity\Services;
+namespace FluentSecurity\App\Services;
 
-use FluentSecurity\Helpers\Arr;
-use FluentSecurity\Helpers\Helper;
+use FluentSecurity\App\Helpers\Arr;
+use FluentSecurity\App\Helpers\Helper;
 
 class GoogleAuthService
 {

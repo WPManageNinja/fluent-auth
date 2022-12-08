@@ -1,6 +1,6 @@
 <?php
 
-namespace FluentSecurity\Helpers;
+namespace FluentSecurity\App\Helpers;
 
 class Helper
 {
@@ -94,21 +94,6 @@ class Helper
         }
 
         return $formattedCaps;
-    }
-
-    public static function getGlobalLoginPassCode()
-    {
-        $settings = self::getAuthSettings();
-
-        if (self::getSetting('extended_auth_security_type') != 'pass_code') {
-            return false;
-        }
-
-        if (defined('FLUENT_SECURITY_LOGIN_CODE')) {
-            return FLUENT_SECURITY_LOGIN_CODE;
-        }
-
-        return apply_filters('fluent_security/global_login_passcode', self::getSetting('global_auth_code'));
     }
 
     public static function getSetting($key, $default = false)

@@ -1,9 +1,8 @@
 <?php
 
-namespace FluentSecurity\Services;
+namespace FluentSecurity\App\Services;
 
-use FluentSecurity\Classes\LoginSecurity;
-use FluentSecurity\Helpers\Arr;
+use FluentSecurity\App\Helpers\Arr;
 
 class AuthService
 {
@@ -40,7 +39,7 @@ class AuthService
         }
 
         $defaultRole = get_option('default_role');
-        if (!$defaultRole || $defaultRole == 'administrator') {
+        if (!$defaultRole || $defaultRole === 'administrator') {
             $defaultRole = 'subscriber';
         }
 
@@ -119,7 +118,7 @@ class AuthService
         $user = get_user_by('ID', $user->ID);
 
         if ($user) {
-            (new LoginSecurity())->logAuthSuccess($user, $provider);
+            do_action( 'wp_login', $user->user_login, $user );
         }
 
         return $user;

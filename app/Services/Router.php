@@ -1,6 +1,6 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Services;
 
 class Router
 {

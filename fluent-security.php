@@ -1,5 +1,4 @@
 <?php
-
 defined('ABSPATH') or die;
 /*
 Plugin Name:  Fluent Security
@@ -20,205 +19,56 @@ define('FLUENT_SECURITY_VERSION', '1.0');
 
 class FluentSecurityPlugin
 {
-
     public function init()
     {
-        $this->loadDependencies();
+        $this->autoLoad();
 
-        // Admin Menu Init
-        (new \FluentSecurity\Classes\AdminMenuHandler())->register();
-
-        (new \FluentSecurity\Classes\LoginSecurity())->init();
-        (new \FluentSecurity\Classes\MagicLogin())->register();
-        (new \FluentSecurity\Classes\TwoFaHandler())->register();
-
-        /*
-         * Social Auth Handler Register
-         */
-        (new \FluentSecurity\Classes\SocialAuthHandler())->register();
-        (new \FluentSecurity\Classes\CustomAuthHandler())->register();
-
-        // Maybe Remove Application Password Login
-        add_filter('wp_is_application_passwords_available', function ($status) {
-            if (!$status || \FluentSecurity\Helpers\Helper::getSetting('disable_app_login') == 'yes') {
-                return false;
-            }
-
-            return $status;
-        });
-
-        // Disable xmlrpc
-        add_filter('xmlrpc_enabled', function ($status) {
-            if (!$status || \FluentSecurity\Helpers\Helper::getSetting('disable_xmlrpc') == 'yes') {
-                return false;
-            }
-
-            return $status;
-        });
-
-        // Maybe disable List Users REST
-        add_filter('rest_user_query', function ($query) {
-            if (\FluentSecurity\Helpers\Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
-                $query['login'] = 'someRandomStringForThis_' . time();
-            }
-            return $query;
-        });
-
-        add_filter('rest_prepare_user', function ($response, $user, $request) {
-            if (!empty($request['id']) && \FluentSecurity\Helpers\Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
-                return new \WP_Error('permission_error', 'You do not have access to list users. Restriction added from fluent security');
-            }
-            return $user;
-        }, 10, 3);
-
-        register_activation_hook(__FILE__, [$this, 'installDbTables']);
-
-        register_deactivation_hook(__FILE__, function () {
-            wp_clear_scheduled_hook('fluent_security_daily_tasks');
-        });
+        register_activation_hook(__FILE__, [$this, 'activatePlugin']);
+        register_deactivation_hook(__FILE__, [$this, 'deactivatePlugin']);
 
         load_plugin_textdomain('fluent-security', false, dirname(plugin_basename(__FILE__)) . '/language');
-
-        /*
-         * Clean Up Old Logs
-         */
-        add_action('fluent_security_daily_tasks', function () {
-            \FluentSecurity\Helpers\Helper::cleanUpLogs();
-        });
-
-        add_action('admin_notices', function () {
-            if (get_option('__fls_auth_settings') || !current_user_can('manage_options')) {
-                return '';
-            }
-
-            $url = admin_url('options-general.php?page=fluent-security#/settings');
-
-            ?>
-            <div style="padding-bottom: 10px;" class="notice notice-warning">
-                <p><?php echo sprintf(__('Thank you for installing %s Plugin. Please configure the security settings to enable enhanced security of your site', 'fluent-security'), '<b>Fluent Security</b>'); ?></p>
-                <a href="<?php echo esc_url($url); ?>"><?php _e('Configure Fluent Security', 'fluent-security'); ?></a>
-            </div>
-            <?php
-        });
 
         $plugin_file = plugin_basename(__FILE__);
         add_filter("plugin_action_links_{$plugin_file}", [$this, 'addContextLinks'], 10, 1);
     }
 
-    public function installDbTables()
+    public function activatePlugin($siteWide = false)
     {
-        global $wpdb;
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        $charsetCollate = $wpdb->get_charset_collate();
-        $table = $wpdb->prefix . 'fls_auth_logs';
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
-            $sql = "CREATE TABLE $table (
-                `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                `username` VARCHAR(192) NOT NULL,
-                `user_id` BIGINT UNSIGNED NULL,
-                `count` INT UNSIGNED NULL DEFAULT 1,
-                `agent` VARCHAR(192) NULL,
-                `browser` varchar(50) NULL,
-                `device_os` varchar(50) NULL,
-                `ip`    varchar(50) NULL,
-                `status` varchar(50) NULL,
-                `error_code` varchar(50) NULL DEFAULT '',
-                `media` varchar(50) NULL DEFAULT 'web',
-                `description` TINYTEXT NULL,
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                  KEY `created_at` (`created_at`),
-                  KEY `ip` (`ip`(50)),
-                  KEY `status` (`status`(50)),
-                  KEY `media` (`media`(50)),
-                  KEY `user_id` (`user_id`),
-                  KEY  `username` (`username`(192))
-            ) $charsetCollate;";
-            dbDelta($sql);
-        }
-
-        $socialAccountMapsTable = $wpdb->prefix . 'fls_social_accounts';
-
-        if ($wpdb->get_var("SHOW TABLES LIKE '$socialAccountMapsTable'") != $socialAccountMapsTable) {
-            $sql = "CREATE TABLE $socialAccountMapsTable (
-                `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                `user_id` BIGINT UNSIGNED NOT NULL,
-                `auth_provider` VARCHAR(192) NULL,
-                `provider_username` VARCHAR(192) NULL,
-                `provider_email` VARCHAR(192) NULL,
-                `status` varchar(50) DEFAULT 'active',
-                `is_primary` TINYINT(1) DEFAULT 1,
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                  KEY `user_id` (`user_id`),
-                  KEY `auth_provider` (`auth_provider`),
-                  KEY  `provider_email` (`provider_email`)
-            ) $charsetCollate;";
-            dbDelta($sql);
-        }
-
-        $table_name = $wpdb->prefix . 'fls_login_hashes';
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-            $sql = "CREATE TABLE $table_name (
-				id BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-				login_hash varchar(192),
-				user_id BIGINT(20) DEFAULT 0,
-				used_count INT(11) DEFAULT 0,
-				use_limit INT(11) DEFAULT 1,
-				status varchar(20) DEFAULT 'issued',
-				use_type varchar(20) DEFAULT 'magic_login',
-				two_fa_code varchar(20) DEFAULT '',
-				ip_address varchar(20) NULL,
-				redirect_intend varchar(255) NULL,
-				success_ip_address varchar(50) NULL,
-				country varchar(50) NULL,
-				city varchar(50) NULL,
-				created_by int(11) null,
-				valid_till  timestamp NULL,
-				created_at timestamp NULL,
-				updated_at timestamp NULL,
-                   KEY `created_at` (`created_at`),
-                   KEY `login_hash` (`login_hash`(192)),
-                   KEY `user_id` (`user_id`),
-                   KEY `status` (`status`(20))
-                   KEY `use_type` (`use_type`(20))
-			) $charsetCollate;";
-            dbDelta($sql);
-        }
-
-        if (!wp_next_scheduled('fluent_security_daily_tasks')) {
-            wp_schedule_event(time(), 'daily', 'fluent_security_daily_tasks');
-        }
+        \FluentSecurity\App\Helpers\Activator::activate($siteWide);
     }
 
-    private function loadDependencies()
+    public function deactivatePlugin()
+    {
+        wp_clear_scheduled_hook('fluent_security_daily_tasks');
+    }
+
+    private function autoLoad()
     {
         require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/libs/wpfluent/wpfluent.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Helpers/Arr.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Helpers/Helper.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Helpers/BrowserDetection.php';
 
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/Router.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SettingsHandler.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/LogsHandler.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/AdminMenuHandler.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/LoginSecurity.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/MagicLogin.php';
+        spl_autoload_register(function($class) {
+            $match = 'FluentSecurity';
 
-        /*
-         * Load Social Logins
-         */
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Services/AuthService.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Services/GithubAuthService.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Services/GoogleAuthService.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SocialAuthApi.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/SocialAuthHandler.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/CustomAuthHandler.php';
-        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Classes/TwoFaHandler.php';
+            if (!preg_match("/\b{$match}\b/", $class)) {
+                return;
+            }
+
+            $path = plugin_dir_path(__FILE__);
+
+            $file = str_replace(
+                ['FluentSecurity', '\\', '/App/'],
+                ['', DIRECTORY_SEPARATOR, 'app/'],
+                $class
+            );
+
+            require(trailingslashit($path) . trim($file, '/') . '.php');
+        });
 
         add_action('rest_api_init', function () {
-            require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/routes.php';
+            require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Http/routes.php';
         });
+
+        require_once FLUENT_SECURITY_PLUGIN_PATH . 'app/Hooks/hooks.php';
     }
 
     public function addContextLinks($actions)

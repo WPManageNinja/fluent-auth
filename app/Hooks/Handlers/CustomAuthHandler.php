@@ -1,10 +1,10 @@
 <?php
 
-namespace FluentSecurity\Classes;
+namespace FluentSecurity\App\Hooks\Handlers;
 
-use FluentSecurity\Helpers\Arr;
-use FluentSecurity\Helpers\Helper;
-use FluentSecurity\Services\AuthService;
+use FluentSecurity\App\Helpers\Arr;
+use FluentSecurity\App\Helpers\Helper;
+use FluentSecurity\App\Services\AuthService;
 
 class CustomAuthHandler
 {
@@ -461,77 +461,6 @@ class CustomAuthHandler
         $this->loaded = true;
     }
 
-    public static function getSettings(\WP_REST_Request $request)
-    {
-
-        $settings = Helper::getAuthFormsSettings();
-
-        return [
-            'settings' => $settings,
-            'roles'    => Helper::getUserRoles(true),
-            'user_capabilities' => Helper::getWpPermissions(true)
-        ];
-    }
-
-    public static function saveSettings(\WP_REST_Request $request)
-    {
-        $oldSettings = Helper::getAuthFormsSettings();
-        $settings = $request->get_param('settings');
-
-        if (!$settings) {
-            $settings = $request->get_param('redirect_settings');
-
-            $oldSettings['login_redirects'] = sanitize_text_field($settings['login_redirects']);
-
-            if (!empty($settings['default_login_redirect'])) {
-                $oldSettings['default_login_redirect'] = sanitize_url($settings['default_login_redirect']);
-            }
-
-            if (!empty($settings['default_logout_redirect'])) {
-                $oldSettings['default_logout_redirect'] = sanitize_url($settings['default_logout_redirect']);
-            }
-
-            $redirectRules = Arr::get($settings, 'redirect_rules', []);
-
-            $sanitizedRules = [];
-
-            if ($redirectRules) {
-                foreach ($redirectRules as $redirectIndex => $redirect) {
-                    $item = [
-                        'login'  => '',
-                        'logout' => ''
-                    ];
-                    if (!empty($redirect['login'])) {
-                        $item['login'] = sanitize_url($redirect['login']);
-                    }
-                    if (!empty($redirect['logout'])) {
-                        $item['logout'] = sanitize_url($redirect['logout']);
-                    }
-                    $conditions = $redirect['conditions'];
-                    foreach ($conditions as $index => $condition) {
-                        $conditions[$index] = map_deep($condition, 'sanitize_text_field');
-                    }
-
-                    $item['conditions'] = $conditions;
-
-                    $sanitizedRules[] = $item;
-                }
-            }
-
-            $oldSettings['redirect_rules'] = $sanitizedRules;
-
-        } else {
-            $oldSettings['enabled'] = sanitize_text_field($settings['enabled']);
-        }
-
-        update_option('__fls_auth_forms_settings', $oldSettings, 'no');
-
-        return [
-            'message'  => __('Settings has been updated', 'fluent-security'),
-            'settings' => $oldSettings
-        ];
-    }
-
     public function isEnabled()
     {
         $settings = Helper::getAuthFormsSettings();
@@ -949,7 +878,7 @@ class CustomAuthHandler
 
         $headers = array('Content-Type: text/html; charset=UTF-8');
 
-        wp_mail($user_data->user_email, $mailSubject, $message, $headers);
+        \wp_mail($user_data->user_email, $mailSubject, $message, $headers);
 
         wp_send_json([
             'message' => __('Please check your email for the reset link', 'fluent-security')
