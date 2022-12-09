@@ -96,7 +96,6 @@ class AuthService
             if (!empty($userData['last_name'])) {
                 $updateData['last_name'] = $userData['last_name'];
             }
-
         }
 
         if (!empty($userData)) {

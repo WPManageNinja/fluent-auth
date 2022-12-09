@@ -35,8 +35,16 @@ class GoogleAuthService
             ]
         ]);
 
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
+
+        if (!$data || empty($data['id_token'])) {
+            return new \WP_Error('token_error', __('Sorry! There has an error when fetching token for google authentication. Please try again', 'fluent-security'));
+        }
 
         return Arr::get($data, 'id_token');
     }
@@ -60,6 +68,10 @@ class GoogleAuthService
         $tokenPayload = base64_decode($tokenParts[1]);
         $jwtPayload = json_decode($tokenPayload, true);
 
+        if (empty($jwtPayload['email'])) {
+            return new \WP_Error('payload_error', __('Sorry! There has an error when fetching data for google authentication. Please try again', 'fluent-security'));
+        }
+
         $username = Arr::get($jwtPayload, 'email');
         $emailArray = explode('@', $username);
         if (count($emailArray)) {
@@ -73,9 +85,9 @@ class GoogleAuthService
         ];
     }
 
-    private static function getAppRedirect()
+    public static function getAppRedirect()
     {
-        return 'https://fluentcrm.com/wp-login.php';
+        return 'https://fluentcrm.com/wp-login.php?fs_auth=google';
         return wp_login_url();
     }
 }

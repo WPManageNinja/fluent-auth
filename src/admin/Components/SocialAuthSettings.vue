@@ -44,6 +44,7 @@ define('FLUENT_AUTH_GOOGLE_CLIENT_SECRET', '******');
                                               :placeholder="$t('Google Client Secret')"/>
                                 </el-form-item>
                             </template>
+                            <p>Please set your Google app Redirect URL: <code>{{auth_info.google.app_redirect}}</code>. For more information how to setup google app for social authentication please <a target="_blank" rel="noopener" :href="auth_info.google.doc_url">read this documentation.</a></p>
                         </template>
                     </div>
 
@@ -76,6 +77,7 @@ define('FLUENT_AUTH_GITHUB_CLIENT_SECRET', '******');
                                               :placeholder="$t('Github Client Secret')"/>
                                 </el-form-item>
                             </template>
+                            <p>Please set your Github app Redirect URL: <code>{{auth_info.github.app_redirect}}</code>. For more information how to setup Github app for social authentication please <a target="_blank" rel="noopener" :href="auth_info.github.doc_url">read this documentation.</a></p>
                         </template>
                     </div>
 
@@ -102,7 +104,8 @@ export default {
             loading: false,
             settings: false,
             saving: false,
-            errors: false
+            errors: false,
+            auth_info: false
         }
     },
     methods: {
@@ -128,6 +131,7 @@ export default {
             this.$get('social-auth-settings')
                 .then(response => {
                     this.settings = response.settings
+                    this.auth_info = response.auth_info
                 })
                 .catch((errors) => {
                     this.$handleError(errors)

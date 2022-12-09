@@ -59,8 +59,16 @@ class GithubAuthService
             ]
         ]);
 
+        if(is_wp_error($response)) {
+            return $response;
+        }
+
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
+
+        if(!$data || empty($data['login'])) {
+            return new \WP_Error('api_error', __('API Error when authenticate via github', 'fluent-security'));
+        }
 
         return [
             'full_name' => Arr::get($data, 'name'),
@@ -71,7 +79,7 @@ class GithubAuthService
         ];
     }
 
-    private static function getAppRedirect()
+    public static function getAppRedirect()
     {
         return add_query_arg([
             'fs_auth' => 'github',

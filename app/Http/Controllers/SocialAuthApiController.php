@@ -4,13 +4,25 @@ namespace FluentAuth\App\Http\Controllers;
 
 use FluentAuth\App\Helpers\Arr;
 use FluentAuth\App\Helpers\Helper;
+use FluentAuth\App\Services\GithubAuthService;
+use FluentAuth\App\Services\GoogleAuthService;
 
 class SocialAuthApiController
 {
     public static function getSettings(\WP_REST_Request $request)
     {
         return [
-            'settings' => Helper::getSocialAuthSettings('view')
+            'settings'  => Helper::getSocialAuthSettings('view'),
+            'auth_info' => [
+                'github' => [
+                    'app_redirect' => GithubAuthService::getAppRedirect(),
+                    'doc_url' => 'https://fluentauth.com/docs/github-auth-connection'
+                ],
+                'google' => [
+                    'app_redirect' => GoogleAuthService::getAppRedirect(),
+                    'doc_url' => 'https://fluentauth.com/docs/google-auth-connection'
+                ]
+            ]
         ];
     }
 

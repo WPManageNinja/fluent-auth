@@ -28,6 +28,7 @@ class SocialAuthHandler
 
     public function maybeSocialAuth()
     {
+
         $provider = false;
         if (!empty($_GET['state']) && !empty($_GET['code'])) {
             $provider = 'google';
@@ -44,7 +45,7 @@ class SocialAuthHandler
         if (isset($_GET['intent_redirect_to'])) {
             \setcookie('fs_intent_redirect', sanitize_url($_GET['intent_redirect_to']), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);  /* expire in 1 hour */
         }
-        
+
         $provider = Arr::get($_GET, 'fs_auth', $provider);
 
         if ($provider === 'github') {
@@ -71,19 +72,37 @@ class SocialAuthHandler
         }
 
         if (isset($data['code'])) {
-            return $this->handleGithubConfirm($data);
+            $redirectUrl = $this->handleGithubConfirm($data);
+            if ($redirectUrl && !is_wp_error($redirectUrl)) {
+                wp_redirect($redirectUrl);
+                exit();
+            }
+
+            add_filter('wp_login_errors', function ($errors) use ($redirectUrl) {
+                return $redirectUrl;
+            });
         }
     }
 
     private function handleGoogleActions($data)
     {
         $actionType = Arr::get($data, 'fs_type');
-        if ($actionType === 'redirect' || empty($data['code'])) {
+
+        if ($actionType === 'redirect') {
             return $this->redirectToGoogle();
         }
 
-        if (isset($data['code'])) {
-            return $this->handleGoogleConfirm($data);
+        if (!empty($data['code'])) {
+            $redirectUrl = $this->handleGoogleConfirm($data);
+            if ($redirectUrl && !is_wp_error($redirectUrl)) {
+                wp_redirect($redirectUrl);
+                exit();
+            }
+            
+            // Handle the error here
+            add_filter('wp_login_errors', function ($errors) use ($redirectUrl) {
+                return $redirectUrl;
+            });
         }
     }
 
@@ -105,14 +124,27 @@ class SocialAuthHandler
     {
         $state = Arr::get($data, 'state');
         if (!$state || $state != AuthService::getStateToken()) {
-            return false;
+            return new \WP_Error('state_mismatch', __('Sorry! we could not authenticate you via github', 'fluent-security'));
         }
+
         $token = GithubAuthService::getTokenByCode(Arr::get($data, 'code'));
         $userData = GithubAuthService::getDataByAccessToken($token);
+
+        if(is_user_logged_in()) {
+            $existingUser = get_user_by('ID', get_current_user_id());
+            if($existingUser->user_email !== $data['email']) {
+                return new \WP_Error('email_mismatch', __('Your Github email address does not match with your current account email address. Please use the same email address', 'fluent-security'));
+            }
+        }
+
+        if (is_wp_error($userData)) {
+            return $userData;
+        }
+
         $user = AuthService::doUserAuth($userData, 'github');
 
         if (is_wp_error($user)) {
-            return false;
+            return $user;
         }
 
         $intentRedirectTo = '';
@@ -131,29 +163,41 @@ class SocialAuthHandler
             }
         }
 
-        update_user_meta($user->ID, '_fls_login_github', 1);
+        update_user_meta($user->ID, '_fls_login_github', $userData['username']);
 
-        $redirect_to = apply_filters('login_redirect', $redirect_to, $intentRedirectTo, $user);
-
-        wp_redirect($redirect_to);
-        exit();
+        return apply_filters('login_redirect', $redirect_to, $intentRedirectTo, $user);
     }
 
     private function handleGoogleConfirm($data)
     {
         $state = Arr::get($data, 'state');
         if (!$state || $state != AuthService::getStateToken()) {
-            return false;
+            return new \WP_Error('state_mismatch', __('Sorry! we could not authenticate you via google', 'fluent-security'));
         }
 
         $token = GoogleAuthService::getTokenByCode(Arr::get($data, 'code'));
 
+        if(is_wp_error($token)) {
+            return $token;
+        }
+
         $userData = GoogleAuthService::getDataByIdToken($token);
+
+        if(is_wp_error($userData)) {
+            return $userData;
+        }
+
+        if(is_user_logged_in()) {
+            $existingUser = get_user_by('ID', get_current_user_id());
+            if($existingUser->user_email !== $userData['email']) {
+                return new \WP_Error('email_mismatch', __('Your Google email address does not match with your current account email address. Please use the same email address', 'fluent-security'));
+            }
+        }
 
         $user = AuthService::doUserAuth($userData, 'google');
 
         if (is_wp_error($user)) {
-            return false;
+            return $user;
         }
 
         $intentRedirectTo = '';
@@ -172,12 +216,9 @@ class SocialAuthHandler
             }
         }
 
-        update_user_meta($user->ID, '_fls_login_google', 1);
+        update_user_meta($user->ID, '_fls_login_google', $userData['email']);
 
-        $redirect_to = apply_filters('login_redirect', $redirect_to, $intentRedirectTo, $user);
-
-        wp_redirect($redirect_to);
-        exit();
+        return apply_filters('login_redirect', $redirect_to, $intentRedirectTo, $user);
     }
 
     public function pushLoginWithButtons()
