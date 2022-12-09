@@ -1,7 +1,6 @@
 ## Fluent Auth
 Super Simple Auth Security Plugin for WordPress
 
-
 **What It Does**
 
 - Log Login Attempts
@@ -9,18 +8,20 @@ Super Simple Auth Security Plugin for WordPress
 - Enable/Disable xml-rpc requests
 - Enable/Disable REST-API Remote Authentications
 - View Detailed Audit Logs for Logins
+- Magic Login via email
+- **Conditional Login/Logout redirect** by user role or user permissions
 - Extra Security Code verification for login
-- Get email when high-level user role login (coming soon)
+- Get email when high-level user role login
+- Social Login/Signup with **Google** and **Github**
+- Two-Factor verification Via Email for specific User roles
 
 **Development**
-
 - `npm install` 
 - Then `npx mix`
 - For development `npx mix watch`
 - For Build `npx mix --production`
 
 **Libraries Used**
-
 - Vue3
 - Element Plus
 - Vue Router
