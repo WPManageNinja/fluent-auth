@@ -96,9 +96,9 @@ class AdminMenuHandler
             'nonce'         => wp_create_nonce('fluent-security'),
             'rest'          => [
                 'base_url'  => esc_url_raw(rest_url()),
-                'url'       => rest_url('fluent-security'),
+                'url'       => rest_url('fluent-auth'),
                 'nonce'     => wp_create_nonce('wp_rest'),
-                'namespace' => 'fluent-security',
+                'namespace' => 'fluent-auth',
                 'version'   => '1'
             ],
             'auth_statuses' => [

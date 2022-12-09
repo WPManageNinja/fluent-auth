@@ -31,7 +31,6 @@ class Activator
     {
         self::migrateLogsTable();
         self::migrateHashesTable();
-        self::migrateSocialConnectTable();
 
         if (!wp_next_scheduled('fluent_auth_daily_tasks')) {
             wp_schedule_event(time(), 'daily', 'fluent_auth_daily_tasks');
@@ -101,32 +100,6 @@ class Activator
                    KEY `status` (`status`(20))
                    KEY `use_type` (`use_type`(20))
 			) $charsetCollate;";
-            dbDelta($sql);
-        }
-    }
-
-    private static function migrateSocialConnectTable()
-    {
-        global $wpdb;
-        $charsetCollate = $wpdb->get_charset_collate();
-
-        $socialAccountMapsTable = $wpdb->prefix . 'fls_social_accounts';
-
-        if ($wpdb->get_var("SHOW TABLES LIKE '$socialAccountMapsTable'") != $socialAccountMapsTable) {
-            $sql = "CREATE TABLE $socialAccountMapsTable (
-                `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                `user_id` BIGINT UNSIGNED NOT NULL,
-                `auth_provider` VARCHAR(192) NULL,
-                `provider_username` VARCHAR(192) NULL,
-                `provider_email` VARCHAR(192) NULL,
-                `status` varchar(50) DEFAULT 'active',
-                `is_primary` TINYINT(1) DEFAULT 1,
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                  KEY `user_id` (`user_id`),
-                  KEY `auth_provider` (`auth_provider`),
-                  KEY  `provider_email` (`provider_email`)
-            ) $charsetCollate;";
             dbDelta($sql);
         }
     }
