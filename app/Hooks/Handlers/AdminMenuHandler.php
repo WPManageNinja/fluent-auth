@@ -20,8 +20,8 @@ class AdminMenuHandler
         }
 
         add_menu_page(
-            __('Fluent Auth Settings', 'fluent-security'),
-            __('Fluent Auth', 'fluent-security'),
+            __('FluentAuth Settings', 'fluent-security'),
+            __('FluentAuth', 'fluent-security'),
             $permission,
             'fluent-auth',
             array($this, 'render'),
@@ -49,15 +49,6 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
-            __('Social Login', 'fluent-support'),
-            __('Social Login', 'fluent-support'),
-            $permission,
-            'fluent-auth#/social-login-settings',
-            array($this, 'render')
-        );
-
-        add_submenu_page(
-            'fluent-security',
             __('Social Login', 'fluent-support'),
             __('Social Login', 'fluent-support'),
             $permission,
