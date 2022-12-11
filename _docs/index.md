@@ -7,6 +7,7 @@ prev: false
 next: true
 editLink: true
 pageClass: docs-home
+menu_order: 1
 ---
 
 ## Installation

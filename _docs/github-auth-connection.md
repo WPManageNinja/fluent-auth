@@ -8,6 +8,7 @@ next: true
 editLink: true
 category: social-connections
 pageClass: docs-github
+menu_order: 2
 ---
 
 ![Configure GitHub](https://fluentauth.com/wp-content/uploads/2022/12/configure-github.png)

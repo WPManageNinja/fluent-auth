@@ -7,6 +7,7 @@ next: true
 editLink: true
 category: other
 pageClass: docs-other
+menu_order: 4
 ---
 
 FluentAuth provides few shortcodes that you can use in your custom login or signup pages. 
