@@ -5,9 +5,8 @@ tagline: Set Login or Logout Redirects based on different criteria
 prev: true
 next: true
 editLink: true
-category: other
 pageClass: docs-redirects
-menu_order: 3
+menu_order: 2
 ---
 
 FluentAuth allows you to create different login/Logout redirection rules based on different user criteria such as role and capability
