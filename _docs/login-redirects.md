@@ -6,7 +6,7 @@ prev: true
 next: true
 editLink: true
 pageClass: docs-redirects
-menu_order: 2
+menu_order: 98
 ---
 
 FluentAuth allows you to create different login/Logout redirection rules based on different user criteria such as role and capability
