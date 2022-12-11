@@ -7,7 +7,7 @@ prev: true
 next: true
 editLink: true
 pageClass: docs-github
-menu_order: 90
+menu_order: 1
 ---
 
 ![Configure GitHub](https://fluentauth.com/wp-content/uploads/2022/12/configure-github.png)
