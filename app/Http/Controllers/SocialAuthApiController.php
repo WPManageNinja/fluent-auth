@@ -15,10 +15,12 @@ class SocialAuthApiController
             'settings'  => Helper::getSocialAuthSettings('view'),
             'auth_info' => [
                 'github' => [
+                    'is_available' => true,
                     'app_redirect' => GithubAuthService::getAppRedirect(),
                     'doc_url' => 'https://fluentauth.com/docs/github-auth-connection'
                 ],
                 'google' => [
+                    'is_available' => defined('FLUENT_AUTH_EXPERIMENTAL_GOOGLE'),
                     'app_redirect' => GoogleAuthService::getAppRedirect(),
                     'doc_url' => 'https://fluentauth.com/docs/google-auth-connection'
                 ]

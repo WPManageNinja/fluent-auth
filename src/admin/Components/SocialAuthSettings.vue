@@ -16,39 +16,6 @@
                     </el-form-item>
 
                     <div v-if="settings.enabled == 'yes'" class="fls_login_settings">
-                        <h3>{{ $t('login_google') }}</h3>
-                        <el-form-item class="fls_switch">
-                            <el-switch v-model="settings.enable_google" active-value="yes" inactive-value="no"/>
-                            {{ $t('enable_google') }}
-                        </el-form-item>
-                        <template v-if="settings.enable_google == 'yes'">
-                            <el-form-item :label="$t('credential_storage')">
-                                <el-radio-group v-model="settings.google_key_method">
-                                    <el-radio-button label="db">{{ $t('Database') }}</el-radio-button>
-                                    <el-radio-button label="wp_config">{{ $t('wp-config') }}</el-radio-button>
-                                </el-radio-group>
-                            </el-form-item>
-                            <div class="fls_code_instruction" v-if="settings.google_key_method == 'wp_config'">
-                                <h3>{{$t('wp_config_instruction')}}</h3>
-                                <textarea readonly>define('FLUENT_AUTH_GOOGLE_CLIENT_ID', '******');
-define('FLUENT_AUTH_GOOGLE_CLIENT_SECRET', '******');
-                                </textarea>
-                            </div>
-                            <template v-else>
-                                <el-form-item :label="$t('Google Client ID')">
-                                    <el-input v-model="settings.google_client_id" type="text"
-                                              :placeholder="$t('Google Client ID')"/>
-                                </el-form-item>
-                                <el-form-item :label="$t('Google Client Secret')">
-                                    <el-input v-model="settings.google_client_secret" type="password"
-                                              :placeholder="$t('Google Client Secret')"/>
-                                </el-form-item>
-                            </template>
-                            <p>Please set your Google app Redirect URL: <code>{{auth_info.google.app_redirect}}</code>. For more information how to setup google app for social authentication please <a target="_blank" rel="noopener" :href="auth_info.google.doc_url">read this documentation.</a></p>
-                        </template>
-                    </div>
-
-                    <div v-if="settings.enabled == 'yes'" class="fls_login_settings">
                         <h3>{{$t('login_github')}}</h3>
                         <el-form-item class="fls_switch">
                             <el-switch v-model="settings.enable_github" active-value="yes" inactive-value="no"/>
@@ -78,6 +45,39 @@ define('FLUENT_AUTH_GITHUB_CLIENT_SECRET', '******');
                                 </el-form-item>
                             </template>
                             <p>Please set your Github app Redirect URL: <code>{{auth_info.github.app_redirect}}</code>. For more information how to setup Github app for social authentication please <a target="_blank" rel="noopener" :href="auth_info.github.doc_url">read this documentation.</a></p>
+                        </template>
+                    </div>
+
+                    <div v-if="settings.enabled == 'yes'" class="fls_login_settings">
+                        <h3>{{ $t('login_google') }}</h3>
+                        <el-form-item class="fls_switch">
+                            <el-switch :disabled="!auth_info.google.is_available" v-model="settings.enable_google" active-value="yes" inactive-value="no"/>
+                            {{ $t('enable_google') }} (Login with google coming soon)
+                        </el-form-item>
+                        <template v-if="settings.enable_google == 'yes'">
+                            <el-form-item :label="$t('credential_storage')">
+                                <el-radio-group v-model="settings.google_key_method">
+                                    <el-radio-button label="db">{{ $t('Database') }}</el-radio-button>
+                                    <el-radio-button label="wp_config">{{ $t('wp-config') }}</el-radio-button>
+                                </el-radio-group>
+                            </el-form-item>
+                            <div class="fls_code_instruction" v-if="settings.google_key_method == 'wp_config'">
+                                <h3>{{$t('wp_config_instruction')}}</h3>
+                                <textarea readonly>define('FLUENT_AUTH_GOOGLE_CLIENT_ID', '******');
+define('FLUENT_AUTH_GOOGLE_CLIENT_SECRET', '******');
+                                </textarea>
+                            </div>
+                            <template v-else>
+                                <el-form-item :label="$t('Google Client ID')">
+                                    <el-input v-model="settings.google_client_id" type="text"
+                                              :placeholder="$t('Google Client ID')"/>
+                                </el-form-item>
+                                <el-form-item :label="$t('Google Client Secret')">
+                                    <el-input v-model="settings.google_client_secret" type="password"
+                                              :placeholder="$t('Google Client Secret')"/>
+                                </el-form-item>
+                            </template>
+                            <p>Please set your Google app Redirect URL: <code>{{auth_info.google.app_redirect}}</code>. For more information how to setup google app for social authentication please <a target="_blank" rel="noopener" :href="auth_info.google.doc_url">read this documentation.</a></p>
                         </template>
                     </div>
 

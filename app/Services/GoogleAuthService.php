@@ -87,7 +87,6 @@ class GoogleAuthService
 
     public static function getAppRedirect()
     {
-        return 'https://fluentcrm.com/wp-login.php?fs_auth=google';
         return wp_login_url();
     }
 }
