@@ -8,10 +8,11 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Secure your website with Login Security, two-factor email authentication, login/logout redirects, social logins, detailed audit logs, and more.
+Enhance the Security and User Experience of Your Website with Login/Signup Security, Two-Factor Email Authentication, Login Redirects, Social Logins, and Detailed Audit Logs.
 
 == Description ==
-Secure your website with Login/Signup Security, two-factor email authentication, login/logout redirects, social logins, detailed audit logs, and more.
+
+Boost Your Website's Security with Login/Signup Security, Two-Factor Email Authentication, Login/Logout Redirects, Social Logins, Detailed Audit Logs, and More
 
 **Highlighted Features**
 
@@ -26,39 +27,39 @@ Secure your website with Login/Signup Security, two-factor email authentication,
 - Super Fast Solution
 
 **🚀 Two-Factor Authentication for Login**
-Enable Two-Factor Login via email for high-level user roles like Administrator / Editor. By using this, only the right person can get access to your admin panel. Even their password gets compromised.
+Ensure secure access to your admin panel with Two-Factor Login via email for high-level user roles like Administrator / Editor. Even if a password gets compromised, only the right person will be able to log in with the additional authentication step.
 
 **🚀 Magic Login via Email**
-We should also improve the authentication process for end users like customers, and subscribers. Often users forget their passwords, and they have to go through several steps to reset their passwords. In this process, some users just leave your site, and businesses lose money. We have improved the flow and added features where users actually don’t need a password to log in to your site.
-
-They have to just type their username or email address, and this plugin will send an email to the user when log in to the site directly by clicking a secure one-time use time-framed link to log in to your site.
+Simplify the login process for end users like customers and subscribers. No more password resets or forgotten passwords that cause users to leave your site. With our improved flow and features, users can log in to your site simply by typing their username or email address and clicking on a secure one-time use link sent to their email.
 
 **🚀 Social Login / Register**
-Want to enable login via GitHub for your users? Enable this super light-weight feature and let your users log in via their GitHub accounts. (Facebook, Google and other coming soon)
+Allow users to log in to your site with their GitHub accounts (with support for Facebook, Google and other platforms coming soon). This feature is lightweight and easy to enable.
 
 **🚀 Limit Login Attempts**
-Block excessive login attempts and protect your site against brute force attacks. Simple, yet powerful tools to improve site security and performance. Configurable lockout timings easily.
+Protect your site against brute force attacks by blocking excessive login attempts. Our simple yet powerful tools also improve site security and performance, and allow for customizable lockout timings.
 
 **🚀 Dynamic Login Redirects**
-WordPress is being used by tons of business types, and sometimes, you need to redirect the users to specific pages after they log in or log out. We have added a super easy configuration opinion where you can easily build your login or logout flow by using our drag-and-drop builder.
+Easily redirect users to specific pages after they log in or log out. Our drag-and-drop builder lets you customize the login and logout flow for different types of businesses.
 
 **🚀 Detailed Audit Logs**
-We also added powerful logs to see exactly when someone is logging into your site and via which media (normal login form, magic URL, or social media).
+Track exactly when users log in to your site and via which method (normal login form, magic URL, or social media) with our powerful audit logs.
 
 **🚀 Core Security Enhancement**
-XML-RPC is the biggest target for WordPress attacks, and 99% of the sites don’t need that. Disable XML-RPC, Remote Application Login, and Protect wp-users listing for REST API.
+XML-RPC is a common target for WordPress attacks, but most sites don't actually need it. This plugin enables you to disable XML-RPC, Remote Application Login, and protect the wp-users listing for REST API for enhanced security.
 
 **🚀 Security Email Notifications**
-As a business owners, we need to add multiple persons with high-level permissions to create content, and manage site; the roles like administrators, editors, Authors, etc. You need to know when these users logging into your site or if someone unauthorized person is trying to log in or not. To solve this, we have implemented email notifications to notify these events.
+As a business owner, it's important to know when high-level users like administrators, editors, and authors log in to your site, or if someone unauthorized is trying to log in. Our plugin includes email notifications to alert you of these events.
 
 **🚀 Super Fast Solution**
-When we build any plugins, we always make it super-fast and keep it simple yet powerful. This plugin was built using all the latest technologies like WordPress REST-API, VueJS V3, Vue-Router, and Element-Plus for UI building. For storing the audit logs, we use custom Database tables so they will not mess up with your default WordPress Database tables.
+We've built this plugin to be super-fast and simple yet powerful, using the latest technologies like WordPress REST-API, VueJS V3, Vue-Router, and Element-Plus for UI building. We also use custom database tables to store audit logs, so they don't interfere with your default WordPress database tables.
 
 == Why FluentAuth? ==
 
-The default WordPress authentication (Log in / Registration) system is kind of basic, and people have to use multiple plugins to enhance the security and improve user experience. One of the most common incidents WordPress site owners get is their site getting hacked. The main reason a site got hacked is hackers send brute-force requests and guess the password, log in to the admin panel, and over-take the site. Another reason is, people use common passwords on different sites, and if one of them gets compromised, then the others will be compromised too.
+To improve the security and user experience of a WordPress website, the default authentication system may need to be enhanced with additional plugins. One common issue that WordPress site owners face is their site getting hacked. This is often due to hackers using brute-force attacks to guess passwords and gain access to the admin panel, leading to site takeover. Additionally, the use of common passwords on multiple sites can put all of them at risk if one password is compromised.
 
-Many WordPress users add multiple security plugins, which are super-bloated. These plugins intercept every WordPress request run through tons of unnecessary rules, and ultimately it takes more server resources, making the sites super slow.
+Using multiple security plugins can be detrimental to the performance of a WordPress website. These plugins, which are often bloated, intercept every WordPress request and run it through a large number of unnecessary rules, resulting in increased server resource usage and slower site performance. To avoid this issue, consider using a comprehensive security solution that offers multiple features in one package, instead of relying on multiple individual plugins. This will help save server resources and improve the overall performance of your website.
+
+To Solve these issues, we decided to build FluentAuth and made it free.
 
 == User Guides ==
 <ul>
