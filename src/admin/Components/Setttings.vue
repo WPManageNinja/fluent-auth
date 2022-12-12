@@ -203,7 +203,7 @@ export default {
                 notify_on_blocked: 'yes',
                 magic_login: 'no',
                 magic_restricted_roles: [],
-                email2fa: 'no',
+                email2fa: 'yes',
                 email2fa_roles: ['administrator', 'editor', 'author']
             }
             this.$notify.success('Recommended settings has been applied. Please review and save the settings');

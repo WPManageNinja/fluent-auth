@@ -97,7 +97,7 @@ class Activator
                    KEY `created_at` (`created_at`),
                    KEY `login_hash` (`login_hash`(192)),
                    KEY `user_id` (`user_id`),
-                   KEY `status` (`status`(20))
+                   KEY `status` (`status`(20)),
                    KEY `use_type` (`use_type`(20))
 			) $charsetCollate;";
             dbDelta($sql);

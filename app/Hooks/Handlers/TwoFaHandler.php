@@ -264,8 +264,12 @@ class TwoFaHandler
 
     private function isEnabled($user = false)
     {
-        if( Helper::getSetting('email2fa') !== 'yes' ) {
+        if( Helper::getSetting('email2fa') !== 'yes') {
             return false;
+        }
+
+        if(!$user) {
+            return true;
         }
 
         $roles = Helper::getSetting('email2fa_roles');

@@ -151,6 +151,8 @@ $bodyBg: #f1f2f5;
       margin-right: 10px;
       ul.#{$slug}menu {
         display: none;
+        li {
+        }
       }
       ul.#{$slug}menu.#{$slug}menu_open {
         display: block;

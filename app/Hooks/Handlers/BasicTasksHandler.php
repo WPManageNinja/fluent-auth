@@ -71,11 +71,11 @@ class BasicTasksHandler
             return '';
         }
 
-        $url = admin_url('options-general.php?page=fluent-security#/settings');
+        $url = admin_url('options-general.php?page=fluent-auth#/settings');
 
         ?>
         <div style="padding-bottom: 10px;" class="notice notice-warning">
-            <p><?php echo sprintf(__('Thank you for installing %s Plugin. Please configure the security settings to enable enhanced security of your site', 'fluent-security'), '<b>Fluent Auth</b>'); ?></p>
+            <p><?php echo sprintf(__('Thank you for installing %s Plugin. Please configure the security settings to enable enhanced security of your site', 'fluent-security'), '<b>FluentAuth</b>'); ?></p>
             <a href="<?php echo esc_url($url); ?>"><?php _e('Configure Fluent Auth', 'fluent-security'); ?></a>
         </div>
         <?php

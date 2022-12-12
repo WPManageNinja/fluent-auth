@@ -1,12 +1,13 @@
 <?php
 defined('ABSPATH') or die;
+
 /*
-Plugin Name:  Fluent Auth
-Plugin URI:   https://github.com/WPManageNinja/fluent-security
+Plugin Name:  FluentAuth - Auth Security Plugin
+Plugin URI:   https://fluentauth.com
 Description:  Super Simple Login & Signup Security and Social Login Plugin for WordPress
-Version:      1.0
+Version:      1.0.0
 Author:       Fluent Auth Team
-Author URI:   https://jewel.im
+Author URI:   https://fluentauth.com
 License:      GPLv2 or later
 License URI:  https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain:  fluent-security
@@ -15,7 +16,7 @@ Domain Path:  /language/
 
 define('FLUENT_AUTH_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('FLUENT_AUTH_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('FLUENT_AUTH_VERSION', '1.0');
+define('FLUENT_AUTH_VERSION', '1.0.0');
 
 class FluentAuthPlugin
 {
@@ -75,13 +76,13 @@ class FluentAuthPlugin
     {
         $actions['settings'] = sprintf(
             '<a href="%s">%s</a>',
-            esc_url(admin_url('admin.php?page=fluent-security#/settings')),
+            esc_url(admin_url('admin.php?page=fluent-auth#/settings')),
             esc_html__('Settings', 'fluent-security')
         );
 
         $actions['dashboard_page'] = sprintf(
             '<a href="%s">%s</a>',
-            esc_url(admin_url('admin.php?page=fluent-security#/')),
+            esc_url(admin_url('admin.php?page=fluent-auth#/')),
             esc_html__('Dashboard', 'fluent-security')
         );
 

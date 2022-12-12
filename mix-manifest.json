@@ -2,5 +2,8 @@
     "/dist/admin/app.js": "/dist/admin/app.js",
     "/dist/public/fls_login.js": "/dist/public/fls_login.js",
     "/dist/public/login_helper.js": "/dist/public/login_helper.js",
+    "/dist/images/index.php": "/dist/images/index.php",
+    "/dist/images/logo.png": "/dist/images/logo.png",
+    "/dist/images/logo.svg": "/dist/images/logo.svg",
     "/dist/images/success.png": "/dist/images/success.png"
 }
