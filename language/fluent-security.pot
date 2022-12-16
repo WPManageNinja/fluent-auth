@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fluent Auth\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-12 13:39+0000\n"
+"POT-Creation-Date: 2022-12-16 15:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -26,68 +26,68 @@ msgstr ""
 msgid "%s Google"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:896
+#: app/Hooks/Handlers/CustomAuthHandler.php:951
 #, php-format
 msgid "%s is required"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:858
+#: app/Hooks/Handlers/CustomAuthHandler.php:913
 #, php-format
 msgid "<p>%s</p>"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:855
+#: app/Hooks/Handlers/CustomAuthHandler.php:910
 #, php-format
 msgid "<p>Hi %s,</p>"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:859
+#: app/Hooks/Handlers/CustomAuthHandler.php:914
 msgid ""
 "<p>If you did not request to reset your password, please ignore this email."
 "</p>"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:856
+#: app/Hooks/Handlers/CustomAuthHandler.php:911
 msgid ""
 "<p>Someone has requested a new password for the following account on "
 "WordPress:</p>"
 msgstr ""
 
-#: app/Services/AuthService.php:183
+#: app/Services/AuthService.php:182
 msgid ""
 "<strong>Error:</strong> This email address is already registered. Please "
 "login or try reset password"
 msgstr ""
 
-#: app/Services/AuthService.php:240
+#: app/Services/AuthService.php:239
 msgid ""
 "<strong>Error</strong>: Could not register you. Please contact the site "
 "admin!"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:807
+#: app/Hooks/Handlers/CustomAuthHandler.php:862
 msgid "<strong>Error</strong>: Invalid username or email"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:621
+#: app/Hooks/Handlers/CustomAuthHandler.php:676
 msgid ""
 "<strong>Error</strong>: Invalid username, email address or incorrect "
 "password."
 msgstr ""
 
-#: app/Services/AuthService.php:160
+#: app/Services/AuthService.php:159
 msgid "<strong>Error</strong>: Please enter a username."
 msgstr ""
 
-#: app/Services/AuthService.php:176
+#: app/Services/AuthService.php:175
 msgid "<strong>Error</strong>: Please type your email address."
 msgstr ""
 
-#: app/Services/AuthService.php:170
+#: app/Services/AuthService.php:169
 msgid "<strong>Error</strong>: Sorry, that username is not allowed."
 msgstr ""
 
-#: app/Services/AuthService.php:178
+#: app/Services/AuthService.php:177
 msgid "<strong>Error</strong>: The email address is not correct."
 msgstr ""
 
@@ -97,19 +97,19 @@ msgid ""
 "different combination."
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:801
+#: app/Hooks/Handlers/CustomAuthHandler.php:856
 msgid ""
 "<strong>Error</strong>: There is no account with that username or email "
 "address."
 msgstr ""
 
-#: app/Services/AuthService.php:165
+#: app/Services/AuthService.php:164
 msgid ""
 "<strong>Error</strong>: This username is already registered. Please choose "
 "another one."
 msgstr ""
 
-#: app/Services/AuthService.php:162
+#: app/Services/AuthService.php:161
 msgid ""
 "<strong>Error</strong>: This username is invalid because it uses illegal "
 "characters. Please enter a valid username."
@@ -150,7 +150,7 @@ msgstr ""
 msgid "All Time"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:176
+#: app/Hooks/Handlers/CustomAuthHandler.php:177
 msgid "Already have an account?"
 msgstr ""
 
@@ -182,16 +182,16 @@ msgstr ""
 msgid "Browser"
 msgstr ""
 
-#: app/Hooks/Handlers/MagicLoginHandler.php:245
+#: app/Hooks/Handlers/MagicLoginHandler.php:250
 msgid "Check your inbox"
 msgstr ""
 
-#: app/Hooks/Handlers/MagicLoginHandler.php:202
+#: app/Hooks/Handlers/MagicLoginHandler.php:207
 #, php-format
 msgid "Click the link below to sign in to your %s account"
 msgstr ""
 
-#: app/Hooks/Handlers/BasicTasksHandler.php:79
+#: app/Hooks/Handlers/BasicTasksHandler.php:135
 msgid "Configure Fluent Auth"
 msgstr ""
 
@@ -199,11 +199,16 @@ msgstr ""
 msgid "Connect with"
 msgstr ""
 
+#: app/Hooks/Handlers/CustomAuthHandler.php:297
+#: app/Hooks/Handlers/MagicLoginHandler.php:87
+msgid "Continue"
+msgstr ""
+
 #: app/Hooks/Handlers/AdminMenuHandler.php:135
 msgid "Core Security Settings"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:111
+#: app/Hooks/Handlers/CustomAuthHandler.php:112
 msgid "Create an Account"
 msgstr ""
 
@@ -211,7 +216,7 @@ msgstr ""
 msgid "Credential Storage Method"
 msgstr ""
 
-#: fluent-security.php:85 app/Hooks/Handlers/AdminMenuHandler.php:113
+#: fluent-security.php:86 app/Hooks/Handlers/AdminMenuHandler.php:113
 msgid "Dashboard"
 msgstr ""
 
@@ -229,6 +234,11 @@ msgstr ""
 
 #: app/Hooks/Handlers/AdminMenuHandler.php:159
 msgid "Description"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:203
+msgid ""
+"Disable admin bar and <code>/wp-admin/</code> access for selected user roles."
 msgstr ""
 
 #: app/Hooks/Handlers/AdminMenuHandler.php:137
@@ -262,11 +272,11 @@ msgstr ""
 msgid "Disable XML-RPC Requests"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:593
+#: app/Hooks/Handlers/CustomAuthHandler.php:648
 msgid "Email and Password is required"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:626
+#: app/Hooks/Handlers/CustomAuthHandler.php:681
 msgid "Email or Password is not valid. Please try again"
 msgstr ""
 
@@ -296,8 +306,8 @@ msgstr ""
 
 #: app/Hooks/Handlers/MagicLoginHandler.php:77
 msgid ""
-"Enter the email address or username associated with your account, and we "
-"will send a direct login url to your inbox."
+"Enter the email address or username associated with your account, and we'll "
+"send a magic link to your inbox."
 msgstr ""
 
 #: app/Hooks/Handlers/AdminMenuHandler.php:143
@@ -328,11 +338,11 @@ msgstr ""
 msgid "FluentAuth Settings"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:117
+#: app/Hooks/Handlers/CustomAuthHandler.php:118
 msgid "Forgot your password?"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:679
+#: app/Hooks/Handlers/CustomAuthHandler.php:734
 msgid "Form validation failed. Please provide the correct data"
 msgstr ""
 
@@ -340,10 +350,6 @@ msgstr ""
 msgid ""
 "Full Authentication Flow ShortCode (includes Login Form, Registration Form "
 "and Password Reset Form)"
-msgstr ""
-
-#: app/Hooks/Handlers/MagicLoginHandler.php:87
-msgid "Get Login URL"
 msgstr ""
 
 #: app/Hooks/Handlers/AdminMenuHandler.php:131
@@ -362,8 +368,8 @@ msgstr ""
 msgid "Google Client Secret"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:210
-#: app/Hooks/Handlers/MagicLoginHandler.php:201
+#: app/Hooks/Handlers/TwoFaHandler.php:214
+#: app/Hooks/Handlers/MagicLoginHandler.php:206
 #, php-format
 msgid "Hello %s,"
 msgstr ""
@@ -377,16 +383,16 @@ msgstr ""
 msgid "https://fluentauth.com"
 msgstr ""
 
-#: app/Hooks/Handlers/MagicLoginHandler.php:212
+#: app/Hooks/Handlers/MagicLoginHandler.php:217
 msgid ""
 "If the button above does not work, paste this link into your web browser:"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:233
+#: app/Hooks/Handlers/TwoFaHandler.php:237
 msgid "If you did not make this request, you can safely ignore this email."
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:783
+#: app/Hooks/Handlers/CustomAuthHandler.php:838
 msgid "Invalid username or email"
 msgstr ""
 
@@ -410,7 +416,7 @@ msgstr ""
 msgid "Log Login Logs"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:178
+#: app/Hooks/Handlers/CustomAuthHandler.php:179
 msgid "Login"
 msgstr ""
 
@@ -418,7 +424,7 @@ msgstr ""
 msgid "Login Code"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:571
+#: app/Hooks/Handlers/CustomAuthHandler.php:626
 msgid "Login is not enabled"
 msgstr ""
 
@@ -502,7 +508,7 @@ msgstr ""
 msgid "Not enough data. This section will show recent successful logins"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:109
+#: app/Hooks/Handlers/CustomAuthHandler.php:110
 msgid "Not registered?"
 msgstr ""
 
@@ -527,11 +533,15 @@ msgstr ""
 msgid "Other Settings"
 msgstr ""
 
+#: app/Hooks/Handlers/CustomAuthHandler.php:511
+msgid "Password"
+msgstr ""
+
 #: app/Hooks/Handlers/AdminMenuHandler.php:193
 msgid "Password Reset Form ShortCode"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:820
+#: app/Hooks/Handlers/CustomAuthHandler.php:875
 msgid "Password reset is not allowed for this user"
 msgstr ""
 
@@ -541,7 +551,7 @@ msgid ""
 "*** with your app values)"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:884
+#: app/Hooks/Handlers/CustomAuthHandler.php:939
 msgid "Please check your email for the reset link"
 msgstr ""
 
@@ -551,11 +561,15 @@ msgid ""
 "Provide here to login"
 msgstr ""
 
+#: app/Hooks/Handlers/TwoFaHandler.php:132
+msgid "Please provide a valid login code"
+msgstr ""
+
 #: app/Hooks/Handlers/AdminMenuHandler.php:149
 msgid "Provide Login Security Pass that users need to provide when login"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:901
+#: app/Hooks/Handlers/CustomAuthHandler.php:956
 #, php-format
 msgid "Provided %s is not a valid email"
 msgstr ""
@@ -572,35 +586,39 @@ msgstr ""
 msgid "refresh"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:720
+#: app/Hooks/Handlers/CustomAuthHandler.php:775
 msgid "Registration has been completed. Please login now"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:119
-#: app/Hooks/Handlers/CustomAuthHandler.php:219
+#: app/Hooks/Handlers/CustomAuthHandler.php:120
+#: app/Hooks/Handlers/CustomAuthHandler.php:220
 msgid "Reset Password"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:837
-#: app/Hooks/Handlers/CustomAuthHandler.php:853
+#: app/Hooks/Handlers/CustomAuthHandler.php:892
+#: app/Hooks/Handlers/CustomAuthHandler.php:908
 #, php-format
 msgid "Reset your password for %s"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:204
+msgid "Roles to disable <code>wp-admin</code> access and hide admin bar"
 msgstr ""
 
 #: app/Hooks/Handlers/AdminMenuHandler.php:133
 msgid "Save Settings"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:579
+#: app/Hooks/Handlers/CustomAuthHandler.php:634
 msgid "Security nonce is required"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:585
+#: app/Hooks/Handlers/CustomAuthHandler.php:640
 msgid "Security verification failed"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:655
-#: app/Hooks/Handlers/CustomAuthHandler.php:762
+#: app/Hooks/Handlers/CustomAuthHandler.php:710
+#: app/Hooks/Handlers/CustomAuthHandler.php:817
 msgid "Security verification failed. Please try again"
 msgstr ""
 
@@ -616,12 +634,12 @@ msgstr ""
 msgid "Send email notification when a user get blocked"
 msgstr ""
 
-#: fluent-security.php:79 app/Hooks/Handlers/AdminMenuHandler.php:115
+#: fluent-security.php:80 app/Hooks/Handlers/AdminMenuHandler.php:115
 msgid "Settings"
 msgstr ""
 
-#: app/Http/Controllers/SettingsController.php:29
-#: app/Http/Controllers/SettingsController.php:162
+#: app/Http/Controllers/SettingsController.php:30
+#: app/Http/Controllers/SettingsController.php:163
 msgid "Settings has been updated"
 msgstr ""
 
@@ -629,13 +647,13 @@ msgstr ""
 msgid "Settings Overview"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:225
-#: app/Hooks/Handlers/MagicLoginHandler.php:198
+#: app/Hooks/Handlers/TwoFaHandler.php:229
+#: app/Hooks/Handlers/MagicLoginHandler.php:203
 #, php-format
 msgid "Sign in to %s"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:168
+#: app/Hooks/Handlers/CustomAuthHandler.php:169
 msgid "Signup"
 msgstr ""
 
@@ -647,7 +665,7 @@ msgstr ""
 msgid "Social Login/Signup Settings"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:211
+#: app/Hooks/Handlers/TwoFaHandler.php:215
 #, php-format
 msgid ""
 "Someone requested to login to %s and here is the Login code that you can use "
@@ -678,11 +696,11 @@ msgstr ""
 msgid "Sorry, You can not login via magic url. Please use regular login form"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:157
+#: app/Hooks/Handlers/TwoFaHandler.php:163
 msgid "Sorry, You can not use this verification method"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:163
+#: app/Hooks/Handlers/TwoFaHandler.php:169
 msgid "Sorry, your login code has been expired. Please try to login again"
 msgstr ""
 
@@ -702,7 +720,7 @@ msgstr ""
 msgid "Successful Logins"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:727
+#: app/Hooks/Handlers/CustomAuthHandler.php:782
 msgid "Successfully registered to the site."
 msgstr ""
 
@@ -711,23 +729,23 @@ msgid ""
 "Super Simple Login & Signup Security and Social Login Plugin for WordPress"
 msgstr ""
 
-#: app/Hooks/Handlers/BasicTasksHandler.php:78
+#: app/Hooks/Handlers/BasicTasksHandler.php:134
 #, php-format
 msgid ""
 "Thank you for installing %s Plugin. Please configure the security settings "
 "to enable enhanced security of your site"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:200
+#: app/Hooks/Handlers/TwoFaHandler.php:204
 msgid "There has an error when log you in. Please try to login again"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:214
+#: app/Hooks/Handlers/TwoFaHandler.php:218
 #, php-format
 msgid "This code will expire in %d minutes and can only be used once."
 msgstr ""
 
-#: app/Hooks/Handlers/MagicLoginHandler.php:203
+#: app/Hooks/Handlers/MagicLoginHandler.php:208
 #, php-format
 msgid "This link will expire in %d minutes and can only be used once."
 msgstr ""
@@ -764,11 +782,11 @@ msgstr ""
 msgid "User ID"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:649
+#: app/Hooks/Handlers/CustomAuthHandler.php:704
 msgid "User registration is not enabled"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:139
+#: app/Hooks/Handlers/CustomAuthHandler.php:140
 #, php-format
 msgid "User registration is not enabled. <a href=\"%s\">Go to Home Page</a>"
 msgstr ""
@@ -781,7 +799,11 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:771
+#: app/Hooks/Handlers/CustomAuthHandler.php:510
+msgid "Username or Email"
+msgstr ""
+
+#: app/Hooks/Handlers/CustomAuthHandler.php:826
 msgid "Username or email is required"
 msgstr ""
 
@@ -795,13 +817,13 @@ msgstr ""
 msgid "view your security config and recent login activities"
 msgstr ""
 
-#: app/Hooks/Handlers/MagicLoginHandler.php:239
+#: app/Hooks/Handlers/MagicLoginHandler.php:244
 msgid ""
 "We just emailed a login link to your registered email. Click the link to "
 "sign in."
 msgstr ""
 
-#: app/Hooks/Handlers/MagicLoginHandler.php:241
+#: app/Hooks/Handlers/MagicLoginHandler.php:246
 #, php-format
 msgid "We just emailed a magic link to %s. Click the link to sign in."
 msgstr ""
@@ -818,10 +840,11 @@ msgstr ""
 msgid "wp-config file(recommended)"
 msgstr ""
 
-#: app/Hooks/Handlers/CustomAuthHandler.php:76
-#: app/Hooks/Handlers/CustomAuthHandler.php:143
-#: app/Hooks/Handlers/CustomAuthHandler.php:194
-#: app/Hooks/Handlers/CustomAuthHandler.php:236
+#: app/Hooks/Handlers/CustomAuthHandler.php:77
+#: app/Hooks/Handlers/CustomAuthHandler.php:144
+#: app/Hooks/Handlers/CustomAuthHandler.php:195
+#: app/Hooks/Handlers/CustomAuthHandler.php:241
+#: app/Hooks/Handlers/CustomAuthHandler.php:269
 #, php-format
 msgid "You are already logged in. <a href=\"%s\">Go to Home Page</a>"
 msgstr ""
@@ -832,10 +855,12 @@ msgstr ""
 msgid "You are trying too much. Please try after %d minutes"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:223
+#: app/Hooks/Handlers/TwoFaHandler.php:227
 msgid "You can also login by clicking the following button"
 msgstr ""
 
+#: app/Hooks/Handlers/CustomAuthHandler.php:286
+#: app/Hooks/Handlers/CustomAuthHandler.php:288
 #: app/Hooks/Handlers/MagicLoginHandler.php:80
 #: app/Hooks/Handlers/MagicLoginHandler.php:82
 msgid "Your Email/Username"
@@ -853,19 +878,19 @@ msgid ""
 "address. Please use the same email address"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:207
+#: app/Hooks/Handlers/TwoFaHandler.php:211
 #, php-format
 msgid "Your Login code for %1s - %d"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:212
+#: app/Hooks/Handlers/TwoFaHandler.php:216
 msgid "Your Login Code: "
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:149
+#: app/Hooks/Handlers/TwoFaHandler.php:155
 msgid "Your provided code is not valid. Please try again"
 msgstr ""
 
-#: app/Hooks/Handlers/TwoFaHandler.php:138
+#: app/Hooks/Handlers/TwoFaHandler.php:144
 msgid "Your provided code or url is not valid"
 msgstr ""

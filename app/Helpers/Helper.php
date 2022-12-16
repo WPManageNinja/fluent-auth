@@ -133,6 +133,12 @@ class Helper
 
     public static function getIp($anonymize = false)
     {
+        static $ipAddress;
+
+        if ($ipAddress) {
+            return $ipAddress;
+        }
+
         if (empty($_SERVER['REMOTE_ADDR'])) {
             // It's a local cli request
             return '127.0.0.1';
@@ -169,7 +175,9 @@ class Helper
             return wp_privacy_anonymize_ip($ipAddress);
         }
 
-        return sanitize_text_field(wp_unslash($ipAddress));
+        $ipAddress = sanitize_text_field(wp_unslash($ipAddress));
+
+        return $ipAddress;
     }
 
     public static function loadView($template, $data)

@@ -29,7 +29,7 @@ class BasicTasksHandler
         add_action('fluent_auth_daily_tasks', function () {
             \FluentAuth\App\Helpers\Helper::cleanUpLogs();
         });
-        
+
         /*
          * Maybe Disable Admin Bar
          */

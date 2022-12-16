@@ -56,3 +56,13 @@ This will render only the Signup form
 </code>
 
 This will render only the Password Reset form
+
+## Only Magic Login Form
+
+**Short Code:**
+
+<code>
+<span>[</span>fluent_auth_magic_login<span>]<span><</span></spam>h3>Your internal Heading<span><</span>/h3>[/fluent_auth_magic_login]</span>
+</code>
+
+This will render only the magic login form

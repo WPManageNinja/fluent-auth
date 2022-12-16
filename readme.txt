@@ -1,10 +1,10 @@
 === FluentAuth - The Ultimate Authorization & Security Plugin for WordPress ===
-Contributors: techjewel
-Tags: Login limit, disable xml-rpc, login logs, social logins, login redirects
+Contributors: techjewel, wpmanageninja, adreastrian
+Tags: Login limit, login redirects, xml-rpc, login logs, social logins,
 Requires at least: 5.0
 Tested up to: 6.1
 Requires PHP: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,10 @@ Boost Your Website's Security with Login/Signup Security, Two-Factor Email Authe
 - Core Security Enhancement
 - Security Email Notifications
 - Super Fast Solution
+- Restrict /wp-admin for low level user roles
+
+[youtube https://www.youtube.com/watch?v=5t_8rvtrkk4]
+
 
 **🚀 Two-Factor Authentication for Login**
 Ensure secure access to your admin panel with Two-Factor Login via email for high-level user roles like Administrator / Editor. Even if a password gets compromised, only the right person will be able to log in with the additional authentication step.
@@ -53,6 +57,9 @@ As a business owner, it's important to know when high-level users like administr
 **🚀 Super Fast Solution**
 We've built this plugin to be super-fast and simple yet powerful, using the latest technologies like WordPress REST-API, VueJS V3, Vue-Router, and Element-Plus for UI building. We also use custom database tables to store audit logs, so they don't interfere with your default WordPress database tables.
 
+**🚀 Restrict /wp-admin for low level user roles**
+If you want to restrict /wp-admin access for subscribers or other low level user roles then you can easily enable that and select the user roles that you want to restrict /wp-admin access.
+
 == Why FluentAuth? ==
 
 To improve the security and user experience of a WordPress website, the default authentication system may need to be enhanced with additional plugins. One common issue that WordPress site owners face is their site getting hacked. This is often due to hackers using brute-force attacks to guess passwords and gain access to the admin panel, leading to site takeover. Additionally, the use of common passwords on multiple sites can put all of them at risk if one password is compromised.
@@ -60,6 +67,36 @@ To improve the security and user experience of a WordPress website, the default 
 Using multiple security plugins can be detrimental to the performance of a WordPress website. These plugins, which are often bloated, intercept every WordPress request and run it through a large number of unnecessary rules, resulting in increased server resource usage and slower site performance. To avoid this issue, consider using a comprehensive security solution that offers multiple features in one package, instead of relying on multiple individual plugins. This will help save server resources and improve the overall performance of your website.
 
 To Solve these issues, we decided to build FluentAuth and made it free.
+
+== Replace Multiple Plugins with FluentAuth ==
+
+FluentAuth has been designed to provide light-weight security solution while adding better UX and performance of your site. If you use FluentAuth then <b>you don't need the following plugins</b>
+
+**For Login Limit and ban brute force attacks**
+
+- Limit Login Attempts Reloaded
+- WPS Limit Login
+
+**For Login & Logout Redirections**
+
+- LoginWP (Formerly Peter's Login Redirect)
+- Sky Login Redirect
+- WP Login and Logout Redirect
+
+**For Login & Logout Redirections**
+
+- LoginWP (Formerly Peter's Login Redirect)
+- Sky Login Redirect
+- WP Login and Logout Redirect
+
+**For Hide Admin Bar and Access Restriction**
+
+- Hide Admin Bar
+- Hide Admin Bar Based on User Roles
+- Auto Hide Admin Bar
+- Hide Admin Bar from Non-Admins
+
+
 
 == User Guides ==
 <ul>
@@ -119,6 +156,12 @@ Absolutely not! From the very first, We were careful about this. It stores all t
 7. Social Login Settings
 
 == Changelog ==
+
+= 1.0.2 - Date: Dec 16, 2022 =
+* Improved UI & UX
+* Added feature to block /wp-admin access and hide admin bar for low-level user roles
+* Fix conflict issue with LearnDash and other wp-users REST-API
+* Improved IP Address for login verification.
 
 = 1.0.0 - Date: Dec 12, 2022 =
 * Initial Release
