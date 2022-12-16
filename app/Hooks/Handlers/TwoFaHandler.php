@@ -124,9 +124,6 @@ class TwoFaHandler
 
     public function verify2FaEmailCode()
     {
-
-        sleep(2);
-
         $code = sanitize_text_field(Arr::get($_REQUEST, 'login_passcode'));
         $hash = sanitize_text_field(Arr::get($_REQUEST, 'login_hash'));
 
@@ -195,8 +192,6 @@ class TwoFaHandler
                 }
 
                 Helper::setLoginMedia('two_factor_email');
-
-                do_action( 'wp_login', $user->user_login, $user );
 
                 $redirectTo = apply_filters('login_redirect', $redirectTo, $logHash->redirect_intend, $user);
                 wp_send_json([

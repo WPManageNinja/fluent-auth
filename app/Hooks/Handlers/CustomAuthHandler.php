@@ -505,7 +505,11 @@ class CustomAuthHandler
             'hide'              => $hide,
             'redirect_fallback' => site_url(),
             'fls_login_nonce'   => wp_create_nonce('fsecurity_login_nonce'),
-            'ajax_url'          => admin_url('admin-ajax.php')
+            'ajax_url'          => admin_url('admin-ajax.php'),
+            'i18n'              => [
+                'Username_or_Email' => __('Username or Email', 'fluent-security'),
+                'Password'          => __('Password', 'fluent-security')
+            ]
         ]);
 
 

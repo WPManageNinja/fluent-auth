@@ -115,7 +115,6 @@ class AuthService
         wp_clear_auth_cookie();
         wp_set_current_user($user->ID, $user->user_login);
         wp_set_auth_cookie($user->ID, true, is_ssl());
-        do_action('wp_login', $user->user_login, $user);
 
         $user = get_user_by('ID', $user->ID);
 

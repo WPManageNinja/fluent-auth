@@ -122,7 +122,7 @@ class MagicLoginHandler
             return;
         }
 
-        wp_enqueue_script('fls_magic_url', FLUENT_AUTH_PLUGIN_URL . 'dist/public/fls_login.js', array('jquery'), null, true);
+        wp_enqueue_script('fls_magic_url', FLUENT_AUTH_PLUGIN_URL . 'dist/public/fls_login.js', [], null, true);
 
         wp_localize_script('fls_magic_url', 'fls_magic_login_vars', [
             'ajaxurl'      => admin_url('admin-ajax.php'),
@@ -142,7 +142,7 @@ class MagicLoginHandler
     public function handleMagicLoginAjax()
     {
         if (!$this->isEnabled()) {
-            wp_send_json_error([
+            wp_send_json([
                 'message' => __('Login via URL is not activated', 'fluent-security')
             ], 423);
         }
@@ -158,7 +158,7 @@ class MagicLoginHandler
             ->count();
 
         if ($existingCount > $loginLimit) {
-            wp_send_json_error([
+            wp_send_json([
                 'message' => sprintf(__('You are trying too much. Please try after %d minutes', 'fluent-security'), $timingMinutes)
             ], 423);
         }
@@ -168,7 +168,7 @@ class MagicLoginHandler
 
         // Verify the nonce now
         if (!wp_verify_nonce($nonce, 'fls_magic_send_magic_email')) {
-            wp_send_json_error(array(
+            wp_send_json(array(
                 'message' => __('Nonce Verification failed. Please try again', 'fluent-security')
             ), 423);
         }
@@ -183,7 +183,7 @@ class MagicLoginHandler
         $canUseMagicLogin = apply_filters('fluent_auth/magic_login_can_use', $this->canUseMagic($user), $user);
 
         if (!$canUseMagicLogin) {
-            wp_send_json_error(array(
+            wp_send_json(array(
                 'message' => __('Sorry, You can not login via magic url. Please use regular login form', 'fluent-security')
             ), 423);
         }
@@ -246,7 +246,7 @@ class MagicLoginHandler
             $message = sprintf(__('We just emailed a magic link to %s. Click the link to sign in.', 'fluent-security'), $user->user_email);
         }
 
-        wp_send_json_success([
+        wp_send_json([
             'heading' => __('Check your inbox', 'fluent-security'),
             'result'  => $result,
             'message' => $message
@@ -389,8 +389,6 @@ class MagicLoginHandler
                     ]);
 
                 Helper::setLoginMedia('magic_login');
-
-                do_action( 'wp_login', $user->user_login, $user );
 
                 if(!wp_doing_ajax()) {
                     if (isset($_GET['force_redirect']) && $_GET['force_redirect'] == 'yes') {

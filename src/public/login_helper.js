@@ -5,6 +5,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginform');
     const twoFaForm = document.getElementById('fls_2fa_form');
 
+
+    function setPlaceHolders() {
+        const userNameField = document.getElementById('user_login');
+        if(userNameField) {
+            userNameField.placeholder = window.fluentAuthPublic.i18n.Username_or_Email;
+        }
+
+        const userPassField = document.getElementById('user_pass');
+        if(userPassField) {
+            userPassField.placeholder = window.fluentAuthPublic.i18n.Password;
+        }
+    }
+
+    setPlaceHolders();
+
+
     function toggleLoading(submitBtn) {
         submitBtn.classList.toggle('fls_loading');
         submitBtn.disabled = !submitBtn.disabled;
@@ -27,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            handleFormSubmission(loginForm, 'fls_login_form', 'fluent_auth_login');
+            handleFormSubmission(loginForm, 'wp-submit', 'fluent_auth_login');
         });
     }
 
