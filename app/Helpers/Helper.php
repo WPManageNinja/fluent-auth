@@ -110,44 +110,41 @@ class Helper
 
     public static function getIp($anonymize = false)
     {
-        $ip = '';
-
-        if (isset($_SERVER['HTTP_X_REAL_IP'])) {
-            $ip = sanitize_text_field(wp_unslash($_SERVER['HTTP_X_REAL_IP']));
-        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            // Proxy servers can send through this header like this: X-Forwarded-For: client1, proxy1, proxy2
-            // Make sure we always only send through the first IP in the list which should always be the client IP.
-            $ip = (string)rest_is_ip_address(trim(current(preg_split('/,/', sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']))))));
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
+        if (empty($_SERVER['REMOTE_ADDR'])) {
+            // It's a local cli request
+            return '127.0.0.1';
         }
 
-
-        if (!$ip || $ip == '127.0.0.1') {
-            // Get real visitor IP behind CloudFlare network
-            // https://stackoverflow.com/questions/13646690/how-to-get-real-ip-from-visitor
-            if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
-                $_SERVER['REMOTE_ADDR'] = sanitize_text_field($_SERVER["HTTP_CF_CONNECTING_IP"]);
-                $_SERVER['HTTP_CLIENT_IP'] = sanitize_text_field($_SERVER["HTTP_CF_CONNECTING_IP"]);
-            }
-            $client = sanitize_text_field(@$_SERVER['HTTP_CLIENT_IP']);
-            $forward = sanitize_text_field(@$_SERVER['HTTP_X_FORWARDED_FOR']);
-            $remote = sanitize_text_field($_SERVER['REMOTE_ADDR']);
-
-            if (filter_var($client, FILTER_VALIDATE_IP)) {
-                $ip = $client;
-            } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
-                $ip = $forward;
+        $ipAddress = '';
+        if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+            //If it's a valid Cloudflare request
+            if (self::isCfIp($_SERVER['REMOTE_ADDR'])) {
+                //Use the CF-Connecting-IP header.
+                $ipAddress = $_SERVER['HTTP_CF_CONNECTING_IP'];
             } else {
-                $ip = $remote;
+                //If it isn't valid, then use REMOTE_ADDR.
+                $ipAddress = $_SERVER['REMOTE_ADDR'];
+            }
+        } else if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+            // most probably it's local reverse proxy
+            if (isset($_SERVER["HTTP_CLIENT_IP"])) {
+                $ipAddress = $_SERVER["HTTP_CLIENT_IP"];
+            } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ipAddress = (string)rest_is_ip_address(trim(current(preg_split('/,/', sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']))))));
             }
         }
+
+        if (!$ipAddress) {
+            $ipAddress = $_SERVER['REMOTE_ADDR'];
+        }
+
+        $ipAddress = preg_replace('/^(\d+\.\d+\.\d+\.\d+):\d+$/', '\1', $ipAddress);
 
         if ($anonymize) {
-            return wp_privacy_anonymize_ip($ip);
+            return wp_privacy_anonymize_ip($ipAddress);
         }
 
-        return $ip;
+        return sanitize_text_field(wp_unslash($ipAddress));
     }
 
     public static function loadView($template, $data)
@@ -269,5 +266,89 @@ class Helper
         }
 
         return 'web';
+    }
+
+    public static function isCfIp($ip = '')
+    {
+        if (!$ip) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        $cloudflareIPRanges = array(
+            '103.21.244.0/22',
+            '103.22.200.0/22',
+            '103.31.4.0/22',
+            '104.16.0.0/13',
+            '104.24.0.0/14',
+            '108.162.192.0/18',
+            '131.0.72.0/22',
+            '141.101.64.0/18',
+            '162.158.0.0/15',
+            '172.64.0.0/13',
+            '173.245.48.0/20',
+            '188.114.96.0/20',
+            '190.93.240.0/20',
+            '197.234.240.0/22',
+            '198.41.128.0/17'
+        );
+        $validCFRequest = false;
+        //Make sure that the request came via Cloudflare.
+        foreach ($cloudflareIPRanges as $range) {
+            //Use the ip_in_range function from Joomla.
+            if (self::ipInRange($ip, $range)) {
+                //IP is valid. Belongs to Cloudflare.
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function ipInRange($ip, $range)
+    {
+        if (strpos($range, '/') !== false) {
+            // $range is in IP/NETMASK format
+            list($range, $netmask) = explode('/', $range, 2);
+            if (strpos($netmask, '.') !== false) {
+                // $netmask is a 255.255.0.0 format
+                $netmask = str_replace('*', '0', $netmask);
+                $netmask_dec = ip2long($netmask);
+                return ((ip2long($ip) & $netmask_dec) == (ip2long($range) & $netmask_dec));
+            } else {
+                // $netmask is a CIDR size block
+                // fix the range argument
+                $x = explode('.', $range);
+                while (count($x) < 4) $x[] = '0';
+                list($a, $b, $c, $d) = $x;
+                $range = sprintf("%u.%u.%u.%u", empty($a) ? '0' : $a, empty($b) ? '0' : $b, empty($c) ? '0' : $c, empty($d) ? '0' : $d);
+                $range_dec = ip2long($range);
+                $ip_dec = ip2long($ip);
+
+                # Strategy 1 - Create the netmask with 'netmask' 1s and then fill it to 32 with 0s
+                #$netmask_dec = bindec(str_pad('', $netmask, '1') . str_pad('', 32-$netmask, '0'));
+
+                # Strategy 2 - Use math to create it
+                $wildcard_dec = pow(2, (32 - $netmask)) - 1;
+                $netmask_dec = ~$wildcard_dec;
+
+                return (($ip_dec & $netmask_dec) == ($range_dec & $netmask_dec));
+            }
+        } else {
+            // range might be 255.255.*.* or 1.2.3.0-1.2.3.255
+            if (strpos($range, '*') !== false) { // a.b.*.* format
+                // Just convert to A-B format by setting * to 0 for A and 255 for B
+                $lower = str_replace('*', '0', $range);
+                $upper = str_replace('*', '255', $range);
+                $range = "$lower-$upper";
+            }
+
+            if (strpos($range, '-') !== false) { // A-B format
+                list($lower, $upper) = explode('-', $range, 2);
+                $lower_dec = (float)sprintf("%u", ip2long($lower));
+                $upper_dec = (float)sprintf("%u", ip2long($upper));
+                $ip_dec = (float)sprintf("%u", ip2long($ip));
+                return (($ip_dec >= $lower_dec) && ($ip_dec <= $upper_dec));
+            }
+            return false;
+        }
     }
 }

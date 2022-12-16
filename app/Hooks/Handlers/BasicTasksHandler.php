@@ -54,6 +54,7 @@ class BasicTasksHandler
         if (Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
             $query['login'] = 'someRandomStringForThis_' . time();
         }
+
         return $query;
     }
 
@@ -62,7 +63,7 @@ class BasicTasksHandler
         if (!empty($request['id']) && Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
             return new \WP_Error('permission_error', 'You do not have access to list users. Restriction added from fluent auth plugin');
         }
-        return $user;
+        return $response;
     }
 
     public function maybeAddAdminNotice()
