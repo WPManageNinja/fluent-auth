@@ -17,6 +17,7 @@ class CustomAuthHandler
         add_shortcode('fluent_auth_signup', array($this, 'registrationForm'));
         add_shortcode('fluent_auth', array($this, 'authForm'));
         add_shortcode('fluent_auth_reset_password', array($this, 'restPasswordForm'));
+        add_shortcode('fluent_auth_magic_login', array($this, 'magicLoginForm'));
 
         /*
          * Alter Login And Logout Redirect URLs
@@ -232,6 +233,10 @@ class CustomAuthHandler
      */
     public function authForm($attributes)
     {
+        if (!$this->isEnabled()) {
+            return '';
+        }
+
         if (get_current_user_id()) {
             return '<p>' . sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url()) . '</p>';
         }
@@ -251,6 +256,50 @@ class CustomAuthHandler
         $authForm .= '</div>';
 
         return $authForm;
+    }
+
+    public function magicLoginForm($attributes, $content = '')
+    {
+        $magicHandler = new MagicLoginHandler();
+        if (!$this->isEnabled() || !$magicHandler->isEnabled()) {
+            return '';
+        }
+
+        if (get_current_user_id()) {
+            return '<p>' . sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url()) . '</p>';
+        }
+
+        $atts = $this->getShortcodes($attributes);
+
+        $magicHandler->pushAssets();
+
+        ob_start();
+        ?>
+        <div id="fls_magic_login">
+            <div class="fls_magic_login_form fls_magic_login">
+                <?php if($content): ?>
+                <div class="fls_magic_content">
+                    <?php echo wp_kses_post($content); ?>
+                </div>
+                <?php endif; ?>
+                <label for="fls_magic_logon">
+                    <?php _e('Your Email/Username', 'fluent-security'); ?>
+                </label>
+                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text"/>
+                <input id="fls_magic_logon_nonce" type="hidden" value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
+                <?php if(!empty($atts['redirect_to'])): ?>
+                <input type="hidden" value="<?php echo esc_url($atts['redirect_to']); ?>" name="redirect_to" />
+                <?php endif; ?>
+                <div class="fls_magic_submit_wrapper">
+                    <button class="button button-primary button-large" id="fls_magic_submit">
+                        <?php _e('Continue', 'fluent-security'); ?>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <?php
+
+        return ob_get_clean();
     }
 
     /**

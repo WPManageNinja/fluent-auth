@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const twoFaForm = document.getElementById('fls_2fa_form');
 
     function toggleLoading(submitBtn) {
-        submitBtn.classList.toggle('loading');
+        submitBtn.classList.toggle('fls_loading');
         submitBtn.disabled = !submitBtn.disabled;
     }
 
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (twoFaForm) {
         twoFaForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            handleFormSubmission(twoFaForm, 'fls_2fa_form', 'fluent_auth_2fa_email');
+            handleFormSubmission(twoFaForm, 'fls_2fa_confirm', 'fluent_auth_2fa_email');
         });
     }
 

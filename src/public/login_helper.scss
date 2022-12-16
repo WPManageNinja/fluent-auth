@@ -90,7 +90,7 @@
                 }
             }
 
-            &.loading {
+            &.fls_loading {
                 background: #0275ff91;
 
                 span {
@@ -163,7 +163,7 @@
                 }
             }
 
-            &.loading {
+            &.fls_loading {
                 background: #0275ff91;
 
                 span {
@@ -198,4 +198,11 @@
     #fls_submit {
         margin-bottom: 15px;
     }
+}
+
+
+button#fls_2fa_confirm.fls_loading {
+    background: gray !important;
+    border-color: gray !important;
+    color: white !important;
 }

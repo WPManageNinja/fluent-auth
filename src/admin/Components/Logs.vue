@@ -52,20 +52,20 @@
                             <span style="font-size:12px; line-height: 12px;">{{ scope.row.user_id }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="media" :label="$t('Media')" width="130"/>
+                    <el-table-column prop="media" :label="$t('Media')" width="150"/>
 
-                    <el-table-column sortable prop="ip" :label="$t('IP')" width="120">
+                    <el-table-column sortable prop="ip" :label="$t('IP')" width="130">
                         <template #default="scope">
                             <a target="_blank" rel="noopener nofollow"
                                :href="'https://ipinfo.io/' + scope.row.ip">{{ scope.row.ip }}</a>
                         </template>
                     </el-table-column>
-                    <el-table-column sortable prop="browser" :label="$t('Browser')" width="220">
+                    <el-table-column sortable prop="browser" :label="$t('Browser')" width="200">
                         <template #default="scope">
                             {{ scope.row.device_os }} / {{ scope.row.browser }}
                         </template>
                     </el-table-column>
-                    <el-table-column sortable prop="created_at" :label="$t('Date')" width="190">
+                    <el-table-column sortable prop="created_at" :label="$t('Date')" width="180">
                         <template #default="scope">
                             {{ scope.row.human_time_diff }}
                         </template>
@@ -93,7 +93,7 @@
                             <el-pagination @current-change="changePage"
                                            :current-page="paginate.page"
                                            :page-size="paginate.per_page"
-                                           background layout="prev, pager, next"
+                                           background layout="total, prev, pager, next"
                                            :total="paginate.total"
                             />
                         </div>

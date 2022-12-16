@@ -45,6 +45,7 @@ class TwoFaHandler
                 <div>
                     <button
                         style="display: block; cursor: pointer; width: 100%;border: 1px solid #2271b1;background: #2271b1;color: #fff;text-decoration: none;text-shadow: none;min-height: 32px;line-height: 2.30769231;padding: 4px 12px;font-size: 13px;border-radius: 3px;"
+                        id="fls_2fa_confirm"
                         type="submit">
                         <?php _e('Login', ''); ?>
                     </button>
@@ -124,8 +125,16 @@ class TwoFaHandler
     public function verify2FaEmailCode()
     {
 
+        sleep(2);
+
         $code = sanitize_text_field(Arr::get($_REQUEST, 'login_passcode'));
         $hash = sanitize_text_field(Arr::get($_REQUEST, 'login_hash'));
+
+        if(!$code || !$hash) {
+            wp_send_json([
+                'message' => __('Please provide a valid login code', 'fluent-security')
+            ], 423);
+        }
 
         $logHash = flsDb()->table('fls_login_hashes')
             ->where('login_hash', $hash)
@@ -134,7 +143,7 @@ class TwoFaHandler
             ->first();
 
         if (!$logHash) {
-            wp_send_json_error([
+            wp_send_json([
                 'message' => __('Your provided code or url is not valid', 'fluent-security')
             ], 423);
         }
@@ -145,7 +154,7 @@ class TwoFaHandler
                 ->update([
                     'used_count' => $logHash->used_count + 1
                 ]);
-            wp_send_json_error([
+            wp_send_json([
                 'message' => __('Your provided code is not valid. Please try again', 'fluent-security')
             ], 423);
         }
@@ -153,13 +162,13 @@ class TwoFaHandler
         $user = get_user_by('ID', $logHash->user_id);
 
         if(!$this->isEnabled($user)) {
-            wp_send_json_error([
+            wp_send_json([
                 'message' => __('Sorry, You can not use this verification method', 'fluent-security')
             ], 423);
         }
 
         if (strtotime($logHash->created_at) < current_time('timestamp') - 600 || !$user || $logHash->status != 'issued' || $logHash->used_count > 5) {
-            wp_send_json_error([
+            wp_send_json([
                 'message' => __('Sorry, your login code has been expired. Please try to login again', 'fluent-security')
             ], 423);
         }
@@ -196,9 +205,9 @@ class TwoFaHandler
             }
         }
 
-        wp_send_json_error([
+        wp_send_json([
             'message' => __('There has an error when log you in. Please try to login again', 'fluent-security')
-        ]);
+        ], 423);
     }
 
 

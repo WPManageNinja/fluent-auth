@@ -387,9 +387,13 @@ $bodyBg: #f1f2f5;
 
 .fls_login_settings {
   padding: 20px 20px 5px;
-  background: #f7f7fc;
-  margin-bottom: 20px;
+  background: #f5f7fa;
+  margin-bottom: 30px;
   border-radius: 5px;
+  transition: background .3s,border .3s,border-radius .3s,box-shadow .3s;
+  &:hover {
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
+  }
   h3 {
     margin: 0 0 15px;
   }

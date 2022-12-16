@@ -38,17 +38,22 @@
                             {{ $t('login_logs_recommendation') }}</p>
 
                         <template v-else>
-                            <el-form-item label="Login Try Limit per IP address in certain defined minutes">
-                                <el-input type="number" v-model="settings.login_try_limit"/>
-                                <p>{{ $t('login_how_many') }} {{ settings.login_try_timing }} minutes</p>
-                            </el-form-item>
-
-                            <el-form-item label="Time limit for login try in minutes">
-                                <el-input type="number" v-model="settings.login_try_timing"/>
-                                <p>If you user do fail login {{ settings.login_try_limit }} times in
-                                    {{ settings.login_try_timing }} minutes then system will block the user for
-                                    {{ settings.login_try_timing }} minutes</p>
-                            </el-form-item>
+                            <el-row :gutter="30">
+                                <el-col :md="12" :sm="24">
+                                    <el-form-item label="Login Try Limit per IP address in certain defined minutes">
+                                        <el-input type="number" v-model="settings.login_try_limit"/>
+                                        <p>{{ $t('login_how_many') }} {{ settings.login_try_timing }} minutes</p>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :md="12" :sm="24">
+                                    <el-form-item label="Time limit for login try in minutes">
+                                        <el-input type="number" v-model="settings.login_try_timing"/>
+                                        <p>If you user do fail login {{ settings.login_try_limit }} times in
+                                            {{ settings.login_try_timing }} minutes then system will block the user for
+                                            {{ settings.login_try_timing }} minutes</p>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
                         </template>
                     </div>
 
@@ -88,39 +93,69 @@
                                 </el-select>
                             </el-form-item>
                         </div>
+
                     </div>
 
                     <div class="fls_login_settings">
                         <h3>{{ $t('Other Settings') }}</h3>
-                        <el-form-item>
-                            <template #label>
-                                {{ $t('delete_logs_label') }}
-                            </template>
-                            <el-input v-model="settings.auto_delete_logs_day" type="number" :min="0"/>
-                            <p style="display: block; width: 100%;">{{ $t('delete_logs_desc') }}</p>
-                        </el-form-item>
-                        <el-form-item>
-                            <template #label>
-                                {{ $t('login_notification_label') }}
-                            </template>
-                            <el-select clearable v-model="settings.notification_user_roles" :multiple="true">
-                                <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
-                                           :key="role.id"></el-option>
-                            </el-select>
-                        </el-form-item>
 
-                        <el-form-item class="fls_switch">
-                            <el-switch v-model="settings.notify_on_blocked" active-value="yes" inactive-value="no"/>
-                            {{ $t('notification_blocked') }}
-                        </el-form-item>
+                        <el-row :gutter="30">
+                            <el-col :sm="24" :md="12">
+                                <el-form-item>
+                                    <template #label>
+                                        {{ $t('login_notification_label') }}
+                                    </template>
+                                    <el-select clearable v-model="settings.notification_user_roles" :multiple="true">
+                                        <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
+                                                   :key="role.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :sm="24" :md="12">
+                                <el-form-item
+                                    v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes'">
+                                    <template #label>
+                                        {{ $t('notification_email') }}
+                                        <el-tooltip
+                                            class="box-item"
+                                            effect="dark"
+                                            content="For multiple emails, please use comma separated values"
+                                            placement="top"
+                                        >
+                                            <el-icon><InfoFilled /></el-icon>
+                                        </el-tooltip>
+                                    </template>
+                                    <el-input type="text" v-model="settings.notification_email"></el-input>
+                                    <p></p>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
 
-                        <el-form-item
-                            v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes'">
-                            <template #label>
-                                {{ $t('notification_email') }}
-                            </template>
-                            <el-input type="text" v-model="settings.notification_email"></el-input>
-                        </el-form-item>
+                        <el-row :gutter="30">
+                            <el-col :sm="24" :md="12">
+                                <el-form-item class="fls_switch">
+                                    <el-switch v-model="settings.notify_on_blocked" active-value="yes" inactive-value="no"/>
+                                    {{ $t('notification_blocked') }}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :sm="24" :md="12">
+                                <el-form-item>
+                                    <template #label>
+                                        {{ $t('delete_logs_label') }}
+                                        <el-tooltip
+                                            class="box-item"
+                                            effect="dark"
+                                            :content="$t('delete_logs_desc')"
+                                            placement="top"
+                                        >
+                                            <el-icon><InfoFilled /></el-icon>
+                                        </el-tooltip>
+                                    </template>
+                                    <el-input v-model="settings.auto_delete_logs_day" type="number" :min="0"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
                     </div>
 
                     <el-form-item>
@@ -137,13 +172,21 @@
 
                 </el-form>
             </div>
+            <div v-else-if="loading" class="box_body">
+                <el-skeleton :animated="true" :rows="4" />
+                <el-skeleton :animated="true" :rows="4" />
+            </div>
         </div>
     </div>
 </template>
 
 <script type="text/babel">
+import {InfoFilled} from '@element-plus/icons-vue'
 export default {
     name: 'Settings',
+    components: {
+        InfoFilled
+    },
     data() {
         return {
             settings: false,
@@ -200,7 +243,7 @@ export default {
                 auto_delete_logs_day: 30,
                 notification_user_roles: ['administrator', 'editor', 'author'],
                 notification_email: '{admin_email}',
-                notify_on_blocked: 'yes',
+                notify_on_blocked: 'no',
                 magic_login: 'no',
                 magic_restricted_roles: [],
                 email2fa: 'yes',

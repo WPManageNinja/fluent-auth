@@ -6,8 +6,12 @@
                 <el-tag v-if="scope.row.status == 'blocked'" size="small" type="error">{{scope.row.status}}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column :width="90" :label="$t('IP')" prop="ip" />
-        <el-table-column :width="120" :label="$t('Date')" prop="human_time_diff">
+        <el-table-column :label="$t('IP')" prop="ip">
+            <template #default="scope">
+                <span style="font-size: 11px;">{{scope.row.ip}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column :width="100" :label="$t('Date')" prop="human_time_diff">
             <template #default="scope">
                 <span :title="scope.row.created_at" style="font-size: 11px;">{{scope.row.human_time_diff}}</span>
             </template>

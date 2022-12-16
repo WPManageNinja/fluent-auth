@@ -47,7 +47,7 @@ jQuery(document).ready(function ($) {
     function showAjaxLoading() {
         var $submitbtn = $('#fls_magic_submit');
         let prevText = $submitbtn.text();
-        $submitbtn.data('prev_text', prevText);
+        $submitbtn.data('prev_text', prevText).addClass('fls_loading');
         $submitbtn.html(window.fls_magic_login_vars.wait_text).attr('disabled', true);
     }
 
@@ -66,10 +66,16 @@ jQuery(document).ready(function ($) {
             return;
         }
         showAjaxLoading();
+
+        let redirectTo = jQuery('#loginform').find('input[name=redirect_to]').val();
+        if(!redirectTo) {
+            redirectTo = jQuery('#fls_magic_login').find('input[name=redirect_to]').val();
+        }
+
         $.post(window.fls_magic_login_vars.ajaxurl, {
             action: 'fls_magic_send_magic_email',
             email: loginValue,
-            redirect_to: jQuery('#loginform').find('input[name=redirect_to]').val(),
+            redirect_to: redirectTo,
             _nonce: $('#fls_magic_logon_nonce').val()
         })
             .then(function (response) {

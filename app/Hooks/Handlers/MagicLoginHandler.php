@@ -74,7 +74,7 @@ class MagicLoginHandler
             </div>
             <div style="display: none" class="fls_magic_login_form">
                 <p class="fls_magic_text">
-                    <?php _e('Enter the email address or username associated with your account, and we will send a direct login url to your inbox.', 'fluent-security'); ?>
+                    <?php _e('Enter the email address or username associated with your account, and we\'ll send a magic link to your inbox.', 'fluent-security'); ?>
                 </p>
                 <label for="fls_magic_logon">
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
@@ -84,7 +84,7 @@ class MagicLoginHandler
                        value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
                 <div class="fls_magic_submit_wrapper">
                     <button class="button button-primary button-large" id="fls_magic_submit">
-                        <?php _e('Get Login URL', 'fluent-security'); ?>
+                        <?php _e('Continue', 'fluent-security'); ?>
                     </button>
                 </div>
 
@@ -134,7 +134,7 @@ class MagicLoginHandler
         $this->assetLoaded = true;
     }
 
-    private function isEnabled()
+    public function isEnabled()
     {
         return Helper::getSetting('magic_login') === 'yes';
     }
@@ -191,7 +191,12 @@ class MagicLoginHandler
         // Now we have a valid user and let's send the email
         $validity = apply_filters('fluent_auth/default_token_validity', 10, $user);
 
-        $redirect_to = $this->getLoginRedirect($user);
+        if(!empty($_REQUEST['redirect_to']) && filter_var( $_REQUEST['redirect_to'], FILTER_VALIDATE_URL )) {
+            $redirect_to = sanitize_url($_REQUEST['redirect_to']);
+        } else {
+            $redirect_to = $this->getLoginRedirect($user);
+        }
+
 
         $loginUrl = esc_url($this->getMagicLoginUrl($user, $validity, false, $redirect_to));
 
