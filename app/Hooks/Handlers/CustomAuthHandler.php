@@ -277,18 +277,20 @@ class CustomAuthHandler
         ?>
         <div id="fls_magic_login">
             <div class="fls_magic_login_form fls_magic_login">
-                <?php if($content): ?>
-                <div class="fls_magic_content">
-                    <?php echo wp_kses_post($content); ?>
-                </div>
+                <?php if ($content): ?>
+                    <div class="fls_magic_content">
+                        <?php echo wp_kses_post($content); ?>
+                    </div>
                 <?php endif; ?>
                 <label for="fls_magic_logon">
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
                 </label>
-                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text"/>
-                <input id="fls_magic_logon_nonce" type="hidden" value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
-                <?php if(!empty($atts['redirect_to'])): ?>
-                <input type="hidden" value="<?php echo esc_url($atts['redirect_to']); ?>" name="redirect_to" />
+                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon"
+                       class="fls_magic_input" type="text"/>
+                <input id="fls_magic_logon_nonce" type="hidden"
+                       value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
+                <?php if (!empty($atts['redirect_to'])): ?>
+                    <input type="hidden" value="<?php echo esc_url($atts['redirect_to']); ?>" name="redirect_to"/>
                 <?php endif; ?>
                 <div class="fls_magic_submit_wrapper">
                     <button class="button button-primary button-large" id="fls_magic_submit">
