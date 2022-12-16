@@ -11,7 +11,8 @@ class SettingsController
     {
         return [
             'settings' => Helper::getAuthSettings(),
-            'user_roles' => Helper::getUserRoles()
+            'user_roles' => Helper::getUserRoles(),
+            'low_level_roles' => Helper::getLowLevelRoles()
         ];
     }
 

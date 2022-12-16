@@ -27,7 +27,11 @@ class Helper
             'magic_login'             => 'no',
             'magic_restricted_roles'  => [],
             'email2fa'                => 'no',
-            'email2fa_roles'          => ['administrator', 'editor', 'author']
+            'email2fa_roles'          => ['administrator', 'editor', 'author'],
+            'disable_admin_bar'       => 'no',
+            'disable_bar_roles'       => [
+                'subscriber'
+            ]
         ];
 
         $settings = get_option('__fls_auth_settings');
@@ -66,6 +70,25 @@ class Helper
             }
         }
         return $formattedRoles;
+    }
+
+    public static function getLowLevelRoles()
+    {
+        if (!function_exists('get_editable_roles')) {
+            require_once(ABSPATH . '/wp-admin/includes/user.php');
+        }
+
+        $roles = \get_editable_roles();
+
+        $formattedRoles = [];
+
+        foreach ($roles as $roleKey => $role) {
+            if (!Arr::get($role, 'capabilities.publish_posts')) {
+                $formattedRoles[$roleKey] = $role['name'];
+            }
+        }
+
+        return apply_filters('fluent_auth/low_level_user_roles', $formattedRoles, $roles);
     }
 
     public static function getWpPermissions($keyed = false)

@@ -29,6 +29,61 @@ class BasicTasksHandler
         add_action('fluent_auth_daily_tasks', function () {
             \FluentAuth\App\Helpers\Helper::cleanUpLogs();
         });
+        
+        /*
+         * Maybe Disable Admin Bar
+         */
+        add_filter('show_admin_bar', function ($status) {
+            if (!$status) {
+                return $status;
+            }
+
+            if (is_admin()) {
+                return $status;
+            }
+
+            if (Helper::getSetting('disable_admin_bar') !== 'yes') {
+                return $status;
+            }
+
+            $roles = Helper::getSetting('disable_bar_roles');
+
+            $user = get_user_by('ID', get_current_user_id());
+
+            if (!$user || !$roles) {
+                return $status;
+            }
+
+            if (array_intersect($roles, array_values($user->roles)) && !current_user_can('publish_posts')) {
+                return false;
+            }
+
+            return $status;
+        });
+
+        /*
+        * Maybe Redirect Non-Admin Users
+        */
+        add_action('admin_init', function () {
+
+            if (Helper::getSetting('disable_admin_bar') !== 'yes' || wp_doing_ajax()) {
+                return false;
+            }
+
+            $roles = Helper::getSetting('disable_bar_roles');
+
+            $user = get_user_by('ID', get_current_user_id());
+
+            if (!$user || !$roles) {
+                return false;
+            }
+
+            if (array_intersect($roles, array_values($user->roles)) && !current_user_can('publish_posts')) {
+                wp_safe_redirect(home_url()); // Replace this with the URL to redirect to.
+                exit;
+            }
+
+        }, 100);
 
     }
 

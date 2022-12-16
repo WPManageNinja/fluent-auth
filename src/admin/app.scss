@@ -687,3 +687,15 @@ ul.fls_listed_data {
     width: 100%;
   }
 }
+
+.el-form-item.fls_checkbox {
+  .el-form-item__content {
+    display: flex;
+    flex-wrap: nowrap;
+    line-height: 140%;
+    align-items: flex-start;
+    > span {
+      margin-top: 5px;
+    }
+  }
+}

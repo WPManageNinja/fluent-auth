@@ -88,28 +88,28 @@ class AdminMenuHandler
         wp_enqueue_script('fluent_auth_app', FLUENT_AUTH_PLUGIN_URL . 'dist/admin/app.js', ['jquery'], '1.0', true);
 
         wp_localize_script('fluent_auth_app', 'fluentAuthAdmin', [
-            'slug'          => 'fluent-security',
-            'nonce'         => wp_create_nonce('fluent-security'),
-            'rest'          => [
+            'slug'            => 'fluent-security',
+            'nonce'           => wp_create_nonce('fluent-security'),
+            'rest'            => [
                 'base_url'  => esc_url_raw(rest_url()),
                 'url'       => rest_url('fluent-auth'),
                 'nonce'     => wp_create_nonce('wp_rest'),
                 'namespace' => 'fluent-auth',
                 'version'   => '1'
             ],
-            'auth_statuses' => [
+            'auth_statuses'   => [
                 'failed'  => __('Failed', 'fluent-security'),
                 'blocked' => __('Blocked', 'fluent-security'),
                 'success' => __('Successful', 'fluent-security')
             ],
-            'auth_settings' => Helper::getAuthSettings(),
-            'asset_url'     => FLUENT_AUTH_PLUGIN_URL . 'dist/',
-            'me'            => [
+            'auth_settings'   => Helper::getAuthSettings(),
+            'asset_url'       => FLUENT_AUTH_PLUGIN_URL . 'dist/',
+            'me'              => [
                 'id'        => $currentUser->ID,
                 'full_name' => trim($currentUser->first_name . ' ' . $currentUser->last_name),
                 'email'     => $currentUser->user_email
             ],
-            'i18n'          => [
+            'i18n'            => [
                 'Dashboard'                     => __('Dashboard', 'fluent-security'),
                 'Logs'                          => __('Logs', 'fluent-security'),
                 'Settings'                      => __('Settings', 'fluent-security'),
@@ -199,7 +199,9 @@ class AdminMenuHandler
                 'This Month'                    => __('This Month', 'fluent-security'),
                 'All Time'                      => __('All Time', 'fluent-security'),
                 'Login/Signup Forms'            => __('Login/Signup Forms', 'fluent-security'),
-                'pass_code_desc'                => __('Users can only login with the extended security code. Enable only if only internal team login to the site to manage', 'fluent-security')
+                'pass_code_desc'                => __('Users can only login with the extended security code. Enable only if only internal team login to the site to manage', 'fluent-security'),
+                'disable_admin_bar_label'       => __('Disable admin bar and <code>/wp-admin/</code> access for selected user roles.', 'fluent-security'),
+                'disable_admin_bar_roles_label' => __('Roles to disable <code>wp-admin</code> access and hide admin bar', 'fluent-security')
             ]
         ]);
 

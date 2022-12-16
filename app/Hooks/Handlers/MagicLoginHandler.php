@@ -373,6 +373,8 @@ class MagicLoginHandler
             return false;
         }
 
+        Helper::setLoginMedia('magic_login');
+
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
         $user = wp_signon(array('user_login' => $user->user_login));
         remove_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);

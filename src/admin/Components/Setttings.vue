@@ -63,10 +63,11 @@
                         <div class="fls_inner_group" :class="'fls_inner_group_' + settings.magic_login">
                             <el-form-item>
                                 <el-checkbox v-model="settings.magic_login" true-label="yes" false-label="no">
-                                    {{$t('Enable Magic Login (User can login via url sent to email)')}}
+                                    {{ $t('Enable Magic Login (User can login via url sent to email)') }}
                                 </el-checkbox>
                             </el-form-item>
-                            <el-form-item style="background: white; padding: 10px 20px;" v-if="settings.magic_login == 'yes'">
+                            <el-form-item style="background: white; padding: 10px 20px;"
+                                          v-if="settings.magic_login == 'yes'">
                                 <template #label>
                                     {{ $t('user_role_magic_disable') }}
                                 </template>
@@ -81,15 +82,19 @@
                         <div class="fls_inner_group" :class="'fls_inner_group_' + settings.email2fa">
                             <el-form-item>
                                 <el-checkbox v-model="settings.email2fa" true-label="yes" false-label="no">
-                                    Enable Two-Factor Authentication via Email (If enable then user have to provide authentication code sent via email)
+                                    Enable Two-Factor Authentication via Email (If enable then user have to provide
+                                    authentication code sent via email)
                                 </el-checkbox>
                             </el-form-item>
-                            <el-form-item style="background: white; padding: 10px 20px;" v-if="settings.email2fa == 'yes'">
+                            <el-form-item style="background: white; padding: 10px 20px;"
+                                          v-if="settings.email2fa == 'yes'">
                                 <template #label>
                                     Select Roles that requires Two-Factor Authentication
                                 </template>
-                                <el-select placeholder="Enabled for All User Roles" clearable v-model="settings.email2fa_roles" :multiple="true">
-                                    <el-option v-for="role in user_roles" :value="role.id" :label="role.title" :key="role.id"></el-option>
+                                <el-select placeholder="Enabled for All User Roles" clearable
+                                           v-model="settings.email2fa_roles" :multiple="true">
+                                    <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
+                                               :key="role.id"></el-option>
                                 </el-select>
                             </el-form-item>
                         </div>
@@ -122,7 +127,9 @@
                                             content="For multiple emails, please use comma separated values"
                                             placement="top"
                                         >
-                                            <el-icon><InfoFilled /></el-icon>
+                                            <el-icon>
+                                                <InfoFilled/>
+                                            </el-icon>
                                         </el-tooltip>
                                     </template>
                                     <el-input type="text" v-model="settings.notification_email"></el-input>
@@ -134,7 +141,8 @@
                         <el-row :gutter="30">
                             <el-col :sm="24" :md="12">
                                 <el-form-item class="fls_switch">
-                                    <el-switch v-model="settings.notify_on_blocked" active-value="yes" inactive-value="no"/>
+                                    <el-switch v-model="settings.notify_on_blocked" active-value="yes"
+                                               inactive-value="no"/>
                                     {{ $t('notification_blocked') }}
                                 </el-form-item>
                             </el-col>
@@ -148,7 +156,9 @@
                                             :content="$t('delete_logs_desc')"
                                             placement="top"
                                         >
-                                            <el-icon><InfoFilled /></el-icon>
+                                            <el-icon>
+                                                <InfoFilled/>
+                                            </el-icon>
                                         </el-tooltip>
                                     </template>
                                     <el-input v-model="settings.auto_delete_logs_day" type="number" :min="0"/>
@@ -156,10 +166,35 @@
                             </el-col>
                         </el-row>
 
+                        <hr style="margin-bottom: 15px;"/>
+
+                        <el-row :gutter="30">
+                            <el-col :sm="24" :md="12">
+                                <el-form-item class="fls_switch fls_checkbox">
+                                    <el-switch v-model="settings.disable_admin_bar" active-value="yes"
+                                               inactive-value="no"/>
+                                    <span v-html="$t('disable_admin_bar_label')"></span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :sm="24" :md="12">
+                                <el-form-item v-if="settings.disable_admin_bar == 'yes'">
+                                    <template #label>
+                                        <span v-html="$t('disable_admin_bar_roles_label')"></span>
+                                    </template>
+                                    <el-select clearable v-model="settings.disable_bar_roles" :multiple="true">
+                                        <el-option v-for="(role, roleId) in low_level_roles" :value="roleId"
+                                                   :label="role"
+                                                   :key="roleId"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
                     </div>
 
                     <el-form-item>
-                        <el-button size="large" @click="saveSettings()" :disabled="saving" v-loading="saving" type="success">
+                        <el-button size="large" @click="saveSettings()" :disabled="saving" v-loading="saving"
+                                   type="success">
                             {{ $t('Save Settings') }}
                         </el-button>
                     </el-form-item>
@@ -173,8 +208,8 @@
                 </el-form>
             </div>
             <div v-else-if="loading" class="box_body">
-                <el-skeleton :animated="true" :rows="4" />
-                <el-skeleton :animated="true" :rows="4" />
+                <el-skeleton :animated="true" :rows="4"/>
+                <el-skeleton :animated="true" :rows="4"/>
             </div>
         </div>
     </div>
@@ -182,6 +217,7 @@
 
 <script type="text/babel">
 import {InfoFilled} from '@element-plus/icons-vue'
+
 export default {
     name: 'Settings',
     components: {
@@ -195,7 +231,8 @@ export default {
             activated: false,
             saving: false,
             errors: false,
-            user_roles: []
+            user_roles: [],
+            low_level_roles: {}
         }
     },
     methods: {
@@ -205,6 +242,7 @@ export default {
                 .then(response => {
                     this.settings = response.settings;
                     this.user_roles = response.user_roles;
+                    this.low_level_roles = response.low_level_roles;
                 })
                 .catch((errors) => {
                     this.$handleError(errors)
@@ -247,7 +285,9 @@ export default {
                 magic_login: 'no',
                 magic_restricted_roles: [],
                 email2fa: 'yes',
-                email2fa_roles: ['administrator', 'editor', 'author']
+                email2fa_roles: ['administrator', 'editor', 'author'],
+                disable_admin_bar: 'yes',
+                disable_bar_roles: ['subscriber']
             }
             this.$notify.success('Recommended settings has been applied. Please review and save the settings');
         }
