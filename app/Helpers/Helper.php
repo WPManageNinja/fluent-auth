@@ -140,6 +140,8 @@ class Helper
 
         $ipAddress = preg_replace('/^(\d+\.\d+\.\d+\.\d+):\d+$/', '\1', $ipAddress);
 
+        $ipAddress = apply_filters('fluent_auth/user_ip', $ipAddress);
+
         if ($anonymize) {
             return wp_privacy_anonymize_ip($ipAddress);
         }
