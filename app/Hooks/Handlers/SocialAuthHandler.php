@@ -98,7 +98,7 @@ class SocialAuthHandler
                 wp_redirect($redirectUrl);
                 exit();
             }
-            
+
             // Handle the error here
             add_filter('wp_login_errors', function ($errors) use ($redirectUrl) {
                 return $redirectUrl;
@@ -130,15 +130,28 @@ class SocialAuthHandler
         $token = GithubAuthService::getTokenByCode(Arr::get($data, 'code'));
         $userData = GithubAuthService::getDataByAccessToken($token);
 
-        if(is_user_logged_in()) {
+        if (is_user_logged_in()) {
             $existingUser = get_user_by('ID', get_current_user_id());
-            if($existingUser->user_email !== $data['email']) {
+            if ($existingUser->user_email !== $data['email']) {
                 return new \WP_Error('email_mismatch', __('Your Github email address does not match with your current account email address. Please use the same email address', 'fluent-security'));
             }
         }
 
         if (is_wp_error($userData)) {
             return $userData;
+        }
+
+        if (empty($userData['email']) || !is_email($userData['email'])) {
+            return new \WP_Error('email_error', __('Sorry! we could not find your valid email via github', 'fluent-security'));
+        }
+
+        $existingUser = get_user_by('email', $userData['email']);
+        if ($existingUser) {
+            $twoFaHandler = new TwoFaHandler();
+            if ($redirectUrl = $twoFaHandler->sendAndGet2FaConfirmFormUrl($existingUser)) {
+                wp_redirect($redirectUrl);
+                exit();
+            }
         }
 
         $user = AuthService::doUserAuth($userData, 'github');
@@ -177,20 +190,33 @@ class SocialAuthHandler
 
         $token = GoogleAuthService::getTokenByCode(Arr::get($data, 'code'));
 
-        if(is_wp_error($token)) {
+        if (is_wp_error($token)) {
             return $token;
         }
 
         $userData = GoogleAuthService::getDataByIdToken($token);
 
-        if(is_wp_error($userData)) {
+        if (is_wp_error($userData)) {
             return $userData;
         }
 
-        if(is_user_logged_in()) {
+        if (is_user_logged_in()) {
             $existingUser = get_user_by('ID', get_current_user_id());
-            if($existingUser->user_email !== $userData['email']) {
+            if ($existingUser->user_email !== $userData['email']) {
                 return new \WP_Error('email_mismatch', __('Your Google email address does not match with your current account email address. Please use the same email address', 'fluent-security'));
+            }
+        }
+
+        if (empty($userData['email']) || !is_email($userData['email'])) {
+            return new \WP_Error('email_error', __('Sorry! we could not find your valid email from Google API', 'fluent-security'));
+        }
+
+        $existingUser = get_user_by('email', $userData['email']);
+        if ($existingUser) {
+            $twoFaHandler = new TwoFaHandler();
+            if ($redirectUrl = $twoFaHandler->sendAndGet2FaConfirmFormUrl($existingUser)) {
+                wp_redirect($redirectUrl);
+                exit();
             }
         }
 

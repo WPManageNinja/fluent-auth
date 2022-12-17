@@ -16,7 +16,7 @@ class TwoFaHandler
 
     public function render2FaForm()
     {
-        if(!$this->isEnabled()) {
+        if (!$this->isEnabled()) {
             return false;
         }
 
@@ -59,14 +59,32 @@ class TwoFaHandler
 
     public function maybe2FaRedirect($user)
     {
-        if(!$this->isEnabled($user)) {
+        // If it's an ajax call and not our own ajax calls then we will just return it
+        // Until we get a better work-around for other plugins
+        if (wp_doing_ajax() && empty($_REQUEST['_is_fls_form'])) {
             return false;
         }
 
-        // If it's an ajax call and not our own ajax calls then we will just return it
-        // Until we get a better work-around for other plugins
-        if(wp_doing_ajax() && empty($_REQUEST['_is_fls_form'])) {
-            return;
+        $loginUrl = $this->sendAndGet2FaConfirmFormUrl($user);
+
+        if(!$loginUrl) {
+            return false;
+        }
+
+        if (wp_doing_ajax()) {
+            wp_send_json([
+                'redirect' => $loginUrl
+            ]);
+        }
+
+        wp_redirect($loginUrl);
+        exit();
+    }
+
+    public function sendAndGet2FaConfirmFormUrl($user)
+    {
+        if (!$this->isEnabled($user)) {
+            return false;
         }
 
         $twoFaCode = mt_rand(100123, 900987);
@@ -106,20 +124,12 @@ class TwoFaHandler
 
         $this->send2FaEmail($data, $user, $autoLoginUrl);
 
-        $loginUrl = add_query_arg([
+        return add_query_arg([
             'fls_2fa'    => 'email',
             'login_hash' => $hash,
             'action'     => 'fls_2fa_email'
         ], wp_login_url());
 
-        if(wp_doing_ajax()) {
-            wp_send_json([
-                'redirect' => $loginUrl
-            ]);
-        }
-
-        wp_redirect($loginUrl);
-        exit();
     }
 
     public function verify2FaEmailCode()
@@ -127,7 +137,7 @@ class TwoFaHandler
         $code = sanitize_text_field(Arr::get($_REQUEST, 'login_passcode'));
         $hash = sanitize_text_field(Arr::get($_REQUEST, 'login_hash'));
 
-        if(!$code || !$hash) {
+        if (!$code || !$hash) {
             wp_send_json([
                 'message' => __('Please provide a valid login code', 'fluent-security')
             ], 423);
@@ -158,7 +168,7 @@ class TwoFaHandler
 
         $user = get_user_by('ID', $logHash->user_id);
 
-        if(!$this->isEnabled($user)) {
+        if (!$this->isEnabled($user)) {
             wp_send_json([
                 'message' => __('Sorry, You can not use this verification method', 'fluent-security')
             ], 423);
@@ -268,16 +278,16 @@ class TwoFaHandler
 
     private function isEnabled($user = false)
     {
-        if( Helper::getSetting('email2fa') !== 'yes') {
+        if (Helper::getSetting('email2fa') !== 'yes') {
             return false;
         }
 
-        if(!$user) {
+        if (!$user) {
             return true;
         }
 
         $roles = Helper::getSetting('email2fa_roles');
 
-        return (bool) array_intersect($roles, array_values($user->roles));
+        return (bool)array_intersect($roles, array_values($user->roles));
     }
 }
