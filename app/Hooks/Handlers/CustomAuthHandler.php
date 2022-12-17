@@ -66,7 +66,7 @@ class CustomAuthHandler
      * @param $attributes
      * @return string
      */
-    public function loginForm($attributes)
+    public function loginForm($attributes, $headerContent = '')
     {
 
         if (!$this->isEnabled()) {
@@ -82,6 +82,10 @@ class CustomAuthHandler
         $this->handleAlreadyLoggedIn($attributes);
 
         $return = '<div id="fls_login_form" class="fls_login_wrapper">';
+
+        if($headerContent) {
+            $return .= $headerContent;
+        }
 
         if (!empty($attributes['redirect_to'])) {
             $redirect = $attributes['redirect_to'];
@@ -130,7 +134,7 @@ class CustomAuthHandler
      * @param $attributes
      * @return string
      */
-    public function registrationForm($attributes)
+    public function registrationForm($attributes, $headerContent = '')
     {
         if (!$this->isEnabled()) {
             return '';
@@ -152,13 +156,20 @@ class CustomAuthHandler
 
         $this->loadAssets($hide);
 
-        return $this->buildRegistrationForm($registrationFields, $hide, $attributes);
+        return $this->buildRegistrationForm($registrationFields, $hide, $attributes, $headerContent);
     }
 
     // This method `buildRegistrationForm` will generate html for sign up form
-    private function buildRegistrationForm($registrationFields, $hide, $attributes)
+    private function buildRegistrationForm($registrationFields, $hide, $attributes, $headerContent = '')
     {
-        $registrationForm = '<div class="fls_registration_wrapper ' . esc_attr($hide) . '"><form id="flsRegistrationForm" class="fls_registration_form" method="post" name="fls_registration_form">';
+
+        $registrationForm = '<div class="fls_registration_wrapper ' . esc_attr($hide) . '">';
+
+        if($headerContent) {
+            $registrationForm .= $headerContent;
+        }
+
+        $registrationForm .= '<form id="flsRegistrationForm" class="fls_registration_form" method="post" name="fls_registration_form">';
 
         foreach ($registrationFields as $fieldName => $registrationField) {
             $registrationForm .= $this->renderField($fieldName, $registrationField);
@@ -185,7 +196,7 @@ class CustomAuthHandler
         return $registrationForm;
     }
 
-    public function restPasswordForm($attributes)
+    public function restPasswordForm($attributes, $headerContent = '')
     {
         if (!$this->isEnabled()) {
             return '';
@@ -203,27 +214,33 @@ class CustomAuthHandler
 
         $this->loadAssets($hide);
 
-        return $this->buildResetPassForm($resetPasswordFields, $hide, $attributes);
+        return $this->buildResetPassForm($resetPasswordFields, $hide, $attributes, $headerContent);
     }
 
     // This method `buildResetPassForm` will generate html for password reset form
-    private function buildResetPassForm($resetPasswordFields, $hide, $attributes)
+    private function buildResetPassForm($resetPasswordFields, $hide, $attributes, $headerContent = '')
     {
-        $restePasswordForm = '<div class="fls_reset_pass_wrapper ' . $hide . '"><form id="flsResetPasswordForm" class="fls_reset_pass_form" method="post" name="fls_reset_pass_form">';
+        $resetPasswordForm = '<div class="fls_reset_pass_wrapper ' . $hide . '">';
 
-        foreach ($resetPasswordFields as $fieldName => $resetPasswordField) {
-            $restePasswordForm .= $this->renderField($fieldName, $resetPasswordField);
+        if($headerContent) {
+            $resetPasswordForm .= $headerContent;
         }
 
-        $restePasswordForm .= '<input type="hidden" name="__redirect_to" value="' . $attributes['redirect_to'] . '">';
-        $restePasswordForm .= '<input type="hidden" name="_fls_reset_pass_nonce" value="' . wp_create_nonce('fluent_auth_reset_pass_nonce') . '">';
-        $restePasswordForm .= '<button type="submit" id="fls_reset_pass">' . $this->submitBtnLoadingSvg() . '<span>' . __('Reset Password', 'fluent-security') . '</span></button>';
+        $resetPasswordForm .= '<form id="flsResetPasswordForm" class="fls_reset_pass_form" method="post" name="fls_reset_pass_form">';
 
-        $restePasswordForm .= '</form>';
+        foreach ($resetPasswordFields as $fieldName => $resetPasswordField) {
+            $resetPasswordForm .= $this->renderField($fieldName, $resetPasswordField);
+        }
 
-        $restePasswordForm .= '</div>';
+        $resetPasswordForm .= '<input type="hidden" name="__redirect_to" value="' . $attributes['redirect_to'] . '">';
+        $resetPasswordForm .= '<input type="hidden" name="_fls_reset_pass_nonce" value="' . wp_create_nonce('fluent_auth_reset_pass_nonce') . '">';
+        $resetPasswordForm .= '<button type="submit" id="fls_reset_pass">' . $this->submitBtnLoadingSvg() . '<span>' . __('Reset Password', 'fluent-security') . '</span></button>';
 
-        return $restePasswordForm;
+        $resetPasswordForm .= '</form>';
+
+        $resetPasswordForm .= '</div>';
+
+        return $resetPasswordForm;
     }
 
     /**

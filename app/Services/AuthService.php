@@ -48,11 +48,12 @@ class AuthService
 
         $setRole = apply_filters('fluent_auth/user_role', $defaultRole);
 
-        $userId = self::registerNewUser($createUserData['username'], $createUserData['password'], $createUserData['email'], [
+        $userId = self::registerNewUser($createUserData['username'], $createUserData['email'], $createUserData['password'], [
             'role'        => $setRole,
             'first_name'  => Arr::get($userData, 'first_name'),
             'last_name'   => Arr::get($userData, 'last_name'),
             'user_url'    => Arr::get($userData, 'user_url'),
+            'full_name'   => Arr::get($userData, 'full_name'),
             'description' => Arr::get($userData, 'description'),
         ]);
 
@@ -119,7 +120,7 @@ class AuthService
         $user = get_user_by('ID', $user->ID);
 
         if ($user) {
-            do_action( 'wp_login', $user->user_login, $user );
+            do_action('wp_login', $user->user_login, $user);
         }
 
         return $user;

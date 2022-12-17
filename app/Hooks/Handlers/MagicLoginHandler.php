@@ -40,6 +40,7 @@ class MagicLoginHandler
             return $this->generateHash($user, $minutes);
 
         }, 10, 3);
+
         add_filter('fluent_auth/login_token_by_user_email', function ($hash, $emailId, $minutes) {
             if (!$this->isEnabled()) {
                 return '';
@@ -52,6 +53,7 @@ class MagicLoginHandler
 
             return $this->generateHash($user, $minutes);
         }, 10, 3);
+
     }
 
     public function maybePushMagicForm()
@@ -285,7 +287,6 @@ class MagicLoginHandler
             ->where('status', 'issued')
             ->where('valid_till', $expectedValidity)
             ->first();
-
 
         if ($lastValid) {
             flsDb()->table('fls_login_hashes')
