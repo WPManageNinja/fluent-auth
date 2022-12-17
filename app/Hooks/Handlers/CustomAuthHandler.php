@@ -87,10 +87,13 @@ class CustomAuthHandler
             $return .= $headerContent;
         }
 
-        if (!empty($attributes['redirect_to'])) {
+        $redirect = '';
+
+        if (!empty($attributes['redirect_to']) && filter_var($attributes['redirect_to'], FILTER_VALIDATE_URL)) {
             $redirect = $attributes['redirect_to'];
-        } else {
-            $redirect = admin_url();
+            add_filter('fluent_auth/social_redirect_to', function ($url) use ($redirect) {
+                return $redirect;
+            });
         }
 
         /*
@@ -480,8 +483,9 @@ class CustomAuthHandler
             'show-reset-password' => false,
         ]);
 
-        if ($shortCodeDefaults['redirect_to'] == 'self') {
-            $shortCodeDefaults['redirect_to'] = get_the_permalink();
+        if (Arr::get($attributes, 'redirect_to') == 'self') {
+            $redirectTo = home_url(Arr::get($_SERVER, 'REQUEST_URI'));
+            $attributes['redirect_to'] = $redirectTo;
         }
 
         return shortcode_atts($shortCodeDefaults, $attributes);

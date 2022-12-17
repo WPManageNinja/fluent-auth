@@ -235,6 +235,8 @@ class SocialAuthHandler
             $redirect_to = admin_url();
         }
 
+        $redirect_to = apply_filters('fluent_auth/social_redirect_to', $redirect_to);
+
         $buttons = [
             'google' => [
                 'link_class' => 'fs_auth_btn fs_auth_google',
