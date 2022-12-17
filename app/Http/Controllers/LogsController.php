@@ -29,7 +29,11 @@ class LogsController
 
         if ($request->get_param('search')) {
             $search = sanitize_text_field($request->get_param('search'));
-            $query->where('username', 'LIKE', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('username', 'LIKE', '%' . $search . '%');
+                $q->orWhere('media', 'LIKE', '%' . $search . '%');
+                return $q;
+            });
         }
 
         $logs = $query->paginate();

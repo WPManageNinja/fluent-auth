@@ -4,7 +4,7 @@ Tags: Login limit, login redirects, xml-rpc, login logs, social logins,
 Requires at least: 5.0
 Tested up to: 6.1
 Requires PHP: 7.0
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Enhance the Security and User Experience of Your Website with Login/Signup Secur
 
 == Description ==
 
-Boost Your Website's Security with Login/Signup Security, Two-Factor Email Authentication, Login/Logout Redirects, Social Logins, Detailed Audit Logs, and More
+Boost Your Website's Security with Login/Signup Security, Two-Factor Email Authentication, Login/Logout Redirects, Social Logins, Detailed Audit Logs, and More. FluentAuth is the <b>lightest and blazing fast</b> security plugin for WordPress.
 
 **Highlighted Features**
 
@@ -156,6 +156,12 @@ Absolutely not! From the very first, We were careful about this. It stores all t
 7. Social Login Settings
 
 == Changelog ==
+
+= 1.0.2 - Date: Dec 17, 2022 =
+* Fix UI issue on dashboard
+* Login with GitHub improvement
+* Do Two-Factor Authentication even for social login for selected user roles
+* Added more hooks for developers
 
 = 1.0.2 - Date: Dec 16, 2022 =
 * Improved UI & UX

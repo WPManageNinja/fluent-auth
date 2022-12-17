@@ -43,7 +43,7 @@ class SocialAuthHandler
         }
 
         if (isset($_GET['intent_redirect_to'])) {
-            \setcookie('fs_intent_redirect', sanitize_url($_GET['intent_redirect_to']), time() + 3600, COOKIEPATH, COOKIE_DOMAIN);  /* expire in 1 hour */
+            \setcookie('fs_intent_redirect', sanitize_url($_GET['intent_redirect_to']), time() + 3600, COOKIEPATH, COOKIE_DOMAIN, is_ssl());  /* expire in 1 hour */
         }
 
         $provider = Arr::get($_GET, 'fs_auth', $provider);

@@ -129,7 +129,7 @@ class AuthService
     public static function setStateToken()
     {
         $state = md5(wp_generate_uuid4());
-        setcookie('fs_auth_state', $state, time() + 3600, COOKIEPATH, COOKIE_DOMAIN);  /* expire in 1 hour */
+        setcookie('fs_auth_state', $state, time() + 3600, COOKIEPATH, COOKIE_DOMAIN, is_ssl());  /* expire in 1 hour */
         return $state;
     }
 

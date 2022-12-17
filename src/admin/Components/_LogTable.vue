@@ -1,5 +1,5 @@
 <template>
-    <el-table :data="logs">
+    <el-table stripe :data="logs">
         <el-table-column :min-width="120" :label="$t('Username')" prop="username">
             <template #default="scope">
                 {{scope.row.username}}
@@ -11,7 +11,7 @@
                 <span style="font-size: 11px;">{{scope.row.ip}}</span>
             </template>
         </el-table-column>
-        <el-table-column :width="100" :label="$t('Date')" prop="human_time_diff">
+        <el-table-column :width="110" :label="$t('Date')" prop="human_time_diff">
             <template #default="scope">
                 <span :title="scope.row.created_at" style="font-size: 11px;">{{scope.row.human_time_diff}}</span>
             </template>

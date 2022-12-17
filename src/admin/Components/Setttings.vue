@@ -1,7 +1,7 @@
 <template>
     <div class="dashboard box_wrapper">
         <div class="box dashboard_box box_narrow">
-            <div v-loading="loading" class="box_header" style="padding: 20px 15px;font-size: 16px;">
+            <div v-loading="loading" class="box_header" style="padding: 15px;font-size: 16px;">
                 {{ $t('Settings') }}
                 <div class="box_actions">
                     <el-button @click="applyRecommended()" size="small">{{ $t('apply_recommended') }}</el-button>
