@@ -24,6 +24,7 @@ class Helper
             'notify_on_blocked'       => 'no',
             'notification_email'      => '{admin_email}',
             'auto_delete_logs_day'    => 30, // in days
+            'digest_summary'          => '',
             'magic_login'             => 'no',
             'magic_restricted_roles'  => [],
             'email2fa'                => 'no',
@@ -38,6 +39,7 @@ class Helper
 
         if (!$settings || !is_array($settings)) {
             $defaults['require_configuration'] = 'yes';
+            $defaults['digest_summary'] = 'monthly';
             $settings = $defaults;
             return $settings;
         }

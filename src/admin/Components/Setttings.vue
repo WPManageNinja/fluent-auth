@@ -118,7 +118,7 @@
                             </el-col>
                             <el-col :sm="24" :md="12">
                                 <el-form-item
-                                    v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes'">
+                                    v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes' || settings.settings.digest_summary">
                                     <template #label>
                                         {{ $t('notification_email') }}
                                         <el-tooltip
@@ -144,6 +144,12 @@
                                     <el-switch v-model="settings.notify_on_blocked" active-value="yes"
                                                inactive-value="no"/>
                                     {{ $t('notification_blocked') }}
+                                </el-form-item>
+                                <el-form-item label="Send Digest Email Report Summary">
+                                    <el-select v-model="settings.digest_summary">
+                                        <el-option value="" label="Do not send digest email summary"></el-option>
+                                        <el-option v-for="(day, dayName) in digest_items" :value="dayName" :label="day"></el-option>
+                                    </el-select>
                                 </el-form-item>
                             </el-col>
                             <el-col :sm="24" :md="12">
@@ -232,7 +238,18 @@ export default {
             saving: false,
             errors: false,
             user_roles: [],
-            low_level_roles: {}
+            low_level_roles: {},
+            digest_items: {
+                daily: 'Daily',
+                sun: 'Every Sunday',
+                mon: 'Every Monday',
+                tue: 'Every Tuesday',
+                wed: 'Every Wednesday',
+                thu: 'Every Thursday',
+                fri: 'Every Friday',
+                sat: 'Every Saturday',
+                monthly: 'Every Month (1st day of every month)'
+            }
         }
     },
     methods: {

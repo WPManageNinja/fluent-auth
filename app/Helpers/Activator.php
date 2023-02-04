@@ -84,7 +84,7 @@ class Activator
 				use_limit INT(11) DEFAULT 1,
 				status varchar(20) DEFAULT 'issued',
 				use_type varchar(20) DEFAULT 'magic_login',
-				two_fa_code varchar(20) DEFAULT '',
+				two_fa_code_hash varchar(100) DEFAULT '',
 				ip_address varchar(20) NULL,
 				redirect_intend varchar(255) NULL,
 				success_ip_address varchar(50) NULL,
@@ -101,7 +101,14 @@ class Activator
                    KEY `use_type` (`use_type`(20))
 			) $charsetCollate;";
             dbDelta($sql);
+        } else {
+            $table_name = $wpdb->prefix . 'fls_login_hashes';
+            if(!$wpdb->get_var( "SHOW COLUMNS FROM `{$table_name}` LIKE 'two_fa_code_hash';" )) {
+                $wpdb->query("ALTER TABLE {$table_name} CHANGE `two_fa_code` `two_fa_code_hash` VARCHAR(100) NULL DEFAULT '' AFTER `use_type`;");
+            }
         }
+
+        update_option('__fluent_security_db_version', '1.0.0', 'no');
     }
 
 }

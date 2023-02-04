@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const registrationForm = document.getElementById('flsRegistrationForm');
     const resetPasswordForm = document.getElementById('flsResetPasswordForm');
     const loginForm = document.getElementById('loginform');
-    const twoFaForm = document.getElementById('fls_2fa_form');
 
 
     function setPlaceHolders() {
@@ -47,12 +46,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (twoFaForm) {
-        twoFaForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            handleFormSubmission(twoFaForm, 'fls_2fa_confirm', 'fluent_auth_2fa_email');
-        });
+    function init2FaForm() {
+        const twoFaForm = document.getElementById('fls_2fa_form');
+        if (twoFaForm) {
+            twoFaForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                handleFormSubmission(twoFaForm, 'fls_2fa_confirm', 'fluent_auth_2fa_email');
+            });
+        }
     }
+
+    init2FaForm();
 
     if (document.getElementById('fls_show_signup')) {
         document.getElementById('fls_show_signup').addEventListener('click', function (event) {
@@ -96,8 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         request.onload = function () {
             if (this.status === 200) {
-                if (this.response.redirect) {
+                if(this.response.load_2fa) {
+                    document.getElementById('fls_login_form').innerHTML = this.response.two_fa_form;
+                    setTimeout(() => {
+                        init2FaForm();
+                    }, 200);
+                } else if (this.response.redirect) {
                     window.location.href = this.response.redirect;
+                    return;
                 } else if (this.response.message) {
                     let el = document.createElement("div");
                     el.classList.add('success', 'text-success', 'fls-text-success');
@@ -106,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     form.reset();
                 } else {
                     window.location.reload();
+                    return;
                 }
             } else {
 
@@ -121,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     let el = document.createElement("div");
                     el.classList.add('error', 'text-danger');
                     el.innerHTML = genericError;
-
                     form.appendChild(el);
                 } else {
                     for (const property in this.response) {
@@ -136,7 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-
             toggleLoading(submitBtn);
         };
 

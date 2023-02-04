@@ -27,6 +27,7 @@ class BasicTasksHandler
          * Clean Up Old Logs
          */
         add_action('fluent_auth_daily_tasks', function () {
+            $this->maybeSendDigestEMail();
             \FluentAuth\App\Helpers\Helper::cleanUpLogs();
         });
 
@@ -106,7 +107,7 @@ class BasicTasksHandler
 
     public function maybeInterceptRestUserQuery($query)
     {
-        if (Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
+        if (Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('edit_others_posts')) {
             $query['login'] = 'someRandomStringForThis_' . time();
         }
 
@@ -115,7 +116,7 @@ class BasicTasksHandler
 
     public function maybeInterceptRestUserResponse($response, $user, $request)
     {
-        if (!empty($request['id']) && Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('list_users')) {
+        if (!empty($request['id']) && Helper::getSetting('disable_users_rest') === 'yes' && !current_user_can('edit_others_posts')) {
             return new \WP_Error('permission_error', 'You do not have access to list users. Restriction added from fluent auth plugin');
         }
         return $response;
@@ -135,6 +136,132 @@ class BasicTasksHandler
             <a href="<?php echo esc_url($url); ?>"><?php _e('Configure Fluent Auth', 'fluent-security'); ?></a>
         </div>
         <?php
+    }
+
+    public function maybeSendDigestEMail()
+    {
+        $frequency = Helper::getSetting('digest_summary');
+        $adminEmail = Helper::getSetting('notification_email');
+
+        if (!$frequency || !$adminEmail) {
+            return false;
+        }
+
+        $adminEmail = str_replace('{admin_email}', get_bloginfo('admin_email'), $adminEmail);
+        if (!$adminEmail) {
+            return false;
+        }
+
+        if ($frequency == 'monthly' && date('d') != '01') {
+            return false;
+        }
+
+        if ($frequency == 'weekly' && date('D') != 'Mon') {
+            return false;
+        }
+
+        $cutOuts = [
+            'daily'   => 23 * HOUR_IN_SECONDS,
+            'weekly'  => 6 * DAY_IN_SECONDS,
+            'monthly' => 27 * DAY_IN_SECONDS
+        ];
+
+        $cutOut = (isset($cutOuts[$frequency])) ? $cutOuts[$frequency] : 0;
+
+        if (!$cutOut) {
+            return false;
+        }
+
+        $lastSent = get_option('_fls_last_digest_sent', 0);
+
+        if ($lastSent && (current_time('timestamp') - strtotime($lastSent)) < $cutOut) {
+            return false;
+        }
+
+        if (!$lastSent) {
+            $lastSent = date('Y-m-d H:i:s', current_time('timestamp') - $cutOut);
+        }
+
+        $counts = flsDb()->table('fls_auth_logs')
+            ->select('status', flsDb()->raw('count(*) as total'))
+            ->where('created_at', '>=', $lastSent)
+            ->groupBy('status')
+            ->get();
+
+        $items = [
+            'success' => [
+                'count' => 0,
+                'title' => __('Successful Logins', 'fluent-security')
+            ],
+            'failed'  => [
+                'count' => 0,
+                'title' => __('Failed Logins', 'fluent-security')
+            ],
+            'blocked' => [
+                'count' => 0,
+                'title' => __('Blocked Logins', 'fluent-security')
+            ]
+        ];
+
+        foreach ($counts as $countItem) {
+            if (isset($items[$countItem->status])) {
+                $items[$countItem->status]['count'] = $countItem->total;
+            }
+        }
+
+        if (Helper::getSetting('magic_login') === 'yes') {
+            $items['magic_login'] = [
+                'title' => __('Login via URL', 'fluent-security'),
+                'count' => flsDb()->table('fls_login_hashes')
+                    ->where('status', 'used')
+                    ->where('use_type', 'magic_login')
+                    ->where('created_at', '>=', $lastSent)
+                    ->count()
+            ];
+        }
+
+        $validItems = [];
+        foreach ($items as $item) {
+            if ($item['count']) {
+                $validItems[] = $item;
+            }
+        }
+
+        if (!$validItems) {
+            return false;
+        }
+
+        $period = $frequency;
+
+        if (!in_array($frequency, ['monthly', 'weekly'])) {
+            $period = 'daily';
+        }
+
+        $infoHtml = '<ul style="padding-left:20px;line-height:25px;font-size: 14px;background: #f9f9f9;padding-top: 20px;padding-bottom: 20px;font-family: monospace;">';
+        foreach ($validItems as $item) {
+            $infoHtml .= '<li><b>' . $item['title'] . ':</b> ' . $item['count'] . '</li>';
+        }
+        $infoHtml .= '</ul>';
+
+        $lines = [
+            sprintf('<p style="font-size: 16px; line-height: 25px;">Hello there, <br />Here is the %1s digest report of your site\'s (%2s) login activity.</p>', $period, site_url()),
+            $infoHtml
+        ];
+
+        $data = [
+            'body'        => implode('', $lines),
+            'pre_header'  => sprintf('Auth Report for %s', get_bloginfo('name')),
+            'show_footer' => true
+        ];
+
+        $body = Helper::loadView('notification', $data);
+        $subject = sprintf('%1s report for %2s - %3s', ucfirst($period), get_bloginfo('name'), date('d, M Y', current_time('timestamp')));
+
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+
+        \wp_mail($adminEmail, $subject, $body, $headers);
+
+        update_option('_fls_last_digest_sent', current_time('mysql'), 'no');
     }
 
 }

@@ -1,22 +1,29 @@
 .fls_login_wrapper{
     max-width: 500px;
-    form#loginform >p {
+    form#loginform > p, #fls_2fa_form > p {
         display: block;
         margin-bottom: 15px;
     }
 
-    form#loginform label {
+    #fls_2fa_form {
+        .wp-pwd {
+            margin-bottom: 20px;
+        }
+    }
+
+    form#loginform label, #fls_2fa_form label {
         display: block;
         font-weight: 500;
     }
 
-    form#loginform .input {
+    form#loginform .input, #fls_2fa_form .input {
         padding: 10px;
         width: 100%;
         margin-top: 10px;
     }
 
-    form#loginform {
+
+    form#loginform, #fls_2fa_form {
         display: block;
         overflow: hidden;
         width: 100%;
