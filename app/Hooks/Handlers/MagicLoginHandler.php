@@ -60,7 +60,7 @@ class MagicLoginHandler
             return '';
         }
 
-        if(apply_filters('fluent_auth/will_disable_magic_form', false)) {
+        if (apply_filters('fluent_auth/will_disable_magic_form', false)) {
             return '';
         }
 
@@ -85,8 +85,7 @@ class MagicLoginHandler
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
                 </label>
                 <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text"/>
-                <input id="fls_magic_logon_nonce" type="hidden"
-                       value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
+                <input id="fls_magic_logon_nonce" type="hidden" value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
                 <div class="fls_magic_submit_wrapper">
                     <button class="button button-primary button-large" id="fls_magic_submit">
                         <?php _e('Continue', 'fluent-security'); ?>
@@ -118,7 +117,7 @@ class MagicLoginHandler
         $this->maybePushMagicForm();
         $newHtml = ob_get_clean();
 
-        return $html.$newHtml;
+        return $html . $newHtml;
     }
 
     public function pushAssets()
@@ -196,7 +195,7 @@ class MagicLoginHandler
         // Now we have a valid user and let's send the email
         $validity = apply_filters('fluent_auth/default_token_validity', 10, $user);
 
-        if(!empty($_REQUEST['redirect_to']) && filter_var( $_REQUEST['redirect_to'], FILTER_VALIDATE_URL )) {
+        if (!empty($_REQUEST['redirect_to']) && filter_var($_REQUEST['redirect_to'], FILTER_VALIDATE_URL)) {
             $redirect_to = sanitize_url($_REQUEST['redirect_to']);
         } else {
             $redirect_to = $this->getLoginRedirect($user);
@@ -282,31 +281,8 @@ class MagicLoginHandler
             return false;
         }
 
-        // check if the user have any valid hashes
-        $expectedValidity = current_time('mysql');
-
-        $lastValid = flsDb()->table('fls_login_hashes')
-            ->where('user_id', $user->ID)
-            ->where('status', 'issued')
-            ->where('valid_till', $expectedValidity)
-            ->first();
-
-
-        if ($lastValid) {
-            flsDb()->table('fls_login_hashes')
-                ->where('id', $lastValid->id)
-                ->update([
-                    'valid_till'      => date('Y-m-d H:i:s', current_time('timestamp') + $validity * 60),
-                    'redirect_intend' => ($redirectIntend) ? $redirectIntend : $lastValid->redirect_intend,
-                    'updated_at'      => current_time('mysql')
-                ]);
-            return $lastValid->login_hash;
-        }
-
-        $string = $user->ID . '-' . wp_generate_uuid4() . mt_rand(1, 99999999);
+        $string = md5($user->ID . '-' . wp_generate_uuid4() . mt_rand(1, 99999999));
         $hash = wp_hash_password($string);
-        $hash = sanitize_title($hash, '', 'display');
-        $hash .= $user->ID . '-' . time();
 
         $data = array(
             'login_hash'      => $hash,
@@ -320,10 +296,10 @@ class MagicLoginHandler
             'updated_at'      => current_time('mysql')
         );
 
-        flsDb()->table('fls_login_hashes')
+        $insertId = flsDb()->table('fls_login_hashes')
             ->insert($data);
 
-        return $hash;
+        return $string . ':' . $insertId;
     }
 
     public function makeLogin($hash)
@@ -332,12 +308,21 @@ class MagicLoginHandler
             return false;
         }
 
+        $hashes = explode(':', $hash);
+
+        if (count($hashes) != 2) {
+            return false;
+        }
+
+        $rowId = $hashes[1];
+        $hash = $hashes[0];
+
         // Check if user logged in
         if (is_user_logged_in()) {
             $userId = get_current_user_id();
             flsDb()->table('fls_login_hashes')
                 ->where('user_id', $userId)
-                ->where('login_hash', $hash)
+                ->where('id', $rowId)
                 ->update([
                     'status'             => 'already_logged_in',
                     'success_ip_address' => Helper::getIp(),
@@ -347,12 +332,16 @@ class MagicLoginHandler
         }
 
         $row = flsDb()->table('fls_login_hashes')
-            ->where('login_hash', $hash)
+            ->where('id', $rowId)
             ->where('use_type', 'magic_login')
             ->where('status', 'issued')
             ->first();
 
         if (!$row) {
+            return false;
+        }
+
+        if (!$this->isPasswordEqual($hash, $row->login_hash)) {
             return false;
         }
 
@@ -397,7 +386,7 @@ class MagicLoginHandler
 
                 Helper::setLoginMedia('magic_login');
 
-                if(!wp_doing_ajax()) {
+                if (!wp_doing_ajax()) {
                     if (isset($_GET['force_redirect']) && $_GET['force_redirect'] == 'yes') {
                         if ($row->redirect_intend) {
                             wp_safe_redirect($row->redirect_intend);
@@ -413,6 +402,11 @@ class MagicLoginHandler
         }
 
         return false;
+    }
+
+    private function isPasswordEqual($password, $stored_hash)
+    {
+        return wp_check_password($password, $stored_hash);
     }
 
     public function allowProgrammaticLogin($user, $username, $password)

@@ -20,7 +20,7 @@ class SocialAuthApiController
                     'doc_url' => 'https://fluentauth.com/docs/github-auth-connection'
                 ],
                 'google' => [
-                    'is_available' => defined('FLUENT_AUTH_EXPERIMENTAL_GOOGLE'),
+                    'is_available' => true,
                     'app_redirect' => GoogleAuthService::getAppRedirect(),
                     'doc_url' => 'https://fluentauth.com/docs/google-auth-connection'
                 ]

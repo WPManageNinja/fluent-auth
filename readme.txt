@@ -2,9 +2,9 @@
 Contributors: techjewel, wpmanageninja, adreastrian
 Tags: Login limit, login redirects, xml-rpc, login logs, social logins,
 Requires at least: 5.0
-Tested up to: 6.1
+Tested up to: 6.2
 Requires PHP: 7.0
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,7 +37,7 @@ Ensure secure access to your admin panel with Two-Factor Login via email for hig
 Simplify the login process for end users like customers and subscribers. No more password resets or forgotten passwords that cause users to leave your site. With our improved flow and features, users can log in to your site simply by typing their username or email address and clicking on a secure one-time use link sent to their email.
 
 **🚀 Social Login / Register**
-Allow users to log in to your site with their GitHub accounts (with support for Facebook, Google and other platforms coming soon). This feature is lightweight and easy to enable.
+Allow users to log in to your site with their GitHub or Google accounts. This feature is lightweight and easy to enable.
 
 **🚀 Limit Login Attempts**
 Protect your site against brute force attacks by blocking excessive login attempts. Our simple yet powerful tools also improve site security and performance, and allow for customizable lockout timings.
@@ -104,6 +104,7 @@ FluentAuth has been designed to provide light-weight security solution while add
 	<li><a href="https://fluentauth.com/docs/login-redirects/" target="_blank">Login / Logout Redirects</a></li>
 	<li><a href="https://fluentauth.com/docs/shortcodes/" target="_blank">Register/Login Shortcodes in FluentAuth</a></li>
 	<li><a href="https://fluentauth.com/docs/github-auth-connection/" target="_blank">Configure Login with GitHub</a></li>
+	<li><a href="https://fluentauth.com/docs/google-auth-connection/" target="_blank">Configure Login with Google</a></li>
 </ul>
 
 == Other Plugins By The Same Team ==
@@ -156,6 +157,10 @@ Absolutely not! From the very first, We were careful about this. It stores all t
 7. Social Login Settings
 
 == Changelog ==
+
+= 1.0.5 - Date: May 04, 2023 =
+* Added Login or Signup with Google Social Auth Connection
+* Magic Login URL token is now hashed to improve the security
 
 = 1.0.4 - Date: Feb 04, 2023 =
 * Added Daily/Weekly/Monthly Email reporting Feature
