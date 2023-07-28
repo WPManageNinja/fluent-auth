@@ -12,6 +12,26 @@ class TwoFaHandler
         add_action('fluent_auth/login_attempts_checked', [$this, 'maybe2FaRedirect'], 1, 1);
         add_action('login_form_fls_2fa_email', [$this, 'render2FaForm'], 1);
         add_action('wp_ajax_nopriv_fluent_auth_2fa_email', [$this, 'verify2FaEmailCode']);
+        add_action('wp_ajax_fluent_auth_2fa_email', function () {
+            $hash = sanitize_text_field(Arr::get($_REQUEST, 'login_hash'));
+
+            $logHash = flsDb()->table('fls_login_hashes')
+                ->where('login_hash', $hash)
+                ->where('use_type', 'email_2_fa')
+                ->orderBy('id', 'DESC')
+                ->first();
+
+            $user = get_user_by('ID', get_current_user_id());
+            $redirectTo = admin_url();
+            if ($logHash && $logHash->redirect_intend) {
+                $redirectTo = $logHash->redirect_intend;
+                $redirectTo = apply_filters('login_redirect', $redirectTo, $logHash->redirect_intend, $user);
+            }
+
+            wp_send_json([
+                'redirect' => $redirectTo
+            ]);
+        });
     }
 
     public function render2FaForm()
@@ -47,7 +67,7 @@ class TwoFaHandler
 
         if (wp_doing_ajax()) {
             wp_send_json([
-                'load_2fa' => 'yes',
+                'load_2fa'    => 'yes',
                 'two_fa_form' => $this->get2FaFormHtml($return)
             ]);
         }
@@ -78,7 +98,7 @@ class TwoFaHandler
             $redirectIntend = esc_url($_GET['redirect_to']);
         }
 
-        if(isset($_REQUEST['rememberme'])) {
+        if (isset($_REQUEST['rememberme'])) {
             $hash .= '-auth';
         }
 
@@ -112,7 +132,7 @@ class TwoFaHandler
 
         $this->send2FaEmail($data, $user, $autoLoginUrl);
 
-        if($return === 'url') {
+        if ($return === 'url') {
             return add_query_arg([
                 'fls_2fa'    => 'email',
                 'login_hash' => $hash,
@@ -126,7 +146,7 @@ class TwoFaHandler
                 'login_hash' => $hash,
                 'action'     => 'fls_2fa_email'
             ], wp_login_url()),
-            'login_hash' => $hash
+            'login_hash'  => $hash
         ];
     }
 
@@ -184,7 +204,7 @@ class TwoFaHandler
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
         $user = wp_signon(array(
                 'user_login' => $user->user_login,
-                'remember' => (bool) strpos($logHash->login_hash, '-auth')
+                'remember'   => (bool)strpos($logHash->login_hash, '-auth')
             )
         );
 
@@ -208,6 +228,7 @@ class TwoFaHandler
                 Helper::setLoginMedia('two_factor_email');
 
                 $redirectTo = apply_filters('login_redirect', $redirectTo, $logHash->redirect_intend, $user);
+
                 wp_send_json([
                     'redirect' => $redirectTo
                 ]);
@@ -300,17 +321,24 @@ class TwoFaHandler
     {
         ob_start();
         ?>
-        <form style="margin-top: 20px;margin-left: 0;padding: 26px 24px 34px;font-weight: 400;overflow: hidden;background: #fff;border: 1px solid #c3c4c7;box-shadow: 0 1px 3px rgb(0 0 0 / 4%);" class="fls_2fs" id="fls_2fa_form">
+        <form
+            style="margin-top: 20px;margin-left: 0;padding: 26px 24px 34px;font-weight: 400;overflow: hidden;background: #fff;border: 1px solid #c3c4c7;box-shadow: 0 1px 3px rgb(0 0 0 / 4%);"
+            class="fls_2fs" id="fls_2fa_form">
             <input type="hidden" name="login_hash" value="<?php echo esc_attr(Arr::get($data, 'login_hash')); ?>"/>
             <input type="hidden" name="redirect_to" value="<?php echo esc_url_raw(Arr::get($data, 'redirect_to')); ?>"/>
             <div class="user-pass-wrap">
                 <p style="margin-bottom: 20px;"><?php _e('Please check your email inbox and get the 2 factor Authentication code and Provide here to login', 'fluent-security'); ?></p>
                 <label for="login_passcode"><?php _e('Two-Factor Authentication Code', 'fluent-security'); ?></label>
                 <div class="wp-pwd">
-                    <input style="font-size: 14px;" placeholder="<?php _e('Login Code', 'fluent-security'); ?>" type="text" value="<?php echo (isset($data['auto_code'])) ? esc_attr($data['auto_code']) : ''; ?>" name="login_passcode" id="login_passcode" class="input" size="20"/>
+                    <input style="font-size: 14px;" placeholder="<?php _e('Login Code', 'fluent-security'); ?>"
+                           type="text"
+                           value="<?php echo (isset($data['auto_code'])) ? esc_attr($data['auto_code']) : ''; ?>"
+                           name="login_passcode" id="login_passcode" class="input" size="20"/>
                 </div>
                 <div>
-                    <button style="display: block; cursor: pointer; width: 100%;border: 1px solid #2271b1;background: #2271b1;color: #fff;text-decoration: none;text-shadow: none;min-height: 32px;line-height: 2.30769231;padding: 4px 12px;font-size: 13px;border-radius: 3px;" id="fls_2fa_confirm" type="submit">
+                    <button
+                        style="display: block; cursor: pointer; width: 100%;border: 1px solid #2271b1;background: #2271b1;color: #fff;text-decoration: none;text-shadow: none;min-height: 32px;line-height: 2.30769231;padding: 4px 12px;font-size: 13px;border-radius: 3px;"
+                        id="fls_2fa_confirm" type="submit">
                         <?php _e('Login', 'fluent-security'); ?>
                     </button>
                 </div>
@@ -326,13 +354,13 @@ class TwoFaHandler
         /*
          * @todo: Remove this whole check function after 2023
          */
-        if(get_option('__fluent_security_db_version')) {
+        if (get_option('__fluent_security_db_version')) {
             return;
         }
 
         global $wpdb;
         $table_name = $wpdb->prefix . 'fls_login_hashes';
-        if(!$wpdb->get_var( "SHOW COLUMNS FROM `{$table_name}` LIKE 'two_fa_code_hash';" )) {
+        if (!$wpdb->get_var("SHOW COLUMNS FROM `{$table_name}` LIKE 'two_fa_code_hash';")) {
             $wpdb->query("ALTER TABLE {$table_name} CHANGE `two_fa_code` `two_fa_code_hash` VARCHAR(100) NULL DEFAULT '' AFTER `use_type`;");
             update_option('__fluent_security_db_version', '1.0.0', 'no');
         }

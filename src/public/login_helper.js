@@ -119,9 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
             } else {
-
                 let genericError = this.response.error;
-
                 if (!genericError && this.response.message) {
                     genericError = this.response.message;
                 } else if (genericError && this.response.data.status === 403) {
