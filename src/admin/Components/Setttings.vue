@@ -118,7 +118,7 @@
                             </el-col>
                             <el-col :sm="24" :md="12">
                                 <el-form-item
-                                    v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes' || settings.settings.digest_summary">
+                                    v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes' || settings.digest_summary">
                                     <template #label>
                                         {{ $t('notification_email') }}
                                         <el-tooltip
@@ -249,7 +249,8 @@ export default {
                 fri: 'Every Friday',
                 sat: 'Every Saturday',
                 monthly: 'Every Month (1st day of every month)'
-            }
+            },
+            app_ready: false
         }
     },
     methods: {
@@ -257,9 +258,11 @@ export default {
             this.loading = true;
             this.$get('settings')
                 .then(response => {
+                    console.log(response);
                     this.settings = response.settings;
                     this.user_roles = response.user_roles;
                     this.low_level_roles = response.low_level_roles;
+                    this.app_ready = true;
                 })
                 .catch((errors) => {
                     this.$handleError(errors)
