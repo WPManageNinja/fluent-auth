@@ -4,6 +4,7 @@ import Settings from './Components/Setttings.vue';
 import SocialAuthSettings from './Components/SocialAuthSettings.vue';
 import AuthShortcodes from './Components/AuthShortcodes.vue';
 import LoginRedirects from './Components/LoginRedirects.vue';
+import ReCaptcha from './Components/ReCaptcha.vue';
 
 export var routes = [
     {
@@ -28,6 +29,14 @@ export var routes = [
         component: Settings,
         meta: {
             active: 'settings'
+        }
+    },
+    {
+        path: '/recaptcha',
+        name: 'recaptcha',
+        component: ReCaptcha,
+        meta: {
+            active: 'recaptcha'
         }
     },
     {

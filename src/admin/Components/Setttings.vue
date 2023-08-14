@@ -118,7 +118,7 @@
                             </el-col>
                             <el-col :sm="24" :md="12">
                                 <el-form-item
-                                    v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes' || settings.settings.digest_summary">
+                                    v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes' || settings.settings?.digest_summary">
                                     <template #label>
                                         {{ $t('notification_email') }}
                                         <el-tooltip

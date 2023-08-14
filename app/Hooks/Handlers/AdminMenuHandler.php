@@ -3,6 +3,7 @@
 namespace FluentAuth\App\Hooks\Handlers;
 
 use FluentAuth\App\Helpers\Helper;
+use FluentAuth\App\Services\ReCaptcha\Recaptcha;
 
 class AdminMenuHandler
 {
@@ -46,6 +47,8 @@ class AdminMenuHandler
             'fluent-auth#/settings',
             array($this, 'render')
         );
+
+        Recaptcha::renderMenuPage($permission, 'fluent-auth', array($this, 'render'));
 
         add_submenu_page(
             'fluent-auth',

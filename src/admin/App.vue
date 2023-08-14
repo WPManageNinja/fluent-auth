@@ -39,6 +39,10 @@ export default {
                     title: this.$t('Settings')
                 },
                 {
+                    route: 'recaptcha',
+                    title: this.$t('Recaptcha')
+                },
+                {
                     route: 'social_auth_settings',
                     title: this.$t('Social Login')
                 },

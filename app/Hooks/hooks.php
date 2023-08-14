@@ -11,3 +11,4 @@
 (new \FluentAuth\App\Hooks\Handlers\TwoFaHandler())->register();
 (new \FluentAuth\App\Hooks\Handlers\BasicTasksHandler())->register();
 
+\FluentAuth\App\Services\ReCaptcha\Recaptcha::register();

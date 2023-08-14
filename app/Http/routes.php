@@ -13,4 +13,6 @@ $router->get('settings', ['\FluentAuth\App\Http\Controllers\SettingsController',
     ->get('social-auth-settings', ['\FluentAuth\App\Http\Controllers\SocialAuthApiController', 'getSettings'], $permissions)
     ->post('social-auth-settings', ['\FluentAuth\App\Http\Controllers\SocialAuthApiController', 'saveSettings'], $permissions)
     ->get('auth-forms-settings', ['\FluentAuth\App\Http\Controllers\SettingsController', 'getAuthFormSettings'], $permissions)
-    ->post('auth-forms-settings', ['\FluentAuth\App\Http\Controllers\SettingsController', 'saveAuthFormSettings'], $permissions);
+    ->post('auth-forms-settings', ['\FluentAuth\App\Http\Controllers\SettingsController', 'saveAuthFormSettings'], $permissions)
+    ->get('recaptcha-settings', ['\FluentAuth\App\Http\Controllers\ReCaptchaController', 'getSettings'], $permissions)
+    ->post('recaptcha-settings', ['\FluentAuth\App\Http\Controllers\ReCaptchaController', 'updateSettings'], $permissions);
