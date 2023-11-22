@@ -3,7 +3,7 @@
 use FluentAuthDb\Connection;
 use FluentAuthDb\Exception;
 
-class QueryBuilderHandler
+class QueryBuilderHandler Extends Connection
 {
 
     /**
