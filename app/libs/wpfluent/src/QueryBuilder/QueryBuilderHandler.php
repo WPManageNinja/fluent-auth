@@ -456,7 +456,7 @@ class QueryBuilderHandler
         if (! is_array($tables)) {
             // because a single table is converted to an array anyways,
             // this makes sense.
-            $tables = func_get_args();
+            $tables = array($tables);
         }
 
         $instance = new static($this->connection);
@@ -474,7 +474,7 @@ class QueryBuilderHandler
     public function from($tables)
     {
         if (! is_array($tables)) {
-            $tables = func_get_args();
+            $tables = array($tables);
         }
 
         $tables = $this->addTablePrefix($tables, false);
@@ -491,7 +491,7 @@ class QueryBuilderHandler
     public function select($fields)
     {
         if (! is_array($fields)) {
-            $fields = func_get_args();
+            $fields = array($fields);
         }
 
         $fields = $this->addTablePrefix($fields);

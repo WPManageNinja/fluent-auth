@@ -1,4 +1,5 @@
-<?php namespace FluentAuthDb\Viocon;
+<?php
+namespace FluentAuthDb\Viocon;
 
 /**
  * This class gives the ability to access non-static methods statically
@@ -38,7 +39,7 @@ class AliasFacade {
     }
 
     /**
-     * @return Container $instance
+     * @return \FluentAuthDb\Viocon\Container $instance
      */
     public static function getVioconInstance()
     {
