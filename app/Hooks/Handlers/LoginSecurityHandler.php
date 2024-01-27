@@ -345,6 +345,14 @@ class LoginSecurityHandler
             return false;
         }
 
+        // get last send email time
+        $lastSendTime = get_option('fls_last_blocked_email_send_time', 0);
+        if ($lastSendTime && (time() - $lastSendTime) < 60) {
+            return false;
+        }
+
+        update_option('fls_last_blocked_email_send_time', time(), 'no');
+
         $agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
         $browserDetection = new \FluentAuth\App\Helpers\BrowserDetection();
 
