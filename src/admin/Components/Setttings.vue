@@ -66,8 +66,7 @@
                                     {{ $t('Enable Magic Login (User can login via url sent to email)') }}
                                 </el-checkbox>
                             </el-form-item>
-                            <el-form-item style="background: white; padding: 10px 20px;"
-                                          v-if="settings.magic_login == 'yes'">
+                            <el-form-item style="background: white; padding: 10px 20px;" v-if="settings.magic_login == 'yes'">
                                 <template #label>
                                     {{ $t('user_role_magic_disable') }}
                                 </template>
@@ -81,13 +80,30 @@
 
                         <div class="fls_inner_group" :class="'fls_inner_group_' + settings.email2fa">
                             <el-form-item>
+                                <el-checkbox v-model="settings.totp2fa" true-label="yes" false-label="no">
+                                    Enable Two-Factor Authentication via TOTP Apps (like Google Authenticator, Authy etc)
+                                </el-checkbox>
+                            </el-form-item>
+                            <el-form-item style="background: white; padding: 10px 20px;" v-if="settings.totp2fa == 'yes'">
+                                <template #label>
+                                    Select Roles that requires Two-Factor Authentication with TOTP Apps
+                                </template>
+                                <el-select placeholder="Enabled for All User Roles" clearable
+                                           v-model="settings.totp_roles" :multiple="true">
+                                    <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
+                                               :key="role.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </div>
+
+                        <div class="fls_inner_group" :class="'fls_inner_group_' + settings.email2fa">
+                            <el-form-item>
                                 <el-checkbox v-model="settings.email2fa" true-label="yes" false-label="no">
                                     Enable Two-Factor Authentication via Email (If enable then user have to provide
                                     authentication code sent via email)
                                 </el-checkbox>
                             </el-form-item>
-                            <el-form-item style="background: white; padding: 10px 20px;"
-                                          v-if="settings.email2fa == 'yes'">
+                            <el-form-item style="background: white; padding: 10px 20px;" v-if="settings.email2fa == 'yes'">
                                 <template #label>
                                     Select Roles that requires Two-Factor Authentication
                                 </template>
