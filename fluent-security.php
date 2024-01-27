@@ -45,7 +45,6 @@ class FluentAuthPlugin
 
     private function autoLoad()
     {
-        require_once FLUENT_AUTH_PLUGIN_PATH . 'app/libs/wpfluent/wpfluent.php';
 
         spl_autoload_register(function($class) {
             $match = 'FluentAuth';
@@ -64,6 +63,8 @@ class FluentAuthPlugin
 
             require(trailingslashit($path) . trim($file, '/') . '.php');
         });
+
+        require_once FLUENT_AUTH_PLUGIN_PATH . 'app/Services/DB/wpfluent.php';
 
         add_action('rest_api_init', function () {
             require_once FLUENT_AUTH_PLUGIN_PATH . 'app/Http/routes.php';

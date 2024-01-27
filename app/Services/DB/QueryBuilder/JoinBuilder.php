@@ -1,4 +1,4 @@
-<?php namespace FluentAuthDb\QueryBuilder;
+<?php namespace FluentAuth\App\Services\DB\QueryBuilder;
 
 class JoinBuilder extends QueryBuilderHandler
 {

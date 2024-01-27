@@ -1,7 +1,7 @@
-<?php namespace FluentAuthDb;
+<?php namespace FluentAuth\App\Services\DB;
 
-use FluentAuthDb\QueryBuilder\QueryBuilderHandler;
-use FluentAuthDb\QueryBuilder\Raw;
+use FluentAuth\App\Services\DB\QueryBuilder\QueryBuilderHandler;
+use FluentAuth\App\Services\DB\QueryBuilder\Raw;
 
 class EventHandler
 {
@@ -63,7 +63,7 @@ class EventHandler
     }
 
     /**
-     * @param QueryBuilderHandler $queryBuilder
+     * @param \FluentAuth\App\Services\DB\src\QueryBuilder\QueryBuilderHandler $queryBuilder
      * @param                     $event
      * @return mixed
      */

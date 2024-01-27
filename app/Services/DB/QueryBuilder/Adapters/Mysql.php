@@ -1,4 +1,5 @@
-<?php namespace FluentAuthDb\QueryBuilder\Adapters;
+<?php
+namespace FluentAuth\App\Services\DB\QueryBuilder\Adapters;
 
 class Mysql extends BaseAdapter
 {

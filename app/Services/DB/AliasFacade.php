@@ -1,6 +1,6 @@
-<?php namespace FluentAuthDb;
+<?php namespace FluentAuth\App\Services\DB;
 
-use FluentAuthDb\QueryBuilder\QueryBuilderHandler;
+use FluentAuth\App\Services\DB\QueryBuilder\QueryBuilderHandler;
 
 /**
  * This class gives the ability to access non-static methods statically

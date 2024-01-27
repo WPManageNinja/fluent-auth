@@ -1,6 +1,7 @@
-<?php namespace FluentAuthDb;
+<?php
+namespace FluentAuth\App\Services\DB;
 
-use FluentAuthDb\Viocon\Container;
+use FluentAuth\App\Services\DB\Viocon\Container;
 
 class Connection
 {
@@ -57,7 +58,7 @@ class Connection
         $this->setAdapter()->setAdapterConfig($config)->connect();
 
         // Create event dependency
-        $this->eventHandler = $this->container->build('\\FluentAuthDb\\EventHandler');
+        $this->eventHandler = $this->container->build('\\FluentAuth\\App\\Services\\DB\\EventHandler');
 
         if ($alias) {
             $this->createAlias($alias);
@@ -71,9 +72,9 @@ class Connection
      */
     public function createAlias($alias)
     {
-        class_alias('FluentAuthDb\\AliasFacade', $alias);
+        class_alias('FluentAuth\\App\\Services\\DB\\AliasFacade', $alias);
 
-        $builder = $this->container->build('\\FluentAuthDb\\QueryBuilder\\QueryBuilderHandler', array($this));
+        $builder = $this->container->build('\\FluentAuth\\App\\Services\\DB\\QueryBuilder\\QueryBuilderHandler', array($this));
 
         AliasFacade::setQueryBuilderInstance($builder);
     }
@@ -83,7 +84,7 @@ class Connection
      */
     public function getQueryBuilder()
     {
-        return $this->container->build('\\FluentAuthDb\\QueryBuilder\\QueryBuilderHandler', array($this));
+        return $this->container->build('\\FluentAuth\\App\\Services\\DB\\QueryBuilder\\QueryBuilderHandler', array($this));
     }
 
 
@@ -161,7 +162,7 @@ class Connection
     }
 
     /**
-     * @return Container
+     * @return \FluentAuth\App\Services\DB\Viocon\Container
      */
     public function getContainer()
     {

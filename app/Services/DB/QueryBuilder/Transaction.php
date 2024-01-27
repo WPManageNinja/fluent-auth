@@ -1,6 +1,6 @@
 <?php
 
-namespace FluentAuthDb\QueryBuilder;
+namespace FluentAuth\App\Services\DB\QueryBuilder;
 
 class Transaction extends QueryBuilderHandler
 {

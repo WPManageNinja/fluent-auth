@@ -155,7 +155,7 @@ class AdminMenuHandler
                 'security_pass_desc'            => __('A new field will be shown to provide this code to login. Users can also set their own code from profile page.', 'fluent-security'),
                 'Other Settings'                => __('Other Settings', 'fluent-security'),
                 'delete_logs_label'             => __('Automatically delete logs older than (in days)', 'fluent-security'),
-                'delete_logs_desc'              => __('Use 0 if you do not delete the logs', 'fluent-security'),
+                'delete_logs_desc'              => __('Use 0 if you do not want to delete the logs', 'fluent-security'),
                 'login_notification_label'      => __('Send Email notification if any of the following user roles login', 'fluent-security'),
                 'notification_blocked'          => __('Send email notification when a user get blocked', 'fluent-security'),
                 'notification_email'            => __('Notification Send to Email Address', 'fluent-security'),

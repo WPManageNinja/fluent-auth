@@ -1,18 +1,18 @@
-<?php namespace FluentAuthDb\QueryBuilder;
+<?php namespace FluentAuth\App\Services\DB\QueryBuilder;
 
-use FluentAuthDb\Connection;
-use FluentAuthDb\Exception;
+use FluentAuth\App\Services\DB\Connection;
+use FluentAuth\App\Services\DB\Exception;
 
 class QueryBuilderHandler
 {
 
     /**
-     * @var \FluentAuthDb\Viocon\Container
+     * @var \FluentAuth\App\Services\DB\Viocon\Container
      */
     protected $container;
 
     /**
-     * @var Connection
+     * @var \FluentAuth\App\Services\DB\src\Connection
      */
     protected $connection;
 
@@ -37,7 +37,7 @@ class QueryBuilderHandler
     protected $tablePrefix = null;
 
     /**
-     * @var \FluentAuthDb\QueryBuilder\Adapters\BaseAdapter
+     * @var \FluentAuth\App\Services\DB\QueryBuilder\Adapters\BaseAdapter
      */
     protected $adapterInstance;
 
@@ -49,9 +49,9 @@ class QueryBuilderHandler
     protected $fetchParameters = array(\PDO::FETCH_OBJ);
 
     /**
-     * @param null|\FluentAuthDb\Connection $connection
+     * @param null|\FluentAuth\App\Services\DB\Connection $connection
      *
-     * @throws \FluentAuthDb\Exception
+     * @throws \FluentAuth\App\Services\DB\Exception
      */
     public function __construct(Connection $connection = null)
     {
@@ -70,10 +70,9 @@ class QueryBuilderHandler
         if (isset($this->adapterConfig['prefix'])) {
             $this->tablePrefix = $this->adapterConfig['prefix'];
         }
-
         // Query builder adapter instance
         $this->adapterInstance = $this->container->build(
-            '\\FluentAuthDb\\QueryBuilder\\Adapters\\' . ucfirst($this->adapter),
+            '\\FluentAuth\\App\\Services\\DB\\QueryBuilder\\Adapters\\' . ucfirst($this->adapter),
             array($this->connection)
         );
     }
@@ -106,7 +105,7 @@ class QueryBuilderHandler
     }
 
     /**
-     * @param null|\FluentAuthDb\Connection $connection
+     * @param null|\FluentAuth\App\Services\DB\Connection $connection
      *
      * @return static
      */
@@ -128,7 +127,7 @@ class QueryBuilderHandler
     public function query($sql, $bindings = array())
     {
         $this->dbStatement = $this->container->build(
-            '\\FluentAuthDb\\QueryBuilder\\QueryObject',
+            '\\FluentAuth\\App\\Services\\DB\\QueryBuilder\\QueryObject',
             array($sql, $bindings)
         )->getRawSql();
 
@@ -153,7 +152,7 @@ class QueryBuilderHandler
      * Get all rows
      *
      * @return array|object|null
-     * @throws \FluentAuthDb\Exception
+     * @throws \FluentAuth\App\Services\DB\Exception
      */
     public function get()
     {
@@ -284,7 +283,7 @@ class QueryBuilderHandler
         $queryArr = $this->adapterInstance->$type($this->statements, $dataToBePassed);
         
         return  $this->container->build(
-            '\\FluentAuthDb\\QueryBuilder\\QueryObject',
+            '\\FluentAuth\\App\\Services\\DB\\QueryBuilder\\QueryObject',
             array($queryArr['sql'], $queryArr['bindings'])
         );
     }
@@ -310,7 +309,7 @@ class QueryBuilderHandler
      * @param $data
      *
      * @return array|string
-     * @throws \FluentAuthDb\Exception
+     * @throws \FluentAuth\App\Services\DB\Exception
      */
     private function doInsert($data, $type)
     {
@@ -383,7 +382,7 @@ class QueryBuilderHandler
     /**
      * @param $data
      *
-     * @throws \FluentAuthDb\Exception
+     * @throws \FluentAuth\App\Services\DB\Exception
      */
     public function update($data)
     {
@@ -428,7 +427,7 @@ class QueryBuilderHandler
 
     /**
      * @return mixed
-     * @throws \FluentAuthDb\Exception
+     * @throws \FluentAuth\App\Services\DB\Exception
      */
     public function delete()
     {
@@ -811,7 +810,7 @@ class QueryBuilderHandler
 
         // Build a new JoinBuilder class, keep it by reference so any changes made
         // in the closure should reflect here
-        $joinBuilder = $this->container->build('\\FluentAuthDb\\QueryBuilder\\JoinBuilder', array($this->connection));
+        $joinBuilder = $this->container->build('\\FluentAuth\\App\\Services\\DB\\QueryBuilder\\JoinBuilder', array($this->connection));
         $joinBuilder = & $joinBuilder;
         // Call the closure with our new joinBuilder object
         $key($joinBuilder);
@@ -837,7 +836,7 @@ class QueryBuilderHandler
 
             // Get the Transaction class
             $transaction = $this->container->build(
-                '\\FluentAuthDb\\QueryBuilder\\Transaction',
+                '\\FluentAuth\\App\\Services\\DB\\QueryBuilder\\Transaction',
                 array($this->connection)
             );
 
@@ -909,7 +908,7 @@ class QueryBuilderHandler
      */
     public function raw($value, $bindings = array())
     {
-        return $this->container->build('\\FluentAuthDb\\QueryBuilder\\Raw', array($value, $bindings));
+        return $this->container->build('\\FluentAuth\\App\\Services\\DB\\QueryBuilder\\Raw', array($value, $bindings));
     }
 
     /**
@@ -923,7 +922,7 @@ class QueryBuilderHandler
     }
 
     /**
-     * @param Connection $connection
+     * @param \FluentAuth\App\Services\DB\Connection $connection
      *
      * @return $this
      */
@@ -935,7 +934,7 @@ class QueryBuilderHandler
     }
 
     /**
-     * @return Connection
+     * @return \FluentAuth\App\Services\DB\Connection
      */
     public function getConnection()
     {
