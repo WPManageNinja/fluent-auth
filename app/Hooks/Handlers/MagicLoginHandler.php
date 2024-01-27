@@ -84,8 +84,10 @@ class MagicLoginHandler
                 <label for="fls_magic_logon">
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
                 </label>
-                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text"/>
-                <input id="fls_magic_logon_nonce" type="hidden" value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
+                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon"
+                       class="fls_magic_input" type="text"/>
+                <input id="fls_magic_logon_nonce" type="hidden"
+                       value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
                 <div class="fls_magic_submit_wrapper">
                     <button class="button button-primary button-large" id="fls_magic_submit">
                         <?php _e('Continue', 'fluent-security'); ?>
@@ -370,7 +372,11 @@ class MagicLoginHandler
         Helper::setLoginMedia('magic_login');
 
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
-        $user = wp_signon(array('user_login' => $user->user_login));
+        $user = wp_signon(array(
+                'user_login' => $user->user_login,
+                'user_password' => ''
+            )
+        );
         remove_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);
 
         if ($user instanceof \WP_User) {

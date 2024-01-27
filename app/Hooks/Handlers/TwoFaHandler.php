@@ -204,7 +204,8 @@ class TwoFaHandler
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
         $user = wp_signon(array(
                 'user_login' => $user->user_login,
-                'remember'   => (bool)strpos($logHash->login_hash, '-auth')
+                'user_password' => '',
+                'remember'   => (bool) strpos($logHash->login_hash, '-auth')
             )
         );
 
@@ -319,13 +320,19 @@ class TwoFaHandler
 
     private function get2FaFormHtml($data = [])
     {
+        $redirectTo = Arr::get($data, 'redirect_to');
+
+        if($redirectTo) {
+            $redirectTo = esc_url_raw($redirectTo);
+        }
+
         ob_start();
         ?>
         <form
             style="margin-top: 20px;margin-left: 0;padding: 26px 24px 34px;font-weight: 400;overflow: hidden;background: #fff;border: 1px solid #c3c4c7;box-shadow: 0 1px 3px rgb(0 0 0 / 4%);"
             class="fls_2fs" id="fls_2fa_form">
             <input type="hidden" name="login_hash" value="<?php echo esc_attr(Arr::get($data, 'login_hash')); ?>"/>
-            <input type="hidden" name="redirect_to" value="<?php echo esc_url_raw(Arr::get($data, 'redirect_to')); ?>"/>
+            <input type="hidden" name="redirect_to" value="<?php echo esc_attr($redirectTo); ?>"/>
             <div class="user-pass-wrap">
                 <p style="margin-bottom: 20px;"><?php _e('Please check your email inbox and get the 2 factor Authentication code and Provide here to login', 'fluent-security'); ?></p>
                 <label for="login_passcode"><?php _e('Two-Factor Authentication Code', 'fluent-security'); ?></label>

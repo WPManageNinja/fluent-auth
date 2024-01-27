@@ -8,13 +8,15 @@ class LogsController
 {
     public static function getLogs(\WP_REST_Request $request)
     {
-        $orderByColumn = sanitize_sql_orderby($request->get_param('sortBy'));
-        $orderBy = sanitize_sql_orderby($request->get_param('sortType'));
-
-        if (!$orderByColumn) {
+        if($orderByColumn = $request->get_param('sortBy')){
+            $orderByColumn = sanitize_sql_orderby($orderByColumn);
+        } else {
             $orderByColumn = 'id';
         }
-        if (!$orderBy) {
+
+        if($orderBy = $request->get_param('sortType')){
+            $orderBy = sanitize_sql_orderby($orderBy);
+        } else {
             $orderBy = 'DESC';
         }
 
@@ -27,8 +29,8 @@ class LogsController
             }
         }
 
-        if ($request->get_param('search')) {
-            $search = sanitize_text_field($request->get_param('search'));
+        if ($search = $request->get_param('search')) {
+            $search = sanitize_text_field($search);
             $query->where(function ($q) use ($search) {
                 $q->where('username', 'LIKE', '%' . $search . '%');
                 $q->orWhere('media', 'LIKE', '%' . $search . '%');
@@ -89,7 +91,7 @@ class LogsController
         $toDate = date('Y-m-d 23:59:59', current_time('timestamp'));
 
         $counts = flsDb()->table('fls_auth_logs')
-            ->select('status', flsDb()->raw('count(*) as total'))
+            ->select(['status', flsDb()->raw('count(*) as total')])
             ->whereBetween('created_at', $fromDate, $toDate)
             ->groupBy('status')
             ->get();
