@@ -150,7 +150,7 @@ class MagicLoginHandler
         if (!$this->isEnabled()) {
             wp_send_json([
                 'message' => __('Login via URL is not activated', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         $loginLimit = Helper::getSetting('login_try_limit', 5);
@@ -166,7 +166,7 @@ class MagicLoginHandler
         if ($existingCount > $loginLimit) {
             wp_send_json([
                 'message' => sprintf(__('You are trying too much. Please try after %d minutes', 'fluent-security'), $timingMinutes)
-            ], 423);
+            ], 422);
         }
 
         $username = sanitize_text_field($_REQUEST['email']);
@@ -176,7 +176,7 @@ class MagicLoginHandler
         if (!wp_verify_nonce($nonce, 'fls_magic_send_magic_email')) {
             wp_send_json(array(
                 'message' => __('Nonce Verification failed. Please try again', 'fluent-security')
-            ), 423);
+            ), 422);
         }
 
         // Let's prepare
@@ -191,7 +191,7 @@ class MagicLoginHandler
         if (!$canUseMagicLogin) {
             wp_send_json(array(
                 'message' => __('Sorry, You can not login via magic url. Please use regular login form', 'fluent-security')
-            ), 423);
+            ), 422);
         }
 
         // Now we have a valid user and let's send the email

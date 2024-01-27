@@ -646,7 +646,7 @@ class CustomAuthHandler
         if (!$this->isEnabled()) {
             wp_send_json([
                 'message' => __('Login is not enabled', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         $nonce = Arr::get($_REQUEST, '_nonce');
@@ -654,13 +654,13 @@ class CustomAuthHandler
         if (!$nonce) {
             wp_send_json([
                 'message' => __('Security nonce is required', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         if (!wp_verify_nonce(Arr::get($_REQUEST, '_nonce'), 'fsecurity_login_nonce')) {
             wp_send_json([
                 'message' => __('Security verification failed', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         $data = $_REQUEST;
@@ -668,7 +668,7 @@ class CustomAuthHandler
         if (empty($data['pwd']) || empty($data['log'])) {
             wp_send_json([
                 'message' => __('Email and Password is required', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         $redirectUrl = admin_url();
@@ -701,7 +701,7 @@ class CustomAuthHandler
 
             wp_send_json([
                 'message' => __('Email or Password is not valid. Please try again', 'fluent-security')
-            ], 423);
+            ], 422);
 
         }
 
@@ -709,7 +709,7 @@ class CustomAuthHandler
         if (is_wp_error($user)) {
             wp_send_json([
                 'message' => $user->get_error_message()
-            ], 423);
+            ], 422);
         }
 
         $redirectUrl = apply_filters('login_redirect', $redirectUrl, false, $user);
@@ -724,13 +724,13 @@ class CustomAuthHandler
         if (!$this->isEnabled() || !get_option('users_can_register')) {
             wp_send_json([
                 'message' => __('User registration is not enabled', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         if (!wp_verify_nonce(Arr::get($_REQUEST, '_fls_signup_nonce'), 'fluent_auth_signup_nonce')) {
             wp_send_json([
                 'message' => __('Security verification failed. Please try again', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         /*
@@ -755,7 +755,7 @@ class CustomAuthHandler
             wp_send_json([
                 'message' => __('Form validation failed. Please provide the correct data', 'fluent-security'),
                 'errors'  => $errors
-            ], 423);
+            ], 422);
         }
 
         /*
@@ -779,7 +779,7 @@ class CustomAuthHandler
         if (is_wp_error($userId)) {
             wp_send_json([
                 'message' => $userId->get_error_message()
-            ], 423);
+            ], 422);
         }
 
         /*
@@ -837,7 +837,7 @@ class CustomAuthHandler
 
             wp_send_json([
                 'message' => __('Security verification failed. Please try again', 'fluent-security')
-            ], 423);
+            ], 422);
 
         }
 
@@ -846,7 +846,7 @@ class CustomAuthHandler
         if (!$usernameOrEmail) {
             wp_send_json([
                 'message' => __('Username or email is required', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         $user_data = get_user_by('email', $usernameOrEmail);
@@ -858,7 +858,7 @@ class CustomAuthHandler
         if (!$user_data) {
             wp_send_json([
                 'message' => __('Invalid username or email', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         $user_data = apply_filters('lostpassword_user_data', $user_data, $errors);
@@ -870,19 +870,19 @@ class CustomAuthHandler
         if ($errors->has_errors()) {
             wp_send_json([
                 'message' => $errors->get_error_message()
-            ], 423);
+            ], 422);
         }
 
         if (!$user_data) {
             wp_send_json([
                 'message' => __('<strong>Error</strong>: There is no account with that username or email address.', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         if (is_multisite() && !is_user_member_of_blog($user_data->ID, get_current_blog_id())) {
             wp_send_json([
                 'message' => __('<strong>Error</strong>: Invalid username or email', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         // Redefining user_login ensures we return the right case in the email.
@@ -895,13 +895,13 @@ class CustomAuthHandler
         if (!$allow) {
             wp_send_json([
                 'message' => __('Password reset is not allowed for this user', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         if (is_wp_error($allow)) {
             wp_send_json([
                 'message' => $allow->get_error_message()
-            ], 423);
+            ], 422);
         }
 
 

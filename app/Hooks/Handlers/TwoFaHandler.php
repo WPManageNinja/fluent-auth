@@ -158,7 +158,7 @@ class TwoFaHandler
         if (!$code || !$hash) {
             wp_send_json([
                 'message' => __('Please provide a valid login code', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         $logHash = flsDb()->table('fls_login_hashes')
@@ -170,7 +170,7 @@ class TwoFaHandler
         if (!$logHash) {
             wp_send_json([
                 'message' => __('Your provided code or url is not valid', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         if (!wp_check_password($code, $logHash->two_fa_code_hash)) {
@@ -182,7 +182,7 @@ class TwoFaHandler
 
             wp_send_json([
                 'message' => __('Your provided code is not valid. Please try again', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         $user = get_user_by('ID', $logHash->user_id);
@@ -190,13 +190,13 @@ class TwoFaHandler
         if (!$this->isEnabled($user)) {
             wp_send_json([
                 'message' => __('Sorry, You can not use this verification method', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         if (strtotime($logHash->created_at) < current_time('timestamp') - 600 || !$user || $logHash->status != 'issued' || $logHash->used_count > 5) {
             wp_send_json([
                 'message' => __('Sorry, your login code has been expired. Please try to login again', 'fluent-security')
-            ], 423);
+            ], 422);
         }
 
         remove_action('fluent_auth/login_attempts_checked', [$this, 'maybe2FaRedirect'], 1);
@@ -238,7 +238,7 @@ class TwoFaHandler
 
         wp_send_json([
             'message' => __('There has an error when log you in. Please try to login again', 'fluent-security')
-        ], 423);
+        ], 422);
     }
 
 
