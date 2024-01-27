@@ -52,7 +52,7 @@ define('FLUENT_AUTH_GITHUB_CLIENT_SECRET', '******');
                         <h3>{{ $t('login_google') }}</h3>
                         <el-form-item class="fls_switch">
                             <el-switch :disabled="!auth_info.google.is_available" v-model="settings.enable_google" active-value="yes" inactive-value="no"/>
-                            {{ $t('enable_google') }} (Login with google coming soon)
+                            {{ $t('enable_google') }}
                         </el-form-item>
                         <template v-if="settings.enable_google == 'yes'">
                             <el-form-item :label="$t('credential_storage')">
