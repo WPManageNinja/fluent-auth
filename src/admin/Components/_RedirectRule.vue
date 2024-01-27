@@ -2,7 +2,7 @@
     <div class="fls_rule">
         <div class="fls_rule_items">
             <div class="fls_rule_item">If</div>
-            <div class="fls_rule_item">
+            <div style="min-width: 150px;" class="fls_rule_item">
                 <el-select @change="resetValue()" v-model="rule.condition">
                     <el-option v-for="(provider, providerIndex) in providers"
                                :key="providerIndex"
