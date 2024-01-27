@@ -73,9 +73,17 @@
 
                     <el-table-column fixed="right" :label="$t('Action')" width="90">
                         <template #default="scope">
-                            <el-button @click="deleteLog(scope.row.id)" type="danger" plain size="small"><span
-                                style="width: 15px; height: 15px; font-size: 15px;"
-                                class="dashicons dashicons-trash"></span></el-button>
+                            <el-popconfirm
+                                title="Are you sure to delete this log?"
+                                confirm-button-type="danger"
+                                icon-color="#f56c6c"
+                                confirm="deleteLog(scope.row.id)">
+                                <template #reference>
+                                    <el-button type="danger" plain size="small"><span
+                                    style="width: 15px; height: 15px; font-size: 15px;"
+                                    class="dashicons dashicons-trash"></span></el-button>
+                                </template>
+                            </el-popconfirm>
                         </template>
                     </el-table-column>
                 </el-table>
