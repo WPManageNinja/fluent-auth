@@ -1,10 +1,10 @@
 === FluentAuth - The Ultimate Authorization & Security Plugin for WordPress ===
 Contributors: techjewel, wpmanageninja, adreastrian
-Tags: Login limit, login redirects, xml-rpc, login logs, social logins,
+Tags: Login limit, login redirects, xml-rpc, login logs, social logins
 Requires at least: 5.0
-Tested up to: 6.2
-Requires PHP: 7.0
-Stable tag: 1.0.5
+Tested up to: 6.4
+Requires PHP: 7.1
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -157,6 +157,12 @@ Absolutely not! From the very first, We were careful about this. It stores all t
 7. Social Login Settings
 
 == Changelog ==
+
+= 1.0.6 - Date: Jan 28, 2024 =
+* Fix Compatibility issue with PHP 8.x
+* Upgrade Internal Libraries
+* Improved Login with Google
+* Improved UI & UX
 
 = 1.0.5 - Date: May 04, 2023 =
 * Added Login or Signup with Google Social Auth Connection
