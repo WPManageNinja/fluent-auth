@@ -122,7 +122,7 @@ class CustomAuthHandler
         }
 
         if ($attributes['show-reset-password'] == 'true') {
-            $return .= '<p style="text-align: center">'
+            $return .= '<p style="text-align: center; font-size: 16px">'
                 . __('Forgot your password?', 'fluent-security')
                 . ' <a href="#" id="fls_show_reset_password">'
                 . __('Reset Password', 'fluent-security')
@@ -307,7 +307,7 @@ class CustomAuthHandler
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
                 </label>
                 <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon"
-                       class="fls_magic_input" type="text"/>
+                       class="fls_magic_input" type="text" name="redirect_to"/>
                 <input id="fls_magic_logon_nonce" type="hidden"
                        value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
                 <?php if (!empty($atts['redirect_to'])): ?>
