@@ -34,20 +34,14 @@ div#fls_magic_login {
 
 
 .fls_magic_show_btn, #fls_magic_submit {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 1;
-  letter-spacing: 0px;
-  font-family: Jost, sans-serif;
-  text-transform: capitalize;
-  border-radius: 4px;
-  padding: 16px 40px 16px 40px;
-  box-shadow: 0px 0px 0px -7px rgba(0, 0, 0, 0);
-  width: 100%;
-  background: #0275ff;
   cursor: pointer;
-  transition: all 0.5s ease;
+  display: block;
+  width: 100%;
+  padding: 5px 15px;
+  color: white;
+  border: 0;
+  border-radius: 5px;
+  min-height: 32px;
 }
 .fls_magic_show_btn, {
   padding: 10px 15px;
@@ -95,13 +89,12 @@ p.fls_magic_text {
 
 .magic_btn_secondary {
   width: 100%;
-  padding: 16px 40px 16px 40px;
+  padding: 10px;
   background-color: white;
   border: 1px solid gray;
   cursor: pointer;
   color: black;
   border-radius: 5px;
-  font-size: 16px;
   &:hover {
     background: #4b5d73;
     color: white;

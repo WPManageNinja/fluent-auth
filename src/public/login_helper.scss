@@ -115,13 +115,7 @@
 }
 
 .fls_reset_pass_wrapper {
-    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.10)!important;
-    padding: 2rem!important;
-    border-radius: 1rem!important;
-    max-width: 650px !important;
-    margin: auto!important;
-    background: white!important;
-
+    max-width: 500px;
     .fls_reset_pass_form {
         display: grid;
 
@@ -130,9 +124,6 @@
             margin-bottom: 15px;
 
             .fls_field_label {
-                label{
-                    font-size: 16px;
-                }
                 &.is-required {
                     label:after {
                         content: " *";
@@ -148,24 +139,6 @@
                 }
             }
         }
-        input[type="text"]{
-            display: block;
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            font-size: 1.1rem;
-            font-weight: 400;
-            line-height: 1.4rem;
-            color: #495057;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid #1118271a;
-            appearance: none;
-            transition: box-shadow 0.15s ease, border-color 0.15s ease;
-            border-radius: 0.5rem!important;
-            padding-left: 15px !important;
-            height: 48px;
-            margin-top: 0.5rem;
-        }
 
         input {
             padding: 10px;
@@ -180,7 +153,6 @@
             color: white;
             border: 0;
             border-radius: 5px;
-            font-size: 16px;
 
             span {
                 transition: all 1s;
@@ -220,10 +192,9 @@
 }
 
 .error.text-danger {
-    font-size: 16px;
+    font-size: 12px;
     margin-top: 4px;
     color: #f56c6c;
-    padding: 1rem 0;
 }
 
 .fls_auth_wrapper {
@@ -246,135 +217,4 @@ button#fls_2fa_confirm.fls_loading {
 .fls_loading {
     opacity: 0.7 !important;
     cursor: wait !important;
-}
-
-/* FluentBoards Login Form Styles */
-
-.fls_auth_wrapper{
-    #fls_magic_login{
-        padding: 1rem 0!important;
-    }
-    .magic_back_regular{
-        .fls_magic-or{
-            font-size: 16px;
-        }
-    }
-}
-
-#fls_login_form{
-
-    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.10)!important;
-    padding: 2rem!important;
-    border-radius: 1rem!important;
-    max-width: 650px !important;
-    margin: auto!important;
-    background: white!important;
-
-    p.login-username label, p.login-password label, p.login-remember label{
-        color: #111827;
-        font-size: 16px;
-        line-height: 26px;
-    }
-    p.login-username input[type="text"], p.login-password input[type=password]{
-        display: block;
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        font-size: 1.1rem;
-        font-weight: 400;
-        line-height: 1.4rem;
-        color: #495057;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #1118271a;
-        appearance: none;
-        transition: box-shadow 0.15s ease, border-color 0.15s ease;
-        border-radius: 0.5rem!important;
-        padding-left: 15px !important;
-        height: 48px;
-        margin-top: 0.5rem;
-    }
-    p.login-submit input[type="submit"]{
-        font-style: normal;
-        font-weight: 500;
-        font-size: 18px;
-        line-height: 1;
-        letter-spacing: 0px;
-        font-family: Jost, sans-serif;
-        text-transform: capitalize;
-        border-radius: 4px;
-        padding: 16px 40px 16px 40px;
-        box-shadow: 0px 0px 0px -7px rgba(0, 0, 0, 0);
-        width: 100%;
-        background: #272d33;
-        cursor: pointer;
-        transition: all 0.5s ease;
-        &:hover{
-            color: #272d33;
-            background: #272d3330;
-            transition: all .2s ease-in;
-        }
-    }
-    .fls_magic_initial {
-        .fls_magic-or span{
-            font-size: 16px;
-        }
-        .fls_magic_login_btn{
-            .fls_magic_show_btn{
-                font-style: normal;
-                font-weight: 500;
-                font-size: 18px;
-                line-height: 1;
-                letter-spacing: 0px;
-                font-family: Jost, sans-serif;
-                text-transform: capitalize;
-                border-radius: 4px;
-                padding: 16px 40px 16px 40px;
-                box-shadow: 0px 0px 0px -7px rgba(0, 0, 0, 0);
-                width: 100%;
-                background: #0275ff;
-                cursor: pointer;
-                transition: all 0.5s ease;
-                &:hover{
-                    background: #0275ff1a;
-                    color: #0275ff;
-                }
-            }
-        }
-    }
-}
-#fls_magic_login{
-    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.10)!important;
-    padding: 2rem!important;
-    border-radius: 1rem!important;
-    max-width: 650px !important;
-    margin: auto!important;
-    background: white!important;
-}
-.fls_magic_login_form{
-    p.fls_magic_text{
-        font-size: 16px;
-    }
-    label{
-        color: #111827;
-        font-size: 16px;
-        line-height: 26px;
-    }
-    input[type="text"]{
-        display: block;
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        font-size: 1.1rem;
-        font-weight: 400;
-        line-height: 1.4rem;
-        color: #495057;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #1118271a;
-        appearance: none;
-        transition: box-shadow 0.15s ease, border-color 0.15s ease;
-        border-radius: 0.5rem!important;
-        padding-left: 15px !important;
-        height: 48px;
-        margin-top: 0.5rem;
-    }
 }

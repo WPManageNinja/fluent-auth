@@ -85,7 +85,7 @@ class MagicLoginHandler
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
                 </label>
                 <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon"
-                       class="fls_magic_input" type="text" name="redirect_to"/>
+                       class="fls_magic_input" type="text"/>
                 <input id="fls_magic_logon_nonce" type="hidden"
                        value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
                 <div class="fls_magic_submit_wrapper">
