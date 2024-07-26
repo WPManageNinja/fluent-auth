@@ -12,7 +12,7 @@ class QueryBuilderHandler
     protected $container;
 
     /**
-     * @var \FluentAuth\App\Services\DB\src\Connection
+     * @var \FluentAuth\App\Services\DB\Connection
      */
     protected $connection;
 
