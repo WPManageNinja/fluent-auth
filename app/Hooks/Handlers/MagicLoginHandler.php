@@ -215,7 +215,7 @@ class MagicLoginHandler
         ];
 
         $callToAction = [
-            'btn_text' => sprintf(__('Sign in to %s', 'ninja_magic_login'), get_bloginfo('name')),
+            'btn_text' => sprintf(__('Sign in to %s', 'fluent-security'), get_bloginfo('name')),
             'url'      => $loginUrl
         ];
 
@@ -223,7 +223,7 @@ class MagicLoginHandler
             __('If the button above does not work, paste this link into your web browser:', 'fluent-security'),
             esc_url($loginUrl),
             ' ',
-            'If you did not make this request, you can safely ignore this email.'
+            __('If you did not make this request, you can safely ignore this email.','fluent-security')
         ];
 
         $emailBody = '';
