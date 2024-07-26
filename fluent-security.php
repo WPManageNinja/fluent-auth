@@ -14,6 +14,10 @@ Text Domain:  fluent-security
 Domain Path:  /language/
 */
 
+if(defined('FLUENT_AUTH_VERSION')) {
+    return;
+}
+
 define('FLUENT_AUTH_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('FLUENT_AUTH_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('FLUENT_AUTH_VERSION', '1.0.6');
