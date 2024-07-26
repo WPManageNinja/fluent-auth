@@ -41,6 +41,9 @@ class QueryBuilderHandler
      */
     protected $adapterInstance;
 
+    protected $adapter;
+    protected $adapterConfig;
+
     /**
      * The PDO fetch parameters to use
      *

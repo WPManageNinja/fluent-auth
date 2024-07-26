@@ -78,12 +78,6 @@ class AdminMenuHandler
 
     public function render()
     {
-
-        /*
-         * @todo: Remove this end of 2023
-         */
-        (new TwoFaHandler())->maybeMigrateDb();
-
         add_filter('admin_footer_text', function ($content) {
             return 'Thank you for using <a rel="noopener"  target="_blank" href="https://fluentauth.com">FluentAuth</a> | Write a <a target="_blank" rel="noopener" href="https://wordpress.org/support/plugin/fluent-security/reviews/?filter=5">review for FluentAuth</a>';
         });
