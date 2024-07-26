@@ -777,52 +777,53 @@ class CustomAuthHandler
             ], 422);
         }
 
-        // Let's check for email verification token
-        if (empty($formData['_email_verification_token'])) {
-            $tokenHtml = $this->sendSignupEmailVerificationHtml($formData);
-
-            wp_send_json([
-                'verifcation_html' => $tokenHtml
-            ]);
-        } else {
-            $token = $formData['_email_verification_token'];
-            $verificationHash = $formData['_email_verification_hash'];
-
-            $logHash = flsDb()->table('fls_login_hashes')
-                ->where('login_hash', $verificationHash)
-                ->where('status', 'issued')
-                ->where('use_type', 'signup_verification')
-                ->first();
-
-            if (!$logHash) {
+        if (apply_filters('fluent_auth/verify_signup_email', true, $formData)) {
+            // Let's check for email verification token
+            if (empty($formData['_email_verification_token'])) {
+                $tokenHtml = $this->sendSignupEmailVerificationHtml($formData);
                 wp_send_json([
-                    'message' => __('Please provide a valid vefification code that sent to your email address', 'fluent-security')
-                ], 422);
-            }
+                    'verifcation_html' => $tokenHtml
+                ]);
+            } else {
+                $token = $formData['_email_verification_token'];
+                $verificationHash = $formData['_email_verification_hash'];
 
-            // check if it got expired or not
-            if ($logHash->used_count > 5 || strtotime($logHash->valid_till) < current_time('timestamp')) {
-                wp_send_json([
-                    'message' => __('Your verification code has beeen expired. Please try again', 'fluent-security')
-                ], 422);
-            }
+                $logHash = flsDb()->table('fls_login_hashes')
+                    ->where('login_hash', $verificationHash)
+                    ->where('status', 'issued')
+                    ->where('use_type', 'signup_verification')
+                    ->first();
 
-            if (!wp_check_password($token, $logHash->two_fa_code_hash)) {
+                if (!$logHash) {
+                    wp_send_json([
+                        'message' => __('Please provide a valid vefification code that sent to your email address', 'fluent-security')
+                    ], 422);
+                }
+
+                // check if it got expired or not
+                if ($logHash->used_count > 5 || strtotime($logHash->valid_till) < current_time('timestamp')) {
+                    wp_send_json([
+                        'message' => __('Your verification code has beeen expired. Please try again', 'fluent-security')
+                    ], 422);
+                }
+
+                if (!wp_check_password($token, $logHash->two_fa_code_hash)) {
+                    flsDb()->table('fls_login_hashes')->where('id', $logHash->id)
+                        ->update([
+                            'used_count' => $logHash->used_count + 1
+                        ]);
+
+                    wp_send_json([
+                        'message' => __('Please provide a valid vefification code that sent to your email address', 'fluent-security')
+                    ], 422);
+                }
+
                 flsDb()->table('fls_login_hashes')->where('id', $logHash->id)
                     ->update([
-                        'used_count' => $logHash->used_count + 1
+                        'used_count' => $logHash->used_count + 1,
+                        'status'     => 'used'
                     ]);
-
-                wp_send_json([
-                    'message' => __('Please provide a valid vefification code that sent to your email address', 'fluent-security')
-                ], 422);
             }
-
-            flsDb()->table('fls_login_hashes')->where('id', $logHash->id)
-                ->update([
-                    'used_count' => $logHash->used_count + 1,
-                    'status'     => 'used'
-                ]);
         }
 
         $userId = AuthService::registerNewUser($formData['username'], $formData['email'], $formData['password'], [

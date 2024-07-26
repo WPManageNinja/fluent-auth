@@ -2,13 +2,13 @@
 Contributors: techjewel, wpmanageninja, adreastrian
 Tags: Login limit, login redirects, xml-rpc, login logs, social logins
 Requires at least: 5.0
-Tested up to: 6.4
+Tested up to: 6.6
 Requires PHP: 7.1
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Enhance the Security and User Experience of Your Website with Login/Signup Security, Two-Factor Email Authentication, Login Redirects, Social Logins, and Detailed Audit Logs.
+Enhance the Security and User Experience of Your Site with Login/Signup Security, Two-Factor Email Authentication, Social Logins and more...
 
 == Description ==
 
@@ -157,6 +157,11 @@ Absolutely not! From the very first, We were careful about this. It stores all t
 7. Social Login Settings
 
 == Changelog ==
+
+= 1.0.7 - Date: Jul 26, 2024 =
+* Added Email verification on User Regstration Flow
+* PHP 8.x compatability issue fixed
+* JS errors fixed on Magic Links Shortcodes
 
 = 1.0.6 - Date: Jan 28, 2024 =
 * Fix Compatibility issue with PHP 8.x
