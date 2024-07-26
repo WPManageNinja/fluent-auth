@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setPlaceHolders() {
         const userNameField = document.getElementById('user_login');
-        if(userNameField) {
+        if (userNameField) {
             userNameField.placeholder = window.fluentAuthPublic.i18n.Username_or_Email;
         }
 
         const userPassField = document.getElementById('user_pass');
-        if(userPassField) {
+        if (userPassField) {
             userPassField.placeholder = window.fluentAuthPublic.i18n.Password;
         }
     }
@@ -21,14 +21,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function toggleLoading(submitBtn) {
-        submitBtn.classList.toggle('fls_loading');
-        submitBtn.disabled = !submitBtn.disabled;
+        if(submitBtn) {
+            submitBtn.classList.toggle('fls_loading');
+            submitBtn.disabled = !submitBtn.disabled;
+        }
     }
 
     if (registrationForm) {
         registrationForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            handleFormSubmission(registrationForm, 'fls_submit', 'fluent_auth_signup');
+            const submitBtn = document.getElementById('fls_verification_submit');
+            toggleLoading(submitBtn);
+
+            handleFormSubmission(registrationForm, 'fls_submit', 'fluent_auth_signup', function (response) {
+                toggleLoading(submitBtn);
+                if (response.verifcation_html) {
+                    let html = response.verifcation_html;
+
+                    // append html to registrationForm dom
+                    let el = document.createElement("div");
+                    el.innerHTML = html;
+                    registrationForm.appendChild(el);
+
+                    let regFields = registrationForm.getElementsByClassName('fls_registration_fields');
+                    // hide regFields with css hidden inline css
+                    for (let i = 0; i < regFields.length; i++) {
+                        regFields[i].style.display = 'none';
+                    }
+                } else {
+                    handleSuccess(response, registrationForm);
+                }
+            }, function (errors) {
+                toggleLoading(submitBtn);
+            });
         });
     }
 
@@ -76,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function handleFormSubmission(form, submitBtnId, action) {
+    function handleFormSubmission(form, submitBtnId, action, callback, errorCallback) {
         const submitBtn = document.getElementById(submitBtnId);
         toggleLoading(submitBtn);
 
@@ -99,25 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
         request.responseType = 'json';
 
         request.onload = function () {
+            toggleLoading(submitBtn);
             if (this.status === 200) {
-                if(this.response.load_2fa) {
-                    document.getElementById('fls_login_form').innerHTML = this.response.two_fa_form;
-                    setTimeout(() => {
-                        init2FaForm();
-                    }, 200);
-                } else if (this.response.redirect) {
-                    window.location.href = this.response.redirect;
-                    return;
-                } else if (this.response.message) {
-                    let el = document.createElement("div");
-                    el.classList.add('success', 'text-success', 'fls-text-success');
-                    el.innerHTML = this.response.message;
-                    form.appendChild(el);
-                    form.reset();
-                } else {
-                    window.location.reload();
+                if (callback) {
+                    callback(this.response);
                     return;
                 }
+                handleSuccess(this.response, form);
             } else {
                 let genericError = this.response.error;
                 if (!genericError && this.response.message) {
@@ -143,11 +156,36 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 }
+
+                if(errorCallback) {
+                    errorCallback(this.response);
+                }
+
             }
-            toggleLoading(submitBtn);
         };
 
         request.send(data);
+    }
+
+    function handleSuccess(response, form) {
+        if (response.load_2fa) {
+            document.getElementById('fls_login_form').innerHTML = response.two_fa_form;
+            setTimeout(() => {
+                init2FaForm();
+            }, 200);
+        } else if (response.redirect) {
+            window.location.href = response.redirect;
+            return;
+        } else if (response.message) {
+            let el = document.createElement("div");
+            el.classList.add('success', 'text-success', 'fls-text-success');
+            el.innerHTML = response.message;
+            form.appendChild(el);
+            form.reset();
+        } else {
+            window.location.reload();
+            return;
+        }
     }
 
     function fsToggleForms(event, that, target) {

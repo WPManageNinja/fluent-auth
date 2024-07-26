@@ -49,7 +49,6 @@
         .fls_field_group {
             display: block;
             margin-bottom: 15px;
-
             .fls_field_label {
                 &.is-required {
                     label:after {
@@ -73,7 +72,7 @@
             margin-top: 10px;
         }
 
-        #fls_submit {
+        #fls_submit,#fls_verification_submit {
             width: 100%;
             padding: 15px;
             background: #0275ff;
@@ -111,6 +110,10 @@
                 }
             }
         }
+    }
+
+    .fls_signup_verification {
+        margin-bottom: 30px;
     }
 }
 

@@ -149,48 +149,19 @@ class AuthService
      */
     public static function registerNewUser($user_login, $user_email, $user_pass = '', $extraData = [])
     {
-        $errors = new \WP_Error();
-
-        $sanitized_user_login = sanitize_user($user_login);
-
         $user_email = apply_filters('user_registration_email', $user_email);
 
-        // Check the username.
-        if ('' === $sanitized_user_login) {
-            $errors->add('empty_username', __('<strong>Error</strong>: Please enter a username.', 'fluent-security'));
-        } elseif (!validate_username($user_login)) {
-            $errors->add('invalid_username', __('<strong>Error</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.', 'fluent-security'));
-            $sanitized_user_login = '';
-        } elseif (username_exists($sanitized_user_login)) {
-            $errors->add('username_exists', __('<strong>Error</strong>: This username is already registered. Please choose another one.', 'fluent-security'));
-        } else {
-            /** This filter is documented in wp-includes/user.php */
-            $illegal_user_logins = (array)apply_filters('illegal_user_logins', array());
-            if (in_array(strtolower($sanitized_user_login), array_map('strtolower', $illegal_user_logins), true)) {
-                $errors->add('invalid_username', __('<strong>Error</strong>: Sorry, that username is not allowed.', 'fluent-security'));
+
+        if (empty($extraData['__validated'])) {
+            $errors = self::checkUserRegDataErrors($user_login, $user_email);
+            if ($errors->has_errors()) {
+                return $errors;
             }
+        } else {
+            unset($extraData['__validated']);
         }
 
-        // Check the email address.
-        if ('' === $user_email) {
-            $errors->add('empty_email', __('<strong>Error</strong>: Please type your email address.', 'fluent-security'));
-        } elseif (!is_email($user_email)) {
-            $errors->add('invalid_email', __('<strong>Error</strong>: The email address is not correct.', 'fluent-security'));
-            $user_email = '';
-        } elseif (email_exists($user_email)) {
-            $errors->add(
-                'email_exists',
-                __('<strong>Error:</strong> This email address is already registered. Please login or try reset password', 'fluent-security')
-            );
-        }
-
-        do_action('register_post', $sanitized_user_login, $user_email, $errors);
-
-        $errors = apply_filters('registration_errors', $errors, $sanitized_user_login, $user_email);
-
-        if ($errors->has_errors()) {
-            return $errors;
-        }
+        $sanitized_user_login = sanitize_user($user_login);
 
         if (!$user_pass) {
             $user_pass = wp_generate_password(8, false);
@@ -252,5 +223,46 @@ class AuthService
         do_action('register_new_user', $user_id);
 
         return $user_id;
+    }
+
+
+    public static function checkUserRegDataErrors($user_login, $user_email)
+    {
+        $errors = new \WP_Error();
+        $sanitized_user_login = sanitize_user($user_login);
+        // Check the username.
+        if ('' === $sanitized_user_login) {
+            $errors->add('empty_username', __('<strong>Error</strong>: Please enter a username.', 'fluent-security'));
+        } elseif (!validate_username($user_login)) {
+            $errors->add('invalid_username', __('<strong>Error</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.', 'fluent-security'));
+            $sanitized_user_login = '';
+        } elseif (username_exists($sanitized_user_login)) {
+            $errors->add('username_exists', __('<strong>Error</strong>: This username is already registered. Please choose another one.', 'fluent-security'));
+        } else {
+            /** This filter is documented in wp-includes/user.php */
+            $illegal_user_logins = (array)apply_filters('illegal_user_logins', array());
+            if (in_array(strtolower($sanitized_user_login), array_map('strtolower', $illegal_user_logins), true)) {
+                $errors->add('invalid_username', __('<strong>Error</strong>: Sorry, that username is not allowed.', 'fluent-security'));
+            }
+        }
+
+        // Check the email address.
+        if ('' === $user_email) {
+            $errors->add('empty_email', __('<strong>Error</strong>: Please type your email address.', 'fluent-security'));
+        } elseif (!is_email($user_email)) {
+            $errors->add('invalid_email', __('<strong>Error</strong>: The email address is not correct.', 'fluent-security'));
+            $user_email = '';
+        } elseif (email_exists($user_email)) {
+            $errors->add(
+                'email_exists',
+                __('<strong>Error:</strong> This email address is already registered. Please login or try reset password', 'fluent-security')
+            );
+        }
+
+        do_action('register_post', $sanitized_user_login, $user_email, $errors);
+
+        $errors = apply_filters('registration_errors', $errors, $sanitized_user_login, $user_email);
+
+        return $errors;
     }
 }

@@ -115,9 +115,6 @@ class TwoFaHandler
             'updated_at'       => current_time('mysql')
         );
 
-        // @todo: Remove this call end of 2023
-        $this->maybeMigrateDb();
-
         flsDb()->table('fls_login_hashes')
             ->insert($data);
 
@@ -354,22 +351,5 @@ class TwoFaHandler
         <?php
 
         return ob_get_clean();
-    }
-
-    public function maybeMigrateDb()
-    {
-        /*
-         * @todo: Remove this whole check function after 2023
-         */
-        if (get_option('__fluent_security_db_version')) {
-            return;
-        }
-
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'fls_login_hashes';
-        if (!$wpdb->get_var("SHOW COLUMNS FROM `{$table_name}` LIKE 'two_fa_code_hash';")) {
-            $wpdb->query("ALTER TABLE {$table_name} CHANGE `two_fa_code` `two_fa_code_hash` VARCHAR(100) NULL DEFAULT '' AFTER `use_type`;");
-            update_option('__fluent_security_db_version', '1.0.0', 'no');
-        }
     }
 }

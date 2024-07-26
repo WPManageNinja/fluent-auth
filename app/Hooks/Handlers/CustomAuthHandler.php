@@ -68,7 +68,6 @@ class CustomAuthHandler
      */
     public function loginForm($attributes, $headerContent = '')
     {
-
         if (!$this->isEnabled()) {
             return '';
         }
@@ -83,7 +82,7 @@ class CustomAuthHandler
 
         $return = '<div id="fls_login_form" class="fls_login_wrapper">';
 
-        if($headerContent) {
+        if ($headerContent) {
             $return .= $headerContent;
         }
 
@@ -108,7 +107,7 @@ class CustomAuthHandler
             'redirect'       => $redirect,
             'remember'       => true,
             'value_remember' => true,
-            'action_url' => site_url('/')
+            'action_url'     => site_url('/')
         ]);
 
         $return .= $this->nativeLoginForm($loginArgs);
@@ -169,11 +168,11 @@ class CustomAuthHandler
 
         $registrationForm = '<div class="fls_registration_wrapper ' . esc_attr($hide) . '">';
 
-        if($headerContent) {
+        if ($headerContent) {
             $registrationForm .= $headerContent;
         }
 
-        $registrationForm .= '<form id="flsRegistrationForm" class="fls_registration_form" method="post" name="fls_registration_form">';
+        $registrationForm .= '<form id="flsRegistrationForm" class="fls_registration_form" method="post" name="fls_registration_form"><div class="fls_registration_fields">';
 
         foreach ($registrationFields as $fieldName => $registrationField) {
             $registrationForm .= $this->renderField($fieldName, $registrationField);
@@ -183,7 +182,7 @@ class CustomAuthHandler
         $registrationForm .= '<input type="hidden" name="_fls_signup_nonce" value="' . wp_create_nonce('fluent_auth_signup_nonce') . '">';
         $registrationForm .= '<button type="submit" id="fls_submit">' . $this->submitBtnLoadingSvg() . '<span>' . __('Signup', 'fluent-security') . '</span></button>';
 
-        $registrationForm .= '</form>';
+        $registrationForm .= '</div></form>';
 
         $registrationForm .= apply_filters('fluent_auth/after_registration_form_close', '', $registrationFields, $attributes);
 
@@ -226,7 +225,7 @@ class CustomAuthHandler
     {
         $resetPasswordForm = '<div class="fls_reset_pass_wrapper ' . $hide . '">';
 
-        if($headerContent) {
+        if ($headerContent) {
             $resetPasswordForm .= $headerContent;
         }
 
@@ -758,6 +757,7 @@ class CustomAuthHandler
             ], 422);
         }
 
+
         /*
          * Action After validate user signup validation success
          *
@@ -770,10 +770,66 @@ class CustomAuthHandler
             $formData['username'] = sanitize_user($formData['email']);
         }
 
+        $errors = AuthService::checkUserRegDataErrors($formData['username'], $formData['email']);
+        if ($errors->has_errors()) {
+            wp_send_json([
+                'message' => $errors->get_error_message()
+            ], 422);
+        }
+
+        // Let's check for email verification token
+        if (empty($formData['_email_verification_token'])) {
+            $tokenHtml = $this->sendSignupEmailVerificationHtml($formData);
+
+            wp_send_json([
+                'verifcation_html' => $tokenHtml
+            ]);
+        } else {
+            $token = $formData['_email_verification_token'];
+            $verificationHash = $formData['_email_verification_hash'];
+
+            $logHash = flsDb()->table('fls_login_hashes')
+                ->where('login_hash', $verificationHash)
+                ->where('status', 'issued')
+                ->where('use_type', 'signup_verification')
+                ->first();
+
+            if (!$logHash) {
+                wp_send_json([
+                    'message' => __('Please provide a valid vefification code that sent to your email address', 'fluent-security')
+                ], 422);
+            }
+
+            // check if it got expired or not
+            if ($logHash->used_count > 5 || strtotime($logHash->valid_till) < current_time('timestamp')) {
+                wp_send_json([
+                    'message' => __('Your verification code has beeen expired. Please try again', 'fluent-security')
+                ], 422);
+            }
+
+            if (!wp_check_password($token, $logHash->two_fa_code_hash)) {
+                flsDb()->table('fls_login_hashes')->where('id', $logHash->id)
+                    ->update([
+                        'used_count' => $logHash->used_count + 1
+                    ]);
+
+                wp_send_json([
+                    'message' => __('Please provide a valid vefification code that sent to your email address', 'fluent-security')
+                ], 422);
+            }
+
+            flsDb()->table('fls_login_hashes')->where('id', $logHash->id)
+                ->update([
+                    'used_count' => $logHash->used_count + 1,
+                    'status'     => 'used'
+                ]);
+        }
+
         $userId = AuthService::registerNewUser($formData['username'], $formData['email'], $formData['password'], [
-            'role'       => apply_filters('fluent_auth/signup_default_role', get_option('default_role'), $formData),
-            'first_name' => Arr::get($formData, 'first_name'),
-            'last_name'  => Arr::get($formData, 'last_name'),
+            'role'        => apply_filters('fluent_auth/signup_default_role', get_option('default_role'), $formData),
+            'first_name'  => Arr::get($formData, 'first_name'),
+            'last_name'   => Arr::get($formData, 'last_name'),
+            '__validated' => true
         ]);
 
         if (is_wp_error($userId)) {
@@ -1006,15 +1062,16 @@ class CustomAuthHandler
         do_action('fluent_auth/after_logging_in_user', $userId);
     }
 
-    protected function nativeLoginForm( $args = array() ) {
+    protected function nativeLoginForm($args = array())
+    {
         $defaults = array(
             'echo'           => true,
-            'redirect'       => ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+            'redirect'       => (is_ssl() ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
             'form_id'        => 'loginform',
-            'label_username' => __( 'Username or Email Address' ),
-            'label_password' => __( 'Password' ),
-            'label_remember' => __( 'Remember Me' ),
-            'label_log_in'   => __( 'Log In' ),
+            'label_username' => __('Username or Email Address'),
+            'label_password' => __('Password'),
+            'label_remember' => __('Remember Me'),
+            'label_log_in'   => __('Log In'),
             'id_username'    => 'user_login',
             'id_password'    => 'user_pass',
             'id_remember'    => 'rememberme',
@@ -1024,24 +1081,24 @@ class CustomAuthHandler
             'value_remember' => false,
         );
 
-        $args = wp_parse_args( $args, apply_filters( 'login_form_defaults', $defaults ) );
+        $args = wp_parse_args($args, apply_filters('login_form_defaults', $defaults));
 
-        $login_form_top = apply_filters( 'login_form_top', '', $args );
+        $login_form_top = apply_filters('login_form_top', '', $args);
 
-        $login_form_middle = apply_filters( 'login_form_middle', '', $args );
+        $login_form_middle = apply_filters('login_form_middle', '', $args);
 
-        $login_form_bottom = apply_filters( 'login_form_bottom', '', $args );
+        $login_form_bottom = apply_filters('login_form_bottom', '', $args);
 
-        $actionUrl = esc_url( site_url( 'wp-login.php', 'login_post' ) );
+        $actionUrl = esc_url(site_url('wp-login.php', 'login_post'));
 
-        if(isset($args['action_url'])) {
+        if (isset($args['action_url'])) {
             $actionUrl = esc_url($args['action_url']);
         }
 
         $form =
             sprintf(
                 '<form name="%1$s" id="%1$s" action="%2$s" method="post">',
-                esc_attr( $args['form_id'] ),
+                esc_attr($args['form_id']),
                 $actionUrl
             ) .
             $login_form_top .
@@ -1050,25 +1107,25 @@ class CustomAuthHandler
 				<label for="%1$s">%2$s</label>
 				<input type="text" name="log" id="%1$s" autocomplete="username" class="input" value="%3$s" size="20" />
 			</p>',
-                esc_attr( $args['id_username'] ),
-                esc_html( $args['label_username'] ),
-                esc_attr( $args['value_username'] )
+                esc_attr($args['id_username']),
+                esc_html($args['label_username']),
+                esc_attr($args['value_username'])
             ) .
             sprintf(
                 '<p class="login-password">
 				<label for="%1$s">%2$s</label>
 				<input type="password" name="pwd" id="%1$s" autocomplete="current-password" class="input" value="" size="20" />
 			</p>',
-                esc_attr( $args['id_password'] ),
-                esc_html( $args['label_password'] )
+                esc_attr($args['id_password']),
+                esc_html($args['label_password'])
             ) .
             $login_form_middle .
-            ( $args['remember'] ?
+            ($args['remember'] ?
                 sprintf(
                     '<p class="login-remember"><label><input name="rememberme" type="checkbox" id="%1$s" value="forever"%2$s /> %3$s</label></p>',
-                    esc_attr( $args['id_remember'] ),
-                    ( $args['value_remember'] ? ' checked="checked"' : '' ),
-                    esc_html( $args['label_remember'] )
+                    esc_attr($args['id_remember']),
+                    ($args['value_remember'] ? ' checked="checked"' : ''),
+                    esc_html($args['label_remember'])
                 ) : ''
             ) .
             sprintf(
@@ -1076,17 +1133,95 @@ class CustomAuthHandler
 				<input type="submit" name="wp-submit" id="%1$s" class="button button-primary" value="%2$s" />
 				<input type="hidden" name="redirect_to" value="%3$s" />
 			</p>',
-                esc_attr( $args['id_submit'] ),
-                esc_attr( $args['label_log_in'] ),
-                esc_url( $args['redirect'] )
+                esc_attr($args['id_submit']),
+                esc_attr($args['label_log_in']),
+                esc_url($args['redirect'])
             ) .
             $login_form_bottom .
             '</form>';
 
-        if ( $args['echo'] ) {
+        if ($args['echo']) {
             echo $form;
         } else {
             return $form;
         }
+    }
+
+
+    public function sendSignupEmailVerificationHtml($formData)
+    {
+        try {
+            $verifcationCode = str_pad(random_int(100123, 900987), 6, 0, STR_PAD_LEFT);
+        } catch (\Exception $e) {
+            $verifcationCode = str_pad(mt_rand(100123, 900987), 6, 0, STR_PAD_LEFT);
+        }
+
+        $hash = wp_hash_password($formData['email']) . time() . '_' . $verifcationCode;
+        $data = array(
+            'login_hash'       => $hash,
+            'status'           => 'issued',
+            'ip_address'       => Helper::getIp(),
+            'use_type'         => 'signup_verification',
+            'two_fa_code_hash' => wp_hash_password($verifcationCode),
+            'valid_till'       => date('Y-m-d H:i:s', current_time('timestamp') + 10 * 60),
+            'created_at'       => current_time('mysql'),
+            'updated_at'       => current_time('mysql')
+        );
+
+        flsDb()->table('fls_login_hashes')
+            ->insert($data);
+
+        $mailSubject = apply_filters("fluent_auth/signup_verification_mail_subject", sprintf(__('Your registration verification code for %s', 'fluent-security'), get_bloginfo('name')));
+
+        $pStart = '<p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">';
+
+        $message = $pStart . sprintf(__('Hello %s,', 'fluent-security'), Arr::get($formData, 'first_name')) . '</p>' .
+            $pStart . __('Thank you for registering with us! To complete the setup of your account, please enter the verification code below on the registration page.', 'fluent-security') . '</p>' .
+            $pStart . '<b>' . sprintf(__('Verification Code: %s', 'fluent-security'), $verifcationCode) . '</b></p>' .
+            '<br />' .
+            $pStart . __('This code is valid for 10 minutes and is meant to ensure the security of your account. If you did not initiate this request, please ignore this email.', 'fluent-security') . '</p>';
+
+        $message = apply_filters('fluent_auth/signup_verification_email_body', $message, $verifcationCode, $formData);
+
+        $data = [
+            'body'        => $message,
+            'pre_header'  => __('Activate your account', 'fluent-security'),
+            'show_footer' => false
+        ];
+
+        $message = Helper::loadView('notification', $data);
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+
+        \wp_mail($formData['email'], $mailSubject, $message, $headers);
+
+
+        ob_start();
+        ?>
+
+        <div class="fls_signup_verification">
+            <div class="fls_field_group fls_field_vefication">
+                <p><?php echo esc_html(sprintf(__('A verification code as been sent to %s. Please provide the code bellow: ', 'fluent-'), $formData['email'])) ?></p>
+                <input type="hidden" name="_email_verification_hash" value="<?php echo esc_attr($hash); ?>"/>
+                <div class="fls_field_label is-required"><label
+                        for="fls_field_vefication"><?php _e('Vefication Code', 'fluent-security'); ?></label></div>
+                <div class="fs_input_wrap"><input type="text" id="fls_field_vefication" placeholder=""
+                                                  name="_email_verification_token" required></div>
+            </div>
+            <button type="submit" id="fls_verification_submit">
+                <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="20px"
+                     viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                    <path fill="#000"
+                          d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+                        <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25"
+                                          to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform>
+                    </path>
+                </svg>
+                <span><?php _e('Complete Signup', 'fluent-security'); ?></span>
+            </button>
+        </div>
+
+        <?php
+        return ob_get_clean();
     }
 }
