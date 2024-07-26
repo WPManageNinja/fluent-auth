@@ -2,32 +2,44 @@ require('./magic_url.scss');
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginform');
-    loginForm.appendChild(document.getElementById('fls_magic_login'));
+    if(loginForm) {
+        loginForm.appendChild(document.getElementById('fls_magic_login'));
+        loginForm.addEventListener('submit', function(e) {
+            if (this.classList.contains('showing_magic_form')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+
+
     document.getElementById('fls_magic_login').style.display = 'block';
 
     const initialWrapper = document.querySelector('.fls_magic_initial');
     const magicFormWrapper = document.querySelector('.fls_magic_login_form');
-    document.querySelector('.fls_magic_show_btn').addEventListener('click', function(e) {
-        e.preventDefault();
-        initialWrapper.style.display = 'none';
-        magicFormWrapper.style.display = 'block';
-        loginForm.classList.add('showing_magic_form');
-    });
 
-    document.querySelector('.fls_magic_show_regular').addEventListener('click', function(e) {
-        e.preventDefault();
-        initialWrapper.style.display = 'block';
-        magicFormWrapper.style.display = 'none';
-        loginForm.classList.remove('showing_magic_form');
-    });
+    const magicBtnShow = document.querySelector('.fls_magic_show_btn');
 
-
-    loginForm.addEventListener('submit', function(e) {
-        if (this.classList.contains('showing_magic_form')) {
+    if(magicBtnShow) {
+        magicBtnShow.addEventListener('click', function(e) {
             e.preventDefault();
-            return false;
-        }
-    });
+            initialWrapper.style.display = 'none';
+            magicFormWrapper.style.display = 'block';
+            loginForm.classList.add('showing_magic_form');
+        });
+    }
+
+    const magicShowRegular = document.querySelector('.fls_magic_show_regular');
+
+    if(magicShowRegular) {
+        magicShowRegular.addEventListener('click', function(e) {
+            e.preventDefault();
+            initialWrapper.style.display = 'block';
+            magicFormWrapper.style.display = 'none';
+            loginForm.classList.remove('showing_magic_form');
+        });
+    }
+
 
     document.getElementById('fls_magic_logon').addEventListener('keyup', function(e) {
         if (e.keyCode === 13) {
@@ -56,8 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function removeAjaxLoading() {
         const submitbtn = document.getElementById('fls_magic_submit');
-        submitbtn.innerHTML = submitbtn.dataset.prevText;
-        submitbtn.disabled = false;
+        if(submitbtn) {
+            submitbtn.innerHTML = submitbtn.dataset.prevText;
+            submitbtn.disabled = false;
+        }
     }
 
     document.getElementById('fls_magic_submit').addEventListener('click', function(e) {
@@ -69,8 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         showAjaxLoading();
 
-        let redirectTo = document.querySelector('#loginform').querySelector('input[name=redirect_to]').value;
-        if (!redirectTo) {
+        let redirectTo = '';
+
+        if(loginForm) {
+            redirectTo = document.querySelector('#loginform').querySelector('input[name=redirect_to]').value;
+        }
+        if (!redirectTo && document.querySelector('#fls_magic_login') && document.querySelector('#fls_magic_login').querySelector('input[name=redirect_to]')) {
             redirectTo = document.querySelector('#fls_magic_login').querySelector('input[name=redirect_to]').value;
         }
 
