@@ -777,6 +777,22 @@ class CustomAuthHandler
             ], 422);
         }
 
+        // let's validate the name field
+        $fullName = trim(Arr::get($formData, 'first_name') . ' ' . Arr::get($formData, 'last_name'));
+        if (!empty($fullName)) {
+            // check if the name is valid
+            // Consider if there has any special characters like +, -, *, /, etc
+            // only check the +,-,*,$,/,=,%,!,@,#,^,&,*,(,),_,{,},[,],:,;,',",<,>,?,|,`,~,,
+            if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/u', $fullName)) {
+                return __('Please provide a valid name', 'fluent-security');
+            }
+
+            // check if there has any http or https
+            if (preg_match('/http|https/', $fullName)) {
+                return __('Please provide a valid name', 'fluent-security');
+            }
+        }
+
         if (apply_filters('fluent_auth/verify_signup_email', true, $formData)) {
             // Let's check for email verification token
             if (empty($formData['_email_verification_token'])) {
@@ -1155,6 +1171,18 @@ class CustomAuthHandler
             $verifcationCode = str_pad(random_int(100123, 900987), 6, 0, STR_PAD_LEFT);
         } catch (\Exception $e) {
             $verifcationCode = str_pad(mt_rand(100123, 900987), 6, 0, STR_PAD_LEFT);
+        }
+
+        $ipAddress = Helper::getIp();
+
+        $existingCount = flsDb()->table('fls_login_hashes')
+            ->where('ip_address', $ipAddress)
+            ->where('use_type', 'signup_verification')
+            ->where('created_at', '>', date('Y-m-d H:i:s', current_time('timestamp') - 60 * 60))
+            ->count();
+
+        if ($existingCount > 5) {
+            return __('Too many requests. Please try again later', 'fluent-security');
         }
 
         $hash = wp_hash_password($formData['email']) . time() . '_' . $verifcationCode;
