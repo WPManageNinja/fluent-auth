@@ -133,8 +133,8 @@ class MagicLoginHandler
         wp_localize_script('fls_magic_url', 'fls_magic_login_vars', [
             'ajaxurl'      => admin_url('admin-ajax.php'),
             'success_icon' => FLUENT_AUTH_PLUGIN_URL . 'dist/images/success.png',
-            'empty_text'   => __('Please provide username / email to get magic login link', 'ninja_magic_login'),
-            'wait_text'    => __('Please Wait...', 'ninja_magic_login'),
+            'empty_text'   => __('Please provide username / email to get magic login link', 'fluent-security'),
+            'wait_text'    => __('Please Wait...', 'fluent-security'),
         ]);
 
         $this->assetLoaded = true;

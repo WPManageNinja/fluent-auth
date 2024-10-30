@@ -383,40 +383,40 @@ class CustomAuthHandler
          *
          * @param array $fields Form fields
          */
-        return apply_filters('fluent_support/registration_form_fields', [
+        return apply_filters('fluent_auth/registration_form_fields', [
             'first_name' => [
                 'required'    => true,
                 'type'        => 'text',
-                'label'       => __('First name', 'fluent-support'),
+                'label'       => __('First name', 'fluent-security'),
                 'id'          => 'fls_first_name',
-                'placeholder' => __('First name', 'fluent-support')
+                'placeholder' => __('First name', 'fluent-security')
             ],
             'last_name'  => [
                 'type'        => 'text',
-                'label'       => __('Last Name', 'fluent-support'),
+                'label'       => __('Last Name', 'fluent-security'),
                 'id'          => 'fls_last_name',
-                'placeholder' => __('Last name', 'fluent-support')
+                'placeholder' => __('Last name', 'fluent-security')
             ],
             'username'   => [
                 'required'    => true,
                 'type'        => 'text',
-                'label'       => __('Username', 'fluent-support'),
+                'label'       => __('Username', 'fluent-security'),
                 'id'          => 'fls_reg_username',
-                'placeholder' => __('Username', 'fluent-support')
+                'placeholder' => __('Username', 'fluent-security')
             ],
             'email'      => [
                 'required'    => true,
                 'type'        => 'email',
-                'label'       => __('Email Address', 'fluent-support'),
+                'label'       => __('Email Address', 'fluent-security'),
                 'id'          => 'fls_reg_email',
-                'placeholder' => __('Your Email Address', 'fluent-support')
+                'placeholder' => __('Your Email Address', 'fluent-security')
             ],
             'password'   => [
                 'required'    => true,
                 'type'        => 'password',
-                'label'       => __('Password', 'fluent-support'),
+                'label'       => __('Password', 'fluent-security'),
                 'id'          => 'fls_reg_password',
-                'placeholder' => __('Password', 'fluent-support')
+                'placeholder' => __('Password', 'fluent-security')
             ]
         ]);
     }
@@ -430,13 +430,13 @@ class CustomAuthHandler
          *
          * @param array $fields Form fields
          */
-        return apply_filters('fluent_support/reset_password_form', [
+        return apply_filters('fluent_auth/reset_password_form', [
             'user_login' => [
                 'required'    => true,
                 'type'        => 'text',
-                'label'       => __('Email Address', 'fluent-support'),
+                'label'       => __('Email Address', 'fluent-security'),
                 'id'          => 'fls_email',
-                'placeholder' => __('Your Email Address', 'fluent-support')
+                'placeholder' => __('Your Email Address', 'fluent-security')
             ]
         ]);
     }
@@ -1004,7 +1004,7 @@ class CustomAuthHandler
 
         $message = sprintf(__('<p>Hi %s,</p>', 'fluent-security'), $user_data->first_name) .
             __('<p>Someone has requested a new password for the following account on WordPress:</p>', 'fluent-security') .
-            sprintf(__('<p>Username: %s</p>', 'fluent-support'), $user_login) .
+            sprintf(__('<p>Username: %s</p>', 'fluent-security'), $user_login) .
             sprintf(__('<p>%s</p>', 'fluent-security'), $resetLink) .
             sprintf(__('<p>If you did not request to reset your password, please ignore this email.</p>', 'fluent-security'));
 
@@ -1085,10 +1085,10 @@ class CustomAuthHandler
             'echo'           => true,
             'redirect'       => (is_ssl() ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
             'form_id'        => 'loginform',
-            'label_username' => __('Username or Email Address'),
-            'label_password' => __('Password'),
-            'label_remember' => __('Remember Me'),
-            'label_log_in'   => __('Log In'),
+            'label_username' => __('Username or Email Address', 'fluent-security'),
+            'label_password' => __('Password', 'fluent-security'),
+            'label_remember' => __('Remember Me', 'fluent-security'),
+            'label_log_in'   => __('Log In', 'fluent-security'),
             'id_username'    => 'user_login',
             'id_password'    => 'user_pass',
             'id_remember'    => 'rememberme',
