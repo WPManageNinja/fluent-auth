@@ -31,8 +31,8 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
-            __('Dashboard', 'fluent-support'),
-            __('Dashboard', 'fluent-support'),
+            __('Dashboard', 'fluent-security'),
+            __('Dashboard', 'fluent-security'),
             $permission,
             'fluent-auth',
             array($this, 'render')
@@ -40,8 +40,8 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
-            __('Security Settings', 'fluent-support'),
-            __('Security Settings', 'fluent-support'),
+            __('Security Settings', 'fluent-security'),
+            __('Security Settings', 'fluent-security'),
             $permission,
             'fluent-auth#/settings',
             array($this, 'render')
@@ -49,8 +49,8 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
-            __('Social Login', 'fluent-support'),
-            __('Social Login', 'fluent-support'),
+            __('Social Login', 'fluent-security'),
+            __('Social Login', 'fluent-security'),
             $permission,
             'fluent-auth#/social-login-settings',
             array($this, 'render')
@@ -58,8 +58,8 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
-            __('Login Redirects', 'fluent-support'),
-            __('Login Redirects', 'fluent-support'),
+            __('Login Redirects', 'fluent-security'),
+            __('Login Redirects', 'fluent-security'),
             $permission,
             'fluent-auth#/login-redirects',
             array($this, 'render')
@@ -67,8 +67,8 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
-            __('Logs', 'fluent-support'),
-            __('Logs', 'fluent-support'),
+            __('Logs', 'fluent-security'),
+            __('Logs', 'fluent-security'),
             $permission,
             'fluent-auth#/logs',
             array($this, 'render')
