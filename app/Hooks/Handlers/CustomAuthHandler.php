@@ -73,7 +73,10 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            return '<p>' . sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url()) . '</p>';
+            $message = apply_filters('fluent_auth/already_logged_in_message',
+                sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
+            );
+            return '<p>' . $message . '</p>';
         }
 
         $this->loadAssets();
@@ -148,7 +151,10 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            return '<p>' . sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), esc_url(site_url())) . '</p>';
+            $message = apply_filters('fluent_auth/already_logged_in_message',
+                sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
+            );
+            return '<p>' . $message . '</p>';
         }
 
         $attributes = $this->getShortcodes($attributes);
@@ -206,7 +212,10 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            return '<p>' . sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), esc_url(site_url())) . '</p>';
+            $message = apply_filters('fluent_auth/already_logged_in_message',
+                sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
+            );
+            return '<p>' . $message . '</p>';
         }
 
         $attributes = $this->getShortcodes($attributes);
@@ -258,9 +267,11 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            return '<p>' . sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url()) . '</p>';
+            $message = apply_filters('fluent_auth/already_logged_in_message',
+                sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
+            );
+            return '<p>' . $message . '</p>';
         }
-
         $atts = $this->getShortcodes($attributes);
 
         $authForm = '<div class="fls_auth_wrapper">';
@@ -286,7 +297,10 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            return '<p>' . sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url()) . '</p>';
+            $message = apply_filters('fluent_auth/already_logged_in_message',
+                sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
+            );
+            return '<p>' . $message . '</p>';
         }
 
         $atts = $this->getShortcodes($attributes);
