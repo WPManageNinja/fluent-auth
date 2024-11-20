@@ -688,7 +688,6 @@ class CustomAuthHandler
         }
 
         if ($currentUserId = get_current_user_id()) { // user already registered
-
             $user = get_user_by('ID', $currentUserId);
             $redirectUrl = apply_filters('login_redirect', $redirectUrl, false, $user);
 
@@ -723,10 +722,11 @@ class CustomAuthHandler
             ], 422);
         }
 
-        $redirectUrl = apply_filters('login_redirect', $redirectUrl, false, $user);
+        $filteredRedirectUrl = apply_filters('login_redirect', $redirectUrl, false, $user);
+        $filteredRedirectUrl = apply_filters('fluent_auth/login_redirect_url', $filteredRedirectUrl, $user, $_REQUEST);
 
         wp_send_json([
-            'redirect' => $redirectUrl
+            'redirect' => $filteredRedirectUrl
         ], 200);
     }
 
@@ -885,6 +885,8 @@ class CustomAuthHandler
             $this->login($userId);
             $redirectUrl = Arr::get($formData, 'redirect_to', admin_url());
             $redirectUrl = apply_filters('login_redirect', $redirectUrl, false, $user);
+            $redirectUrl = apply_filters('fluent_auth/login_redirect_url', $redirectUrl, $user, $formData);
+
             $message = __('Successfully registered to the site.', 'fluent-security');
         }
 
@@ -1123,13 +1125,13 @@ class CustomAuthHandler
             $actionUrl = esc_url($args['action_url']);
         }
 
-        $form = sprintf(
+        $form = \sprintf(
                 '<form name="%1$s" id="%1$s" action="%2$s" method="post">',
                 esc_attr($args['form_id']),
                 $actionUrl
             ) .
             $login_form_top .
-            sprintf(
+            \sprintf(
                 '<p class="login-username">
 				<label for="%1$s">%2$s</label>
 				<input type="text" name="log" id="%1$s" autocomplete="username" class="input" value="%3$s" size="20" />
@@ -1138,7 +1140,7 @@ class CustomAuthHandler
                 esc_html($args['label_username']),
                 esc_attr($args['value_username'])
             ) .
-            sprintf(
+            \sprintf(
                 '<p class="login-password">
 				<label for="%1$s">%2$s</label>
 				<input type="password" name="pwd" id="%1$s" autocomplete="current-password" class="input" value="" size="20" />
@@ -1148,14 +1150,14 @@ class CustomAuthHandler
             ) .
             $login_form_middle .
             ($args['remember'] ?
-                sprintf(
+                \sprintf(
                     '<p class="login-remember"><label><input name="rememberme" type="checkbox" id="%1$s" value="forever"%2$s /> %3$s</label></p>',
                     esc_attr($args['id_remember']),
                     ($args['value_remember'] ? ' checked="checked"' : ''),
                     esc_html($args['label_remember'])
                 ) : ''
             ) .
-            sprintf(
+            \sprintf(
                 '<p class="login-submit">
 				<input type="submit" name="wp-submit" id="%1$s" class="button button-primary" value="%2$s" />
 				<input type="hidden" name="redirect_to" value="%3$s" />
