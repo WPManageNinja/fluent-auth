@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.error.text-danger').forEach(e => {
             e.parentNode.parentNode.classList.remove('is-error');
             e.remove();
-        })
+        });
 
         const data = new FormData(form);
 
@@ -160,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(errorCallback) {
                     errorCallback(this.response);
                 }
-
             }
         };
 

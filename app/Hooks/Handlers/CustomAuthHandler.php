@@ -521,7 +521,6 @@ class CustomAuthHandler
         }
 
         wp_enqueue_script('fluent_auth_login_helper', FLUENT_AUTH_PLUGIN_URL . 'dist/public/login_helper.js', [], FLUENT_AUTH_VERSION);
-
         wp_localize_script('fluent_auth_login_helper', 'fluentAuthPublic', [
             'hide'              => $hide,
             'redirect_fallback' => site_url(),
@@ -532,7 +531,6 @@ class CustomAuthHandler
                 'Password'          => __('Password', 'fluent-security')
             ]
         ]);
-
 
         $this->loaded = true;
     }
@@ -756,7 +754,6 @@ class CustomAuthHandler
                 'errors'  => $errors
             ], 422);
         }
-
 
         /*
          * Action After validate user signup validation success
@@ -1112,8 +1109,7 @@ class CustomAuthHandler
             $actionUrl = esc_url($args['action_url']);
         }
 
-        $form =
-            sprintf(
+        $form = sprintf(
                 '<form name="%1$s" id="%1$s" action="%2$s" method="post">',
                 esc_attr($args['form_id']),
                 $actionUrl
@@ -1163,7 +1159,6 @@ class CustomAuthHandler
             return $form;
         }
     }
-
 
     public function sendSignupEmailVerificationHtml($formData)
     {
