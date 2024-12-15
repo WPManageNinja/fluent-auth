@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     document.getElementById('fls_magic_login').style.display = 'block';
 
     const initialWrapper = document.querySelector('.fls_magic_initial');
@@ -93,14 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const data = new FormData;
-
         data.append('action', 'fls_magic_send_magic_email');
         data.append('email', loginValue);
         data.append('redirect_to', redirectTo);
         data.append('_nonce', document.getElementById('fls_magic_logon_nonce').value);
 
         const request = new XMLHttpRequest();
-
 
         request.open('POST', window.fls_magic_login_vars.ajaxurl, true);
         request.responseType = 'json';

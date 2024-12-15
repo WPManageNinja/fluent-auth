@@ -72,7 +72,7 @@ class MagicLoginHandler
                     <span><?php _e('Or', 'fluent-security') ?></span>
                 </div>
                 <div class="fls_magic_login_btn">
-                    <button class="fls_magic_show_btn button button-primary button-large">
+                    <button class="fls_magic_show_btn magic_btn_secondary button button-primary button-large">
                         <?php _e('Login Via Magic URL', 'fluent-security'); ?>
                     </button>
                 </div>
@@ -84,10 +84,8 @@ class MagicLoginHandler
                 <label for="fls_magic_logon">
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
                 </label>
-                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon"
-                       class="fls_magic_input" type="text" name="redirect_to"/>
-                <input id="fls_magic_logon_nonce" type="hidden"
-                       value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
+                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text" name="fls_magic_logon_email"/>
+                <input id="fls_magic_logon_nonce" type="hidden" name="fls_magic_logon_nonce" value="<?php echo wp_create_nonce('fls_magic_logon_nonce'); ?>"/>
                 <div class="fls_magic_submit_wrapper">
                     <button class="button button-primary button-large" id="fls_magic_submit">
                         <?php _e('Continue', 'fluent-security'); ?>
@@ -173,7 +171,7 @@ class MagicLoginHandler
         $nonce = sanitize_text_field($_REQUEST['_nonce']);
 
         // Verify the nonce now
-        if (!wp_verify_nonce($nonce, 'fls_magic_send_magic_email')) {
+        if (!wp_verify_nonce($nonce, 'fls_magic_logon_nonce')) {
             wp_send_json(array(
                 'message' => __('Nonce Verification failed. Please try again', 'fluent-security')
             ), 422);
@@ -182,6 +180,9 @@ class MagicLoginHandler
         // Let's prepare
         if (strpos($username, '@')) {
             $user = get_user_by('email', $username);
+            if(!$user) {
+                $user = get_user_by('login', $username);
+            }
         } else {
             $user = get_user_by('login', $username);
         }
@@ -202,7 +203,6 @@ class MagicLoginHandler
         } else {
             $redirect_to = $this->getLoginRedirect($user);
         }
-
 
         $loginUrl = esc_url($this->getMagicLoginUrl($user, $validity, false, $redirect_to));
 

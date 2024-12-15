@@ -457,17 +457,16 @@ class CustomAuthHandler
 
     protected function submitBtnLoadingSvg()
     {
-        $loadingIcon = '<svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-           width="40px" height="20px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
-        <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
-          <animateTransform attributeType="xml"
-            attributeName="transform"
-            type="rotate"
-            from="0 25 25"
-            to="360 25 25"
-            dur="0.6s"
-            repeatCount="indefinite"/>
-          </path>
+        $loadingIcon = '<svg version="1.1" class="fls_loading_svg" x="0px" y="0px" width="40px" height="20px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+            <path fill="currentColor" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+              <animateTransform attributeType="xml"
+                attributeName="transform"
+                type="rotate"
+                from="0 25 25"
+                to="360 25 25"
+                dur="0.6s"
+                repeatCount="indefinite"/>
+              </path>
         </svg>';
 
         /*
@@ -654,6 +653,7 @@ class CustomAuthHandler
      */
     public function handleLoginAjax()
     {
+
         if (!$this->isEnabled()) {
             wp_send_json([
                 'message' => __('Login is not enabled', 'fluent-security')
@@ -712,7 +712,6 @@ class CustomAuthHandler
             wp_send_json([
                 'message' => __('Email or Password is not valid. Please try again', 'fluent-security')
             ], 422);
-
         }
 
         $user = wp_signon();
@@ -732,7 +731,9 @@ class CustomAuthHandler
 
     public function handleSignupAjax()
     {
-        if (!$this->isEnabled() || !get_option('users_can_register')) {
+        $signupEnabled = $this->isEnabled() && get_option('users_can_register');
+        $signupEnabled = apply_filters('fluent_auth/signup_enabled', $signupEnabled);
+        if (!$signupEnabled) {
             wp_send_json([
                 'message' => __('User registration is not enabled', 'fluent-security')
             ], 422);
@@ -1248,10 +1249,9 @@ class CustomAuthHandler
                                                   name="_email_verification_token" required></div>
             </div>
             <button type="submit" id="fls_verification_submit">
-                <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg"
-                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="20px"
+                <svg version="1.1" class="fls_loading_svg" x="0px" y="0px" width="40px" height="20px"
                      viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
-                    <path fill="#000"
+                    <path fill="currentColor"
                           d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
                         <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25"
                                           to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform>
