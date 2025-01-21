@@ -4,7 +4,7 @@ Tags: Login limit, login redirects, xml-rpc, login logs, social logins
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.1
-Stable tag: 1.0.8
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -157,6 +157,10 @@ Absolutely not! From the very first, We were careful about this. It stores all t
 7. Social Login Settings
 
 == Changelog ==
+
+= 1.1.0 - Date: Dec 16, 2014 =
+* Added hooks for 3rd party developers
+* Improvement on Authentication flow
 
 = 1.0.8 - Date: Dec 02, 2024 =
 * Added Additional Hooks for Regsitration and Signup
