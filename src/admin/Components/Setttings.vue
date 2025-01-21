@@ -40,17 +40,17 @@
                         <template v-else>
                             <el-row :gutter="30">
                                 <el-col :md="12" :sm="24">
-                                    <el-form-item label="Login Try Limit per IP address in certain defined minutes">
+                                    <el-form-item label="{{ $t(login_try_limit') }} {{ $t('minutes') }}">
                                         <el-input type="number" v-model="settings.login_try_limit"/>
-                                        <p>{{ $t('login_how_many') }} {{ settings.login_try_timing }} minutes</p>
+                                        <p>{{ $t('login_how_many') }} {{ settings.login_try_timing }} {{ $t('minutes') }}</p>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :md="12" :sm="24">
-                                    <el-form-item label="Time limit for login try in minutes">
+                                    <el-form-item label="{{ $t('login_try_time_limit') }} {{ $t('minutes') }}">
                                         <el-input type="number" v-model="settings.login_try_timing"/>
-                                        <p>If you user do fail login {{ settings.login_try_limit }} times in
-                                            {{ settings.login_try_timing }} minutes then system will block the user for
-                                            {{ settings.login_try_timing }} minutes</p>
+                                        <p>{{ $t('user_fails_to_login') }} {{ settings.login_try_limit }} {{ $t('times_within') }}
+                                            {{ settings.login_try_timing }} {{ $t('minutes') }} {{ $t('system_will_block') }}
+                                            {{ settings.login_try_timing }} {{ $t('minutes') }}.</p>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
@@ -58,12 +58,12 @@
                     </div>
 
                     <div class="fls_login_settings" v-if="settings.enable_auth_logs == 'yes'">
-                        <h3>{{ $t('Extended Login Options') }}</h3>
+                        <h3>{{ $t('extended_login_options') }}</h3>
 
                         <div class="fls_inner_group" :class="'fls_inner_group_' + settings.magic_login">
                             <el-form-item>
                                 <el-checkbox v-model="settings.magic_login" true-label="yes" false-label="no">
-                                    {{ $t('Enable Magic Login (User can login via url sent to email)') }}
+                                    {{ $t('enable_magic_login') }}
                                 </el-checkbox>
                             </el-form-item>
                             <el-form-item style="background: white; padding: 10px 20px;"
@@ -82,16 +82,15 @@
                         <div class="fls_inner_group" :class="'fls_inner_group_' + settings.email2fa">
                             <el-form-item>
                                 <el-checkbox v-model="settings.email2fa" true-label="yes" false-label="no">
-                                    Enable Two-Factor Authentication via Email (If enable then user have to provide
-                                    authentication code sent via email)
+                                    {{ $t('enable_2fa_via_email') }}
                                 </el-checkbox>
                             </el-form-item>
                             <el-form-item style="background: white; padding: 10px 20px;"
                                           v-if="settings.email2fa == 'yes'">
                                 <template #label>
-                                    Select Roles that requires Two-Factor Authentication
+                                    {{ $t('select_roles_for_2fa') }}
                                 </template>
-                                <el-select placeholder="Enabled for All User Roles" clearable
+                                <el-select placeholder="{{ $t('enabled_for_all_user_roles') }}" clearable
                                            v-model="settings.email2fa_roles" :multiple="true">
                                     <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
                                                :key="role.id"></el-option>
