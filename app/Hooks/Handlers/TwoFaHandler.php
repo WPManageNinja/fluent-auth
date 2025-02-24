@@ -199,7 +199,8 @@ class TwoFaHandler
         remove_action('fluent_auth/login_attempts_checked', [$this, 'maybe2FaRedirect'], 1);
 
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
-        $user = wp_signon(array(
+        $user = wp_signon(
+            array(
                 'user_login' => $user->user_login,
                 'user_password' => '',
                 'remember'   => (bool) strpos($logHash->login_hash, '-auth')
@@ -318,38 +319,32 @@ class TwoFaHandler
     private function get2FaFormHtml($data = [])
     {
         $redirectTo = Arr::get($data, 'redirect_to');
-
-        if($redirectTo) {
+        if ($redirectTo) {
             $redirectTo = esc_url_raw($redirectTo);
         }
 
         ob_start();
-        ?>
-        <form
-            style="margin-top: 20px;margin-left: 0;padding: 26px 24px 34px;font-weight: 400;overflow: hidden;background: #fff;border: 1px solid #c3c4c7;box-shadow: 0 1px 3px rgb(0 0 0 / 4%);"
-            class="fls_2fs" id="fls_2fa_form">
-            <input type="hidden" name="login_hash" value="<?php echo esc_attr(Arr::get($data, 'login_hash')); ?>"/>
-            <input type="hidden" name="redirect_to" value="<?php echo esc_attr($redirectTo); ?>"/>
+?>
+        <form class="fls_2fa" id="fls_2fa_form">
+            <input type="hidden" name="login_hash" value="<?php echo esc_attr(Arr::get($data, 'login_hash')); ?>" />
+            <input type="hidden" name="redirect_to" value="<?php echo esc_attr($redirectTo); ?>" />
             <div class="user-pass-wrap">
-                <p style="margin-bottom: 20px;"><?php _e('Please check your email inbox and get the 2 factor Authentication code and Provide here to login', 'fluent-security'); ?></p>
+                <p><?php _e('Please check your email inbox and get the 2 factor Authentication code and Provide here to login', 'fluent-security'); ?></p>
                 <label for="login_passcode"><?php _e('Two-Factor Authentication Code', 'fluent-security'); ?></label>
                 <div class="wp-pwd">
-                    <input style="font-size: 14px;" placeholder="<?php _e('Login Code', 'fluent-security'); ?>"
-                           type="text"
-                           value="<?php echo (isset($data['auto_code'])) ? esc_attr($data['auto_code']) : ''; ?>"
-                           name="login_passcode" id="login_passcode" class="input" size="20"/>
+                    <input placeholder="<?php _e('Login Code', 'fluent-security'); ?>"
+                        type="text"
+                        value="<?php echo (isset($data['auto_code'])) ? esc_attr($data['auto_code']) : ''; ?>"
+                        name="login_passcode" id="login_passcode" class="input" size="20" />
                 </div>
                 <div>
-                    <button
-                        style="display: block; cursor: pointer; width: 100%;border: 1px solid #2271b1;background: #2271b1;color: #fff;text-decoration: none;text-shadow: none;min-height: 32px;line-height: 2.30769231;padding: 4px 12px;font-size: 13px;border-radius: 3px;"
-                        id="fls_2fa_confirm" type="submit">
+                    <button id="fls_2fa_confirm" type="submit">
                         <?php _e('Login', 'fluent-security'); ?>
                     </button>
                 </div>
             </div>
         </form>
-        <?php
-
+<?php
         return ob_get_clean();
     }
 }

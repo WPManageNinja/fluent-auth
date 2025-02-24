@@ -1,27 +1,47 @@
+/**
+ * FluentAuth Magic URL Styles
+ * Styles specific to the magic login functionality
+ */
+
+// Import base styles
+@import 'login_helper';
+
+// Magic Login Container
 div#fls_magic_login {
   display: block;
   clear: both;
-  margin-top: 20px;
+
+  input {
+    @extend .fls-input;
+  }
 }
 
-#login form p.submit {
-  clear: both;
-  overflow: hidden;
+// Magic Login Form
+.fls_magic_login_form {
+  @extend %form-layout;
+  @extend %form-container;
+
+  label {
+    @extend %label-style;
+  }
 }
 
+// Divider
 .fls_magic-or {
-  margin-bottom: 16px;
+  margin-bottom: var(--fls-form-gap);
   position: relative;
   text-align: center;
+
   span {
-    background: #fff;
-    color: #777;
+    background: var(--fls-white);
+    color: var(--fls-gray);
     position: relative;
-    padding: 0 8px;
+    padding: 0 var(--fls-spacing-base);
     text-transform: uppercase;
   }
+
   &:before {
-    background: #E5E5E5;
+    background: var(--fls-border-color);
     content: '';
     height: 1px;
     position: absolute;
@@ -31,27 +51,17 @@ div#fls_magic_login {
   }
 }
 
-
-
-.fls_magic_show_btn, #fls_magic_submit {
-  cursor: pointer;
-  display: block;
-  width: 100%;
-  padding: 5px 15px;
-  color: white;
-  border: 0;
-  border-radius: 5px;
-  min-height: 32px;
-}
-.fls_magic_show_btn, {
-  padding: 10px 15px;
+// Magic Login Buttons
+.fls_magic_show_btn,
+#fls_magic_submit {
+  @extend .fls-button;
 }
 
-.fls_magic_show_btn:hover, #fls_magic_submit:hover {
-  background: #006799;
-  border-radius: 5px;
+#fls_magic_submit:is(:hover, :focus) {
+  background: var(--fls-primary-hover);
 }
 
+// Form States
 #loginform.showing_magic_form > {
   * {
     display: none !important;
@@ -61,51 +71,45 @@ div#fls_magic_login {
   }
 }
 
-p.fls_magic_text {
-  margin-bottom: 10px !important;
-  font-size: 15px;
-}
-
+// Success States
 .login_magic_success {
   text-align: center;
+
   img {
     width: 48px;
-    margin-bottom: 10px;
+    margin-bottom: var(--fls-spacing-base);
   }
 }
 
 .login_success_heading {
-  font-size: 20px;
-  margin-bottom: 15px;
+  font-size: calc(var(--fls-font-size-base) * 1.4);
+  margin-bottom: var(--fls-spacing-base);
 }
 
 .login_success_message {
-  font-size: 14px;
+  font-size: var(--fls-font-size-base);
 }
 
+// Back Button Section
 .magic_back_regular {
-  margin-top: 30px;
+  @extend %form-layout;
+
+  .fls_magic-or {
+    margin-bottom: 0;
+  }
 }
 
+// Secondary Button
 .magic_btn_secondary {
-  width: 100%;
-  padding: 10px;
-  background-color: white;
-  border: 1px solid gray;
-  cursor: pointer;
-  color: black;
-  border-radius: 5px;
-  &:hover {
-    background: #4b5d73;
-    color: white;
-  }
+  @extend .fls-button;
+  @extend .fls-button-secondary;
 }
 
 #fls_magic_logon {
   display: block;
   width: 100%;
-  margin: 10px 0px;
-  font-size: 14px;
+  margin: var(--fls-spacing-base) 0;
+  font-size: var(--fls-font-size-base);
 }
 
 .fls_magic_submit_wrapper {
@@ -114,5 +118,13 @@ p.fls_magic_text {
 }
 
 #fls_magic_login {
-  margin-bottom: 10px;
+  margin-bottom: var(--fls-spacing-base);
+}
+
+// Reset margins since we're using gap
+.fls_magic_show_btn,
+#fls_magic_submit,
+.magic_btn_secondary,
+#fls_magic_logon {
+  margin: 0;
 }

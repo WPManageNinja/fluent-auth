@@ -224,7 +224,6 @@ class Helper
             ->where('status', '!=', 'issued')
             ->where('created_at', '<', $dateTime)
             ->delete();
-
     }
 
     public static function getSocialAuthSettings($context = 'view')
@@ -385,5 +384,57 @@ class Helper
             }
             return false;
         }
+    }
+
+    public static function getCssVariables()
+    {
+        $variables = [
+            // Colors
+            'fls-primary' => '#0275ff',
+            'fls-primary-hover' => '#006799',
+            'fls-primary-light' => '#0275ff91',
+            'fls-secondary' => '#4b5d73',
+            'fls-white' => '#fff',
+            'fls-gray' => '#777',
+            'fls-border-color' => '#c3c4c7',
+            'fls-error' => '#f56c6c',
+
+            // Typography
+            'fls-font-size-base' => '16px',
+
+            // Spacing
+            'fls-spacing-base' => '15px',
+            'fls-spacing-lg' => '24px',
+            'fls-spacing-xl' => '26px',
+            'fls-spacing-between' => '20px',
+
+            // Layout
+            'fls-max-width' => '500px',
+            'fls-gap' => '20px',
+            'fls-form-gap' => '15px',
+            'fls-input-gap' => '10px',
+
+            // Border & Shadow
+            'fls-border-radius' => '5px',
+            'fls-box-shadow' => '0 1px 3px rgb(0 0 0 / 4%)',
+        ];
+
+        return apply_filters('fluent_auth/css_variables', $variables);
+    }
+
+    public static function renderCssVariables()
+    {
+        $variables = self::getCssVariables();
+        $css = '';
+
+        foreach ($variables as $name => $value) {
+            $css .= "--{$name}: {$value};";
+        }
+
+        $styles = sprintf(':root {%s}', $css);
+
+        wp_register_style('fls-css-variables', false); // No actual file
+        wp_enqueue_style('fls-css-variables');
+        wp_add_inline_style('fls-css-variables', $styles);
     }
 }
