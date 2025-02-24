@@ -256,13 +256,13 @@ class Helper
 
         if ($context == 'edit') {
             if ($settings['google_key_method'] == 'wp_config') {
-                $settings['google_client_id'] = defined('\FLUENT_AUTH_GOOGLE_CLIENT_ID') ? \FLUENT_AUTH_GOOGLE_CLIENT_ID : '';
-                $settings['google_client_secret'] = defined('\FLUENT_AUTH_GOOGLE_CLIENT_SECRET') ? \FLUENT_AUTH_GOOGLE_CLIENT_SECRET : '';
+                $settings['google_client_id'] = (defined('FLUENT_AUTH_GOOGLE_CLIENT_ID')) ? FLUENT_AUTH_GOOGLE_CLIENT_ID : '';
+                $settings['google_client_secret'] = (defined('FLUENT_AUTH_GOOGLE_CLIENT_SECRET')) ? FLUENT_AUTH_GOOGLE_CLIENT_SECRET : '';
             }
 
             if ($settings['github_key_method'] == 'wp_config') {
-                $settings['github_client_id'] = defined('\FLUENT_AUTH_GITHUB_CLIENT_ID') ? \FLUENT_AUTH_GITHUB_CLIENT_ID : '';
-                $settings['github_client_secret'] = defined('\FLUENT_AUTH_GITHUB_CLIENT_SECRET') ? \FLUENT_AUTH_GITHUB_CLIENT_SECRET : '';
+                $settings['github_client_id'] = (defined('FLUENT_AUTH_GITHUB_CLIENT_ID')) ? FLUENT_AUTH_GITHUB_CLIENT_ID : '';
+                $settings['github_client_secret'] = (defined('FLUENT_AUTH_GITHUB_CLIENT_SECRET')) ? FLUENT_AUTH_GITHUB_CLIENT_SECRET : '';
             }
         }
 
