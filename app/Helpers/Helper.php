@@ -388,7 +388,7 @@ class Helper
 
     public static function getCssVariables()
     {
-        return [
+        $variables = [
             // Colors
             'fls-primary' => '#0275ff',
             'fls-primary-hover' => '#006799',
@@ -418,6 +418,8 @@ class Helper
             'fls-border-radius' => '5px',
             'fls-box-shadow' => '0 1px 3px rgb(0 0 0 / 4%)',
         ];
+
+        return apply_filters('fluent_auth/css_variables', $variables);
     }
 
     public static function renderCssVariables()
