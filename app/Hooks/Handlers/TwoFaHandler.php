@@ -199,7 +199,8 @@ class TwoFaHandler
         remove_action('fluent_auth/login_attempts_checked', [$this, 'maybe2FaRedirect'], 1);
 
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
-        $user = wp_signon(array(
+        $user = wp_signon(
+            array(
                 'user_login' => $user->user_login,
                 'user_password' => '',
                 'remember'   => (bool) strpos($logHash->login_hash, '-auth')
@@ -241,11 +242,15 @@ class TwoFaHandler
 
     private function send2FaEmail($data, $user, $autoLoginUrl = false)
     {
-        $emailSubject = sprintf(__('Your Login code for %1s - %d', 'fluent-security'), get_bloginfo('name'), $data['two_fa_code']);
+        $emailSubject = sprintf(
+            __('Your Login code for %s - %d', 'fluent-security'),
+            Helper::getBlogName(),
+            $data['two_fa_code']
+        );
 
         $emailLines = [
             sprintf(__('Hello %s,', 'fluent-security'), $user->display_name),
-            sprintf(__('Someone requested to login to %s and here is the Login code that you can use in the login form', 'fluent-security'), get_bloginfo('name')),
+            sprintf(__('Someone requested to login to %s and here is the Login code that you can use in the login form', 'fluent-security'), Helper::getBlogName()),
             '<b>' . __('Your Login Code: ', 'fluent-security') . '</b>',
             '<p style="font-size: 22px;border: 2px dashed #555454;padding: 5px 10px;text-align: center;background: #fffaca;letter-spacing: 7px;color: #555454;display:block;">' . $data['two_fa_code'] . '</p>',
             sprintf(__('This code will expire in %d minutes and can only be used once.', 'fluent-security'), 10),
@@ -259,7 +264,7 @@ class TwoFaHandler
             $emailLines[] = ' ';
             $emailLines[] = __('You can also login by clicking the following button', 'fluent-security');
             $callToAction = [
-                'btn_text' => sprintf(__('Sign in to %s', 'fluent-security'), get_bloginfo('name')),
+                'btn_text' => sprintf(__('Sign in to %s', 'fluent-security'), $blogName),
                 'url'      => $autoLoginUrl
             ];
         }
@@ -319,25 +324,25 @@ class TwoFaHandler
     {
         $redirectTo = Arr::get($data, 'redirect_to');
 
-        if($redirectTo) {
+        if ($redirectTo) {
             $redirectTo = esc_url_raw($redirectTo);
         }
 
         ob_start();
-        ?>
+?>
         <form
             style="margin-top: 20px;margin-left: 0;padding: 26px 24px 34px;font-weight: 400;overflow: hidden;background: #fff;border: 1px solid #c3c4c7;box-shadow: 0 1px 3px rgb(0 0 0 / 4%);"
             class="fls_2fs" id="fls_2fa_form">
-            <input type="hidden" name="login_hash" value="<?php echo esc_attr(Arr::get($data, 'login_hash')); ?>"/>
-            <input type="hidden" name="redirect_to" value="<?php echo esc_attr($redirectTo); ?>"/>
+            <input type="hidden" name="login_hash" value="<?php echo esc_attr(Arr::get($data, 'login_hash')); ?>" />
+            <input type="hidden" name="redirect_to" value="<?php echo esc_attr($redirectTo); ?>" />
             <div class="user-pass-wrap">
                 <p style="margin-bottom: 20px;"><?php _e('Please check your email inbox and get the 2 factor Authentication code and Provide here to login', 'fluent-security'); ?></p>
                 <label for="login_passcode"><?php _e('Two-Factor Authentication Code', 'fluent-security'); ?></label>
                 <div class="wp-pwd">
                     <input style="font-size: 14px;" placeholder="<?php _e('Login Code', 'fluent-security'); ?>"
-                           type="text"
-                           value="<?php echo (isset($data['auto_code'])) ? esc_attr($data['auto_code']) : ''; ?>"
-                           name="login_passcode" id="login_passcode" class="input" size="20"/>
+                        type="text"
+                        value="<?php echo isset($data['auto_code']) ? esc_attr($data['auto_code']) : ''; ?>"
+                        name="login_passcode" id="login_passcode" class="input" size="20" />
                 </div>
                 <div>
                     <button
@@ -348,7 +353,7 @@ class TwoFaHandler
                 </div>
             </div>
         </form>
-        <?php
+<?php
 
         return ob_get_clean();
     }

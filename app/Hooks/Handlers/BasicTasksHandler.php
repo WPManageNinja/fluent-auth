@@ -83,9 +83,7 @@ class BasicTasksHandler
                 wp_safe_redirect(home_url()); // Replace this with the URL to redirect to.
                 exit;
             }
-
         }, 100);
-
     }
 
     public function maybeDisableAppPassword($status)
@@ -130,12 +128,12 @@ class BasicTasksHandler
 
         $url = admin_url('options-general.php?page=fluent-auth#/settings');
 
-        ?>
+?>
         <div style="padding-bottom: 10px;" class="notice notice-warning">
             <p><?php echo sprintf(__('Thank you for installing %s Plugin. Please configure the security settings to enable enhanced security of your site', 'fluent-security'), '<b>FluentAuth</b>'); ?></p>
             <a href="<?php echo esc_url($url); ?>"><?php _e('Configure Fluent Auth', 'fluent-security'); ?></a>
         </div>
-        <?php
+<?php
     }
 
     public function maybeSendDigestEMail()
@@ -250,12 +248,12 @@ class BasicTasksHandler
 
         $data = [
             'body'        => implode('', $lines),
-            'pre_header'  => sprintf('Auth Report for %s', get_bloginfo('name')),
+            'pre_header'  => sprintf('Auth Report for %s', Helper::getBlogName()),
             'show_footer' => true
         ];
 
         $body = Helper::loadView('notification', $data);
-        $subject = sprintf('%1s report for %2s - %3s', ucfirst($period), get_bloginfo('name'), date('d, M Y', current_time('timestamp')));
+        $subject = sprintf('%1s report for %2s - %3s', ucfirst($period), Helper::getBlogName(), date('d, M Y', current_time('timestamp')));
 
         $headers = array('Content-Type: text/html; charset=UTF-8');
 
@@ -263,5 +261,4 @@ class BasicTasksHandler
 
         update_option('_fls_last_digest_sent', current_time('mysql'), 'no');
     }
-
 }

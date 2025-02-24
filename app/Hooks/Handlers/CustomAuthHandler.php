@@ -73,7 +73,8 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            $message = apply_filters('fluent_auth/already_logged_in_message',
+            $message = apply_filters(
+                'fluent_auth/already_logged_in_message',
                 sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
             );
             return '<p>' . $message . '</p>';
@@ -151,7 +152,8 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            $message = apply_filters('fluent_auth/already_logged_in_message',
+            $message = apply_filters(
+                'fluent_auth/already_logged_in_message',
                 sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
             );
             return '<p>' . $message . '</p>';
@@ -212,7 +214,8 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            $message = apply_filters('fluent_auth/already_logged_in_message',
+            $message = apply_filters(
+                'fluent_auth/already_logged_in_message',
                 sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
             );
             return '<p>' . $message . '</p>';
@@ -267,7 +270,8 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            $message = apply_filters('fluent_auth/already_logged_in_message',
+            $message = apply_filters(
+                'fluent_auth/already_logged_in_message',
                 sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
             );
             return '<p>' . $message . '</p>';
@@ -297,7 +301,8 @@ class CustomAuthHandler
         }
 
         if (get_current_user_id()) {
-            $message = apply_filters('fluent_auth/already_logged_in_message',
+            $message = apply_filters(
+                'fluent_auth/already_logged_in_message',
                 sprintf(__('You are already logged in. <a href="%s">Go to Home Page</a>', 'fluent-security'), site_url())
             );
             return '<p>' . $message . '</p>';
@@ -308,7 +313,7 @@ class CustomAuthHandler
         $magicHandler->pushAssets();
 
         ob_start();
-        ?>
+?>
         <div id="fls_magic_login">
             <div class="fls_magic_login_form fls_magic_login">
                 <?php if ($content): ?>
@@ -320,11 +325,11 @@ class CustomAuthHandler
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
                 </label>
                 <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon"
-                       class="fls_magic_input" type="text"/>
+                    class="fls_magic_input" type="text" />
                 <input id="fls_magic_logon_nonce" type="hidden"
-                       value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>"/>
+                    value="<?php echo wp_create_nonce('fls_magic_send_magic_email'); ?>" />
                 <?php if (!empty($atts['redirect_to'])): ?>
-                    <input type="hidden" value="<?php echo esc_url($atts['redirect_to']); ?>" name="redirect_to"/>
+                    <input type="hidden" value="<?php echo esc_url($atts['redirect_to']); ?>" name="redirect_to" />
                 <?php endif; ?>
                 <div class="fls_magic_submit_wrapper">
                     <button class="button button-primary button-large" id="fls_magic_submit">
@@ -514,14 +519,14 @@ class CustomAuthHandler
                     return;
                 }
 
-                ?>
+        ?>
                 <script type="text/javascript">
-                    document.addEventListener("DOMContentLoaded", function () {
+                    document.addEventListener("DOMContentLoaded", function() {
                         var redirect = "<?php echo esc_url($redirect); ?>";
                         window.location.replace(redirect);
                     });
                 </script>
-                <?php
+        <?php
             }
             die();
         }
@@ -925,7 +930,6 @@ class CustomAuthHandler
             wp_send_json([
                 'message' => __('Security verification failed. Please try again', 'fluent-security')
             ], 422);
-
         }
 
         $usernameOrEmail = trim(wp_unslash(Arr::get($data, 'user_login')));
@@ -998,7 +1002,7 @@ class CustomAuthHandler
          * @since v1.5.7
          * @param string $linkText
          */
-        $linkText = apply_filters("fluent_auth/reset_password_link", sprintf(__('Reset your password for %s', 'fluent-security'), get_bloginfo('name')));
+        $linkText = apply_filters("fluent_auth/reset_password_link", sprintf(__('Reset your password for %s', 'fluent-security'), Helper::getBlogName()));
 
         $resetUrl = add_query_arg([
             'action' => 'rp',
@@ -1014,7 +1018,7 @@ class CustomAuthHandler
          * @since v1.5.7
          * @param string $mailSubject
          */
-        $mailSubject = apply_filters("fluent_auth/reset_password_mail_subject", sprintf(__('Reset your password for %s', 'fluent-security'), get_bloginfo('name')));
+        $mailSubject = apply_filters("fluent_auth/reset_password_mail_subject", sprintf(__('Reset your password for %s', 'fluent-security'), Helper::getBlogName()));
 
         $message = sprintf(__('<p>Hi %s,</p>', 'fluent-security'), $user_data->first_name) .
             __('<p>Someone has requested a new password for the following account on WordPress:</p>', 'fluent-security') .
@@ -1127,10 +1131,10 @@ class CustomAuthHandler
         }
 
         $form = \sprintf(
-                '<form name="%1$s" id="%1$s" action="%2$s" method="post">',
-                esc_attr($args['form_id']),
-                $actionUrl
-            ) .
+            '<form name="%1$s" id="%1$s" action="%2$s" method="post">',
+            esc_attr($args['form_id']),
+            $actionUrl
+        ) .
             $login_form_top .
             \sprintf(
                 '<p class="login-username">
@@ -1212,7 +1216,7 @@ class CustomAuthHandler
         flsDb()->table('fls_login_hashes')
             ->insert($data);
 
-        $mailSubject = apply_filters("fluent_auth/signup_verification_mail_subject", sprintf(__('Your registration verification code for %s', 'fluent-security'), get_bloginfo('name')));
+        $mailSubject = apply_filters("fluent_auth/signup_verification_mail_subject", sprintf(__('Your registration verification code for %s', 'fluent-security'), Helper::getBlogName()));
 
         $pStart = '<p style="font-family: Arial, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">';
 
@@ -1242,26 +1246,26 @@ class CustomAuthHandler
         <div class="fls_signup_verification">
             <div class="fls_field_group fls_field_vefication">
                 <p><?php echo esc_html(sprintf(__('A verification code as been sent to %s. Please provide the code bellow: ', 'fluent-'), $formData['email'])) ?></p>
-                <input type="hidden" name="_email_verification_hash" value="<?php echo esc_attr($hash); ?>"/>
+                <input type="hidden" name="_email_verification_hash" value="<?php echo esc_attr($hash); ?>" />
                 <div class="fls_field_label is-required"><label
                         for="fls_field_vefication"><?php _e('Vefication Code', 'fluent-security'); ?></label></div>
                 <div class="fs_input_wrap"><input type="text" id="fls_field_vefication" placeholder=""
-                                                  name="_email_verification_token" required></div>
+                        name="_email_verification_token" required></div>
             </div>
             <button type="submit" id="fls_verification_submit">
                 <svg version="1.1" class="fls_loading_svg" x="0px" y="0px" width="40px" height="20px"
-                     viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                    viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                     <path fill="currentColor"
-                          d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+                        d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
                         <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25"
-                                          to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform>
+                            to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform>
                     </path>
                 </svg>
                 <span><?php _e('Complete Signup', 'fluent-security'); ?></span>
             </button>
         </div>
 
-        <?php
+<?php
         return ob_get_clean();
     }
 }
