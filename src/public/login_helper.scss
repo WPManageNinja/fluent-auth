@@ -1,223 +1,384 @@
-.fls_login_wrapper{
-    max-width: 500px;
-    form#loginform > p, #fls_2fa_form > p {
-        display: block;
-        margin-bottom: 15px;
-    }
+/**
+ * FluentAuth Login Helper Styles
+ * Base styles and common components for authentication forms
+ */
 
-    #fls_2fa_form {
-        .wp-pwd {
-            margin-bottom: 20px;
-        }
-    }
-
-    form#loginform label, #fls_2fa_form label {
-        display: block;
-        font-weight: 500;
-    }
-
-    form#loginform .input, #fls_2fa_form .input {
-        padding: 10px;
-        width: 100%;
-        margin-top: 10px;
-    }
-
-
-    form#loginform, #fls_2fa_form {
-        display: block;
-        overflow: hidden;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    input#wp-submit {
-        width: 100%;
-        padding: 15px;
-        background: #0275ff;
-        color: white;
-        border: 0;
-        border-radius: 5px;
-    }
+// Base Form Components
+.fls-form-group {
+  margin-bottom: var(--fls-spacing-between);
 }
 
-.fls_registration_wrapper {
-    max-width: 500px;
-
-    .fls_registration_form {
-        display: grid;
-
-        .fls_field_group {
-            display: block;
-            margin-bottom: 15px;
-            .fls_field_label {
-                &.is-required {
-                    label:after {
-                        content: " *";
-                        color: #f56c6c;
-                        margin-left: 3px;
-                    }
-                }
-            }
-
-            &.is-error {
-                input {
-                    border-color: #f56c6c;
-                }
-            }
-        }
-
-        input {
-            padding: 10px;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        #fls_submit,#fls_verification_submit {
-            width: 100%;
-            padding: 15px;
-            background: #0275ff;
-            color: white;
-            border: 0;
-            border-radius: 5px;
-
-            span {
-                transition: all 1s;
-                opacity: 1;
-            }
-
-            svg {
-                display: none;
-                margin: 0 auto;
-                transition: all 1s;
-
-                path, rect {
-                    fill: white;
-                    transition: initial;
-                }
-            }
-
-            &.fls_loading {
-                background: #0275ff91;
-
-                span {
-                    display: none;
-                    opacity: 0;
-                }
-
-                svg {
-                    display: block;
-                    opacity: 1;
-                }
-            }
-        }
-    }
-
-    .fls_signup_verification {
-        margin-bottom: 30px;
-    }
+// Common Input & Button Base Styles
+%form-element-base {
+  width: 100%;
+  padding: var(--fls-spacing-base);
+  font-size: var(--fls-font-size-base);
+  border-radius: var(--fls-border-radius);
+  box-sizing: border-box;
+  margin: 0;
 }
 
+// Input Base
+.fls-input {
+  @extend %form-element-base;
+  border: 1px solid var(--fls-border-color);
+
+  &:focus {
+    outline: none;
+    border-color: var(--fls-primary);
+  }
+}
+
+// Button Base
+.fls-button {
+  @extend %form-element-base;
+  background: var(--fls-primary);
+  color: var(--fls-white);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:is(:hover, :focus) {
+    background: var(--fls-primary-hover);
+  }
+
+  // Secondary Button Variant
+  &.fls-button-secondary {
+    background: var(--fls-white);
+    border: 1px solid var(--fls-border-color);
+    color: var(--fls-gray);
+
+    &:is(:hover, :focus) {
+      background: var(--fls-secondary);
+      color: var(--fls-white);
+    }
+  }
+}
+
+// Common Form Layout
+%form-container {
+  max-width: var(--fls-max-width);
+  width: 100%;
+  margin: 0 auto;
+}
+
+%form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fls-form-gap);
+}
+
+%label-style {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+// Form Wrappers
+.fls_login_wrapper {
+  @extend %form-container;
+
+  form#loginform {
+    @extend %form-layout;
+  }
+
+  // Form Elements
+  input[type='text'],
+  input[type='password'],
+  input[type='email'],
+  input#wp-submit {
+    @extend .fls-input;
+  }
+
+  input#wp-submit {
+    @extend .fls-button;
+  }
+
+  label {
+    @extend %label-style;
+  }
+
+  // Reset margins for form groups
+  .login-username,
+  .login-password,
+  .login-remember,
+  .login-submit {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--fls-input-gap);
+  }
+
+  & > p {
+    text-align: center;
+  }
+
+  & p:has(+ p) {
+    margin-bottom: var(--fls-spacing-base);
+  }
+
+  // WordPress password field wrapper
+  .user-pass-wrap {
+    label {
+      margin-bottom: var(--fls-input-gap);
+    }
+
+    .wp-pwd {
+      margin-bottom: var(--fls-spacing-base);
+    }
+  }
+}
+
+// Registration & Reset Password Forms
+.fls_registration_wrapper,
 .fls_reset_pass_wrapper {
-    max-width: 500px;
-    .fls_reset_pass_form {
-        display: grid;
+  @extend %form-container;
 
-        .fls_field_group {
-            display: block;
-            margin-bottom: 15px;
+  form {
+    @extend %form-layout;
+  }
 
-            .fls_field_label {
-                &.is-required {
-                    label:after {
-                        content: " *";
-                        color: #f56c6c;
-                        margin-left: 3px;
-                    }
-                }
-            }
+  .fls_registration_fields {
+    @extend %form-layout;
+  }
 
-            &.is-error {
-                input {
-                    border-color: #f56c6c;
-                }
-            }
-        }
+  .fls_field_group {
+    @extend %form-layout;
+    gap: var(--fls-input-gap);
+    margin: 0;
 
-        input {
-            padding: 10px;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        #fls_reset_pass {
-            width: 100%;
-            padding: 15px;
-            background: #0275ff;
-            color: white;
-            border: 0;
-            border-radius: 5px;
-
-            span {
-                transition: all 1s;
-                opacity: 1;
-            }
-
-            svg {
-                display: none;
-                margin: 0 auto;
-                transition: all 1s;
-
-                path, rect {
-                    fill: white;
-                    transition: initial;
-                }
-            }
-
-            &.fls_loading {
-                background: #0275ff91;
-
-                span {
-                    display: none;
-                    opacity: 0;
-                }
-
-                svg {
-                    display: block;
-                    opacity: 1;
-                }
-            }
-        }
+    .fls_field_label {
+      margin: 0;
     }
-    .success.text-success {
-        margin-top: 15px;
-        text-align: center;
+  }
+
+  & > p {
+    text-align: center;
+    margin-top: var(--fls-spacing-base);
+  }
+
+  // Form Elements
+  input[type='text'],
+  input[type='password'],
+  input[type='email'] {
+    @extend .fls-input;
+  }
+
+  label {
+    @extend %label-style;
+  }
+
+  // Submit Buttons
+  #fls_submit,
+  #fls_verification_submit,
+  #fls_reset_pass {
+    @extend .fls-button;
+    @extend %button-loading;
+
+    &:is(:hover, :focus) {
+      background: var(--fls-primary-hover);
     }
+  }
 }
 
+// Error & Success Messages
 .error.text-danger {
-    font-size: 12px;
-    margin-top: 4px;
-    color: #f56c6c;
+  font-size: var(--fls-font-size-base);
+  color: var(--fls-error);
+  text-align: center;
+  margin-bottom: var(--fls-spacing-base);
 }
 
+.success.text-success {
+  margin-top: var(--fls-spacing-base);
+  text-align: center;
+}
+
+// Auth Wrapper
 .fls_auth_wrapper {
-    .hide {
-        display: none;
-    }
+  @extend %form-layout;
+  gap: var(--fls-gap);
 
-    #fls_submit {
-        margin-bottom: 15px;
-    }
+  p {
+    font-size: var(--fls-font-size-base);
+  }
+
+  .hide {
+    display: none;
+  }
 }
 
+// Loading States
+.fls_loading {
+  opacity: 0.7 !important;
+  cursor: wait !important;
+}
 
 button#fls_2fa_confirm.fls_loading {
-    background: gray !important;
-    border-color: gray !important;
-    color: white !important;
+  background: var(--fls-gray) !important;
+  border-color: var(--fls-gray) !important;
+  color: var(--fls-white) !important;
 }
 
-.fls_loading {
-    opacity: 0.7 !important;
-    cursor: wait !important;
+// Magic Login Styles
+#fls_magic_login {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fls-form-gap);
+
+  .fls_magic_login_form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: var(--fls-max-width);
+    width: 100%;
+    margin-inline: auto;
+
+    label {
+      margin-bottom: var(--fls-input-gap);
+    }
+
+    .fls_magic_input,
+    .fls_magic_submit_wrapper {
+      margin-bottom: var(--fls-form-gap);
+    }
+  }
+
+  .fls_magic_content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fls-input-gap);
+  }
+}
+
+// Links container
+.fls_auth_links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fls-input-gap);
+  text-align: center;
+  margin-top: var(--fls-form-gap);
+}
+
+// Loading state adjustments
+.fls_loading_svg {
+  margin: 0 auto;
+}
+
+// Remove any leftover margin/padding that might interfere with gap
+.fls_field_label,
+.fs_input_wrap,
+.fls_magic_submit_wrapper,
+.magic_back_regular {
+  margin: 0;
+  padding: 0;
+}
+
+.magic_back_regular .fls_magic-or {
+  margin-bottom: 0;
+}
+
+// Common Button Styles
+[class*='fls_'] {
+  button,
+  input[type='submit'] {
+    @extend .fls-button;
+    @extend %button-loading;
+
+    &:is(:hover, :focus) {
+      background: var(--fls-primary-hover);
+    }
+
+    // Secondary variant
+    &.magic_btn_secondary,
+    &.fls-button-secondary {
+      background: var(--fls-white);
+      border: 1px solid var(--fls-border-color);
+      color: var(--fls-gray);
+
+      &:is(:hover, :focus) {
+        background: var(--fls-secondary);
+        color: var(--fls-white);
+      }
+    }
+  }
+}
+
+// Loading State Styles
+%button-loading {
+  span {
+    transition: all 1s;
+    opacity: 1;
+  }
+
+  svg {
+    display: none;
+    margin: 0 auto;
+    transition: all 1s;
+
+    path,
+    rect {
+      fill: var(--fls-white);
+      transition: initial;
+    }
+  }
+
+  &.fls_loading {
+    background: var(--fls-primary-light);
+
+    span {
+      display: none;
+      opacity: 0;
+    }
+
+    svg {
+      display: block;
+      opacity: 1;
+    }
+  }
+}
+
+// Two Factor Authentication Form
+.fls_2fa {
+  @extend %form-container;
+  margin-top: var(--fls-spacing-xl);
+  padding: var(--fls-spacing-xl) var(--fls-spacing-lg);
+  font-weight: 400;
+  overflow: hidden;
+  background: var(--fls-white);
+  border: 1px solid var(--fls-border-color);
+  border-radius: var(--fls-border-radius);
+  box-shadow: var(--fls-box-shadow);
+
+  .user-pass-wrap {
+    @extend %form-layout;
+    gap: 0;
+
+    p {
+      margin-bottom: var(--fls-spacing-xl);
+    }
+
+    input {
+      @extend .fls-input;
+    }
+
+    label {
+      @extend %label-style;
+    }
+
+    .wp-pwd {
+      margin-bottom: var(--fls-form-gap);
+    }
+  }
+
+  #fls_2fa_confirm {
+    @extend .fls-button;
+    @extend %button-loading;
+
+    &.fls_loading {
+      background: var(--fls-gray) !important;
+      border-color: var(--fls-gray) !important;
+      color: var(--fls-white) !important;
+    }
+  }
 }
