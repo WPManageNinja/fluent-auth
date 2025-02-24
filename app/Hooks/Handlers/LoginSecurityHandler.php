@@ -309,7 +309,7 @@ class LoginSecurityHandler
             $infoHtml
         ];
 
-        $siteName = get_bloginfo('name');
+        $siteName = Helper::getBlogName();
         $data = [
             'body'        => implode('', $lines),
             'pre_header'  => 'Login success at ' . $siteName,
@@ -378,7 +378,7 @@ class LoginSecurityHandler
             $infoHtml
         ];
 
-        $siteName = get_bloginfo('name');
+        $siteName = Helper::getBlogName();
         $data = [
             'body'        => implode('', $lines),
             'pre_header'  => 'Blocked from login ' . $siteName,

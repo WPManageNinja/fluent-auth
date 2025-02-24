@@ -224,7 +224,6 @@ class Helper
             ->where('status', '!=', 'issued')
             ->where('created_at', '<', $dateTime)
             ->delete();
-
     }
 
     public static function getSocialAuthSettings($context = 'view')
@@ -385,5 +384,15 @@ class Helper
             }
             return false;
         }
+    }
+
+    /**
+     * Get the blog name
+     *
+     * @return string
+     */
+    public static function getBlogName()
+    {
+        return html_entity_decode(get_bloginfo('name'), ENT_QUOTES, 'UTF-8');
     }
 }

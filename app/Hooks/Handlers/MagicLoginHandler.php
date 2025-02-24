@@ -38,7 +38,6 @@ class MagicLoginHandler
             }
 
             return $this->generateHash($user, $minutes);
-
         }, 10, 3);
         add_filter('fluent_auth/login_token_by_user_email', function ($hash, $emailId, $minutes) {
             if (!$this->isEnabled()) {
@@ -65,7 +64,7 @@ class MagicLoginHandler
         }
 
         $this->pushAssets();
-        ?>
+?>
         <div style="display: none;" id="fls_magic_login">
             <div class="fls_magic_initial">
                 <div class="fls_magic-or">
@@ -84,8 +83,8 @@ class MagicLoginHandler
                 <label for="fls_magic_logon">
                     <?php _e('Your Email/Username', 'fluent-security'); ?>
                 </label>
-                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text" name="fls_magic_logon_email"/>
-                <input id="fls_magic_logon_nonce" type="hidden" name="fls_magic_logon_nonce" value="<?php echo wp_create_nonce('fls_magic_logon_nonce'); ?>"/>
+                <input placeholder="<?php _e('Your Email/Username', 'fluent-security'); ?>" id="fls_magic_logon" class="fls_magic_input" type="text" name="fls_magic_logon_email" />
+                <input id="fls_magic_logon_nonce" type="hidden" name="fls_magic_logon_nonce" value="<?php echo wp_create_nonce('fls_magic_logon_nonce'); ?>" />
                 <div class="fls_magic_submit_wrapper">
                     <button class="button button-primary button-large" id="fls_magic_submit">
                         <?php _e('Continue', 'fluent-security'); ?>
@@ -104,7 +103,7 @@ class MagicLoginHandler
                 </div>
             </div>
         </div>
-        <?php
+<?php
     }
 
     public function maybeMagicFormOnLoginFunc($html)
@@ -180,7 +179,7 @@ class MagicLoginHandler
         // Let's prepare
         if (strpos($username, '@')) {
             $user = get_user_by('email', $username);
-            if(!$user) {
+            if (!$user) {
                 $user = get_user_by('login', $username);
             }
         } else {
@@ -206,16 +205,16 @@ class MagicLoginHandler
 
         $loginUrl = esc_url($this->getMagicLoginUrl($user, $validity, false, $redirect_to));
 
-        $emailSubject = sprintf(__('Sign in to %s', 'fluent-security'), get_bloginfo('name'));
+        $emailSubject = sprintf(__('Sign in to %s', 'fluent-security'), Helper::getBlogName());
 
         $emailLines = [
             sprintf(__('Hello %s,', 'fluent-security'), $user->display_name),
-            sprintf(__('Click the link below to sign in to your %s account', 'fluent-security'), get_bloginfo('name')),
+            sprintf(__('Click the link below to sign in to your %s account', 'fluent-security'), Helper::getBlogName()),
             sprintf(__('This link will expire in %d minutes and can only be used once.', 'fluent-security'), $validity)
         ];
 
         $callToAction = [
-            'btn_text' => sprintf(__('Sign in to %s', 'fluent-security'), get_bloginfo('name')),
+            'btn_text' => sprintf(__('Sign in to %s', 'fluent-security'), Helper::getBlogName()),
             'url'      => $loginUrl
         ];
 
@@ -223,7 +222,7 @@ class MagicLoginHandler
             __('If the button above does not work, paste this link into your web browser:', 'fluent-security'),
             esc_url($loginUrl),
             ' ',
-            __('If you did not make this request, you can safely ignore this email.','fluent-security')
+            __('If you did not make this request, you can safely ignore this email.', 'fluent-security')
         ];
 
         $emailBody = '';
@@ -372,7 +371,8 @@ class MagicLoginHandler
         Helper::setLoginMedia('magic_login');
 
         add_filter('authenticate', array($this, 'allowProgrammaticLogin'), 10, 3);    // hook in earlier than other callbacks to short-circuit them
-        $user = wp_signon(array(
+        $user = wp_signon(
+            array(
                 'user_login' => $user->user_login,
                 'user_password' => ''
             )
@@ -444,5 +444,4 @@ class MagicLoginHandler
 
         return !array_intersect($restrictedRoles, array_values($user->roles));
     }
-
 }
