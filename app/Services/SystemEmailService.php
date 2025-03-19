@@ -43,7 +43,8 @@ class SystemEmailService
                 'title'       => 'New User Registration Notification',
                 'description' => 'An essential email sent to the admin when someone signup.',
                 'recipient'   => 'site_admin',
-                'hook'        => 'wp_new_user_notification'
+                'hook'        => 'wp_new_user_notification',
+                'can_disable' => 'yes',
             ],
         ];
 
@@ -94,8 +95,8 @@ class SystemEmailService
                 ]
             ],
             'user_registration_to_admin'                  => [
-                'status' => 'system',
-                'email'  => [
+                'status'      => 'system',
+                'email'       => [
                     'subject' => 'New User Registration: {{user.display_name}} has joined {{site.name}}',
                     'body'    => self::getDefaultEmailBody('user_registration_to_admin'),
                 ]

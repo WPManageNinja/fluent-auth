@@ -102,6 +102,12 @@ class SystemEmailsController
                 'subject' => sanitize_text_field(Arr::get($settings, 'email.subject')),
                 'body'    => wp_kses_post(Arr::get($settings, 'email.body')),
             ];
+        } else if ($settings['status'] == 'disabled') {
+            $allEmailSettings['emails'][$remailId]['status'] = 'disabled';
+            $allEmailSettings['emails'][$remailId]['email'] = [
+                'subject' => sanitize_text_field(Arr::get($settings, 'email.subject')),
+                'body'    => wp_kses_post(Arr::get($settings, 'email.body')),
+            ];
         } else {
             unset($allEmailSettings['emails'][$remailId]);
         }

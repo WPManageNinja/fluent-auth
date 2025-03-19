@@ -69,9 +69,6 @@
                         </template>
                     </el-table-column>
                 </el-table>
-
-
-                <pre>{{ emailIndexes }}</pre>
             </div>
         </div>
     </div>

@@ -19,8 +19,8 @@ class WPSystemEmailHandler
             return (new SmartCodeParser())->parse($code, $user);
         });
 
-        add_filter('retrieve_password_notification_email', [$this, 'maybeAlterPasswordResetEmail'], 99, 4);
         add_filter('wp_new_user_notification_email', [$this, 'maybeAlterUserRegistrationEmail'], 99, 3);
+        add_filter('retrieve_password_notification_email', [$this, 'maybeAlterPasswordResetEmail'], 99, 4);
         add_filter('new_user_email_content', [$this, 'maybeAlterEmailChangeNotificationEmailToUser'], 99, 2);
 
         add_filter('email_change_email', [$this, 'maybeAlterEmailChangedEmailToUser'], 99, 3);
@@ -61,6 +61,13 @@ class WPSystemEmailHandler
         if (!$setting || Arr::get($setting, 'status', '') !== 'active') {
             return $defaults;
         }
+
+        $key = get_password_reset_key($user);
+        if (is_wp_error($key)) {
+            return $defaults;
+        }
+
+        $user->_password_reset_key_ = $key;
 
         // Let's change these now
         $email = Arr::get($setting, 'email', []);

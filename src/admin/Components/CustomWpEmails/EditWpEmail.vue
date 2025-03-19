@@ -20,6 +20,7 @@
                             <el-radio-group v-model="settings.status">
                                 <el-radio value="active">Customized Content</el-radio>
                                 <el-radio value="system">System Default</el-radio>
+                                <el-radio v-if="email.can_disable == 'yes'" value="disabled">Disable</el-radio>
                             </el-radio-group>
                         </el-form-item>
                         <div v-if="settings.status == 'system'" style="padding: 10px 20px;" class="text-bg-warning">
@@ -29,6 +30,14 @@
                             <p style="margin: 0; font-size: 13px;">
                                 This email will use the system default content. If you want to customize the email
                                 subject and body please switch to "Custimized Content".
+                            </p>
+                        </div>
+                        <div v-else-if="settings.status == 'disabled'" style="padding: 10px 20px;" class="text-bg-warning">
+                            <p style="margin: 0; font-size: 14px;">
+                                <strong>Notification is disabled</strong>
+                            </p>
+                            <p style="margin: 0; font-size: 13px;">
+                                This email notification is disabled. So no email notification will be sent for this event.
                             </p>
                         </div>
                         <template v-else-if="settings.status == 'active'">
@@ -43,9 +52,6 @@
                     </el-form>
                 </div>
             </div>
-            <pre>{{ smartcodes }}</pre>
-            <pre>{{ email }}</pre>
-            <pre>{{ settings }}</pre>
         </div>
     </div>
 </template>
