@@ -151,6 +151,7 @@ $bodyBg: #f1f2f5;
       margin-right: 10px;
       ul.#{$slug}menu {
         display: none;
+
         li {
         }
       }
@@ -197,6 +198,7 @@ $bodyBg: #f1f2f5;
 @import "~element-plus/theme-chalk/el-notification.css";
 @import "~element-plus/theme-chalk/el-loading.css";
 @import "~element-plus/theme-chalk/el-message-box.css";
+@import "~element-plus/theme-chalk/el-slider.css";
 
 .el-table .cell pre.sql_pre {
   margin: 0;
@@ -256,6 +258,10 @@ $bodyBg: #f1f2f5;
     color: #f7ba2a
   }
 
+  &-bg-warning {
+    background-color: #fff6a6;
+  }
+
   &-bg-highlight {
     background: #EEEEEE;
   }
@@ -290,14 +296,13 @@ $bodyBg: #f1f2f5;
 
 .box_wrapper {
   box-sizing: border-box;
+  display: block;
+  width: 100%;
+  overflow: hidden;
 
   * {
     box-sizing: border-box;
   }
-
-  display: block;
-  width: 100%;
-  overflow: hidden;
 
   .box_header {
     display: block;
@@ -390,10 +395,12 @@ $bodyBg: #f1f2f5;
   background: #f5f7fa;
   margin-bottom: 30px;
   border-radius: 5px;
-  transition: background .3s,border .3s,border-radius .3s,box-shadow .3s;
+  transition: background .3s, border .3s, border-radius .3s, box-shadow .3s;
+
   &:hover {
     box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
   }
+
   h3 {
     margin: 0 0 15px;
   }
@@ -410,7 +417,7 @@ $bodyBg: #f1f2f5;
     width: 100%;
     flex-grow: 1;
     -webkit-appearance: none;
-    color: var(--el-input-text-color,var(--el-text-color-regular));
+    color: var(--el-input-text-color, var(--el-text-color-regular));
     font-size: inherit;
     height: var(--el-input-inner-height);
     line-height: var(--el-input-inner-height);
@@ -419,6 +426,7 @@ $bodyBg: #f1f2f5;
     border: none;
     background: 0 0;
     box-sizing: border-box;
+
     &:focus {
       border-color: inherit;
       box-shadow: none;
@@ -439,6 +447,7 @@ $bodyBg: #f1f2f5;
 .fls_errors {
   background: #fff06f;
   padding: 10px;
+
   ul {
     margin: 0;
     padding-left: 20px;
@@ -458,6 +467,7 @@ ul.fls_listed_data {
   margin: 0;
   list-style: none;
   padding: 0;
+
   li {
     padding: 10px 15px;
     margin: 0;
@@ -465,9 +475,11 @@ ul.fls_listed_data {
     display: block;
     width: 100%;
     border-bottom: 1px solid #ebeef5;
+
     &:hover {
       background-color: #f7fafc;
     }
+
     span.fls_value {
       text-align: right;
       float: right;
@@ -476,7 +488,7 @@ ul.fls_listed_data {
   }
 }
 
-.el-form-item > label {
+.el-form-item label.el-form-item__label, .el-form-item--label-top .el-form-item__label {
   font-weight: 500;
   color: black;
 }
@@ -497,6 +509,7 @@ ul.fls_listed_data {
     height: 100%;
     justify-content: center;
     text-align: center;
+
     h3 {
       margin: 0;
     }
@@ -513,11 +526,11 @@ ul.fls_listed_data {
 }
 
 .fct_widget_dark.fct_widget_bar {
+  margin-bottom: 1rem;
+
   * {
     color: #dcdcdc;
   }
-
-  margin-bottom: 1rem;
 
   .fct_stat_item {
     background: #1f1f25;
@@ -526,6 +539,7 @@ ul.fls_listed_data {
     box-sizing: border-box;
     color: #f1f2f3;
     cursor: pointer;
+
     &:hover {
       background: #34343b;
     }
@@ -553,11 +567,13 @@ ul.fls_listed_data {
     margin-bottom: 5px;
     width: 100%;
   }
+
   h1 {
     margin: 0;
     padding: 0;
     font-size: 16px;
   }
+
   p {
     margin: 0;
   }
@@ -567,6 +583,7 @@ ul.fls_listed_data {
   border: 0 !important;
   min-height: inherit;
   padding: inherit;
+
   &:focus {
     box-shadow: none !important;
     outline: 0 !important;
@@ -585,10 +602,12 @@ ul.fls_listed_data {
 .fls_code_instruction {
   display: block;
   overflow: hidden;
+
   h3 {
     font-weight: normal;
     font-size: 17px;
   }
+
   textarea {
     width: 100%;
     height: 70px;
@@ -597,6 +616,7 @@ ul.fls_listed_data {
 
 .fls_shortcode_section {
   margin-bottom: 30px;
+
   textarea {
     width: 100%;
     height: 40px;
@@ -604,10 +624,12 @@ ul.fls_listed_data {
     border-color: #e3e8ee;
     background-color: #f3f3f3;
   }
+
   p {
     font-size: 12px;
     line-height: 15px;
   }
+
   h3 {
     margin-top: 15px;
     margin-bottom: 8px;
@@ -617,6 +639,7 @@ ul.fls_listed_data {
 
 .fls_advanced_rules {
   position: relative;
+
   .fls_then_arrow {
     position: absolute;
     left: -30px;
@@ -630,6 +653,7 @@ ul.fls_listed_data {
     font-size: 10px;
     height: 15px;
     line-height: 15px;
+
     &:before {
       content: "⮀";
       width: 9px;
@@ -642,6 +666,7 @@ ul.fls_listed_data {
       font-weight: bold;
       font-size: 21px;
     }
+
     &:after {
       content: "⮀";
       width: 8px;
@@ -655,6 +680,7 @@ ul.fls_listed_data {
       font-size: 15px;
     }
   }
+
   .fls_rule_number {
     position: absolute;
     right: 3px;
@@ -674,15 +700,19 @@ ul.fls_listed_data {
   display: flex;
   align-content: center;
   align-items: center;
+
   .fls_rule_item {
     padding: 0 10px;
+
     &:first-child {
       padding-left: 0;
     }
+
     &:last-child {
       padding-right: 0;
     }
   }
+
   .fls_values {
     width: 100%;
   }
@@ -694,8 +724,24 @@ ul.fls_listed_data {
     flex-wrap: nowrap;
     line-height: 140%;
     align-items: flex-start;
+
     > span {
       margin-top: 5px;
+    }
+  }
+}
+
+
+.fls_email_name {
+  padding: 0;
+  margin: 0;
+  p {
+    margin: 0;
+    padding: 0;
+    &.fls_email_title {
+        font-size: 16px;
+        font-weight: 500;
+      margin-bottom: 5px;
     }
   }
 }

@@ -125,3 +125,25 @@ export const sortingCustomerColumns = [
         value: 'updated_at'
     }
 ];
+
+export const emailFontFamilies = {
+    SystemUi: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    Arial: "Arial, 'Helvetica Neue', Helvetica, sans-serif",
+    'Comic Sans': "'Comic Sans MS', 'Marker Felt-Thin', Arial, sans-serif",
+    'Courier New': "'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace",
+    Georgia: "Georgia, Times, 'Times New Roman', serif",
+    Helvetica: 'Helvetica , Arial, Verdana, sans-serif',
+    Lucida: "'Lucida Sans Unicode', 'Lucida Grande', sans-serif",
+    Tahoma: 'Tahoma, Verdana, Segoe, sans-serif',
+    'Times New Roman': "'Times New Roman', Times, Baskerville, Georgia, serif",
+    'Trebuchet MS': "'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif",
+    Verdana: 'Verdana, Geneva, sans-serif',
+    Lato: "'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    Lora: "'Lora', Georgia, 'Times New Roman', serif",
+    Merriweather: "'Merriweather', Georgia, 'Times New Roman', serif",
+    'Merriweather Sans': "'Merriweather Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    'Noticia Text': "'Noticia Text', Georgia, 'Times New Roman', serif",
+    'Open Sans': "'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    Roboto: "'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    'Source Sans Pro': "'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+};

@@ -49,6 +49,10 @@ export default {
                 {
                     route: 'login_redirects',
                     title: this.$t('Login Redirects')
+                },
+                {
+                    route: 'custom_wp_emails',
+                    title: this.$t('Customize WP Emails')
                 }
             ]
         }

@@ -74,6 +74,15 @@ class AdminMenuHandler
             array($this, 'render')
         );
 
+        add_submenu_page(
+            'fluent-auth',
+            __('Customize WP Emails', 'fluent-security'),
+            __('Customize WP Emails', 'fluent-security'),
+            $permission,
+            'fluent-auth#/custom-wp-emails',
+            array($this, 'render')
+        );
+
     }
 
     public function render()
@@ -83,6 +92,14 @@ class AdminMenuHandler
         });
 
         $currentUser = wp_get_current_user();
+
+        if (function_exists('wp_enqueue_media')) {
+            // Editor default styles.
+            add_filter('user_can_richedit', '__return_true');
+            wp_tinymce_inline_scripts();
+            wp_enqueue_editor();
+            wp_enqueue_media();
+        }
 
         wp_enqueue_script('fluent_auth_app', FLUENT_AUTH_PLUGIN_URL . 'dist/admin/app.js', ['jquery'], '1.0', true);
 

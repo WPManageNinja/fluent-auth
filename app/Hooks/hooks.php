@@ -10,4 +10,4 @@
 (new \FluentAuth\App\Hooks\Handlers\SocialAuthHandler())->register();
 (new \FluentAuth\App\Hooks\Handlers\TwoFaHandler())->register();
 (new \FluentAuth\App\Hooks\Handlers\BasicTasksHandler())->register();
-
+(new \FluentAuth\App\Hooks\Handlers\WPSystemEmailHandler())->register();

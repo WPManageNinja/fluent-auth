@@ -5,6 +5,9 @@ import SocialAuthSettings from './Components/SocialAuthSettings.vue';
 import AuthShortcodes from './Components/AuthShortcodes.vue';
 import LoginRedirects from './Components/LoginRedirects.vue';
 
+import CustomWpEmails from './Components/CustomWpEmails/AllEmails.vue';
+import EditWpEmail from './Components/CustomWpEmails/EditWpEmail.vue';
+
 export var routes = [
     {
         path: '/',
@@ -52,6 +55,23 @@ export var routes = [
         component: LoginRedirects,
         meta: {
             active: 'login_redirects'
+        }
+    },
+    {
+        path: '/custom-wp-emails',
+        name: 'custom_wp_emails',
+        component: CustomWpEmails,
+        meta: {
+            active: 'custom_wp_emails'
+        }
+    },
+    {
+        path: '/custom-wp-emails/:email_id/edit',
+        name: 'edit_wp_email',
+        component: EditWpEmail,
+        props: true,
+        meta: {
+            active: 'custom_wp_emails'
         }
     }
 ];

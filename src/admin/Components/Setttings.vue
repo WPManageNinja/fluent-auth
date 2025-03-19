@@ -40,13 +40,13 @@
                         <template v-else>
                             <el-row :gutter="30">
                                 <el-col :md="12" :sm="24">
-                                    <el-form-item label="{{ $t(login_try_limit') }} {{ $t('minutes') }}">
+                                    <el-form-item :label="$t('Login Try Limit per IP address in certain defined minutes')">
                                         <el-input type="number" v-model="settings.login_try_limit"/>
                                         <p>{{ $t('login_how_many') }} {{ settings.login_try_timing }} {{ $t('minutes') }}</p>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :md="12" :sm="24">
-                                    <el-form-item label="{{ $t('login_try_time_limit') }} {{ $t('minutes') }}">
+                                    <el-form-item :label="$t('Time limit for login try in minutes')">
                                         <el-input type="number" v-model="settings.login_try_timing"/>
                                         <p>{{ $t('user_fails_to_login') }} {{ settings.login_try_limit }} {{ $t('times_within') }}
                                             {{ settings.login_try_timing }} {{ $t('minutes') }} {{ $t('system_will_block') }}
