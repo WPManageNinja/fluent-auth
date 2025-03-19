@@ -187,6 +187,19 @@ class SmartCodeParser
             return esc_url(self_admin_url('profile.php?newuseremail=' . $hash));
         }
 
+        if ($valueKey == 'profile_edit_url') {
+            return admin_url('user-edit.php?user_id=' . $wpUser->ID);
+        }
+
+        if ($valueKey == 'roles') {
+            $userRoles = (array)$wpUser->roles;
+            $userRoles = array_map(function ($role) {
+                return ucfirst($role);
+            }, $userRoles);
+
+            return implode(', ', $userRoles);
+        }
+
         $valueKeys = explode('.', $valueKey);
         if (count($valueKeys) == 1) {
             $value = $wpUser->get($valueKey);

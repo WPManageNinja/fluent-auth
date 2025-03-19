@@ -20,12 +20,13 @@ class WPSystemEmailHandler
         });
 
         add_filter('retrieve_password_notification_email', [$this, 'maybeAlterPasswordResetEmail'], 99, 4);
-
         add_filter('wp_new_user_notification_email', [$this, 'maybeAlterUserRegistrationEmail'], 99, 3);
-
         add_filter('new_user_email_content', [$this, 'maybeAlterEmailChangeNotificationEmailToUser'], 99, 2);
-    }
 
+        add_filter('email_change_email', [$this, 'maybeAlterEmailChangedEmailToUser'], 99, 3);
+
+        add_filter('wp_new_user_notification_email_admin', [$this, 'maybeAlterUserRegistrationEmailToAdmin'], 99, 3);
+    }
 
     public function maybeAlterPasswordResetEmail($defaults, $key, $user_login, $user_data)
     {
@@ -99,6 +100,55 @@ class WPSystemEmailHandler
         add_filter('wp_mail', [$this, 'alterEmailChangeNotificationEmailSubjectHeader'], 99, 1);
 
         return $newEmailBody;
+    }
+
+    public function maybeAlterEmailChangedEmailToUser($defaults, $oldUserData, $updatedUserData)
+    {
+        $setting = SystemEmailService::getEmailSettingsByType('email_change_notification_after_confimation');
+
+        if (!$setting || Arr::get($setting, 'status', '') !== 'active') {
+            return $defaults;
+        }
+
+        $userObj = new \WP_User($oldUserData['ID']);
+        $userObj->_previous_email_address_ = $oldUserData['user_email'];
+
+        // Let's change these now
+        $email = Arr::get($setting, 'email', []);
+
+        $defaults['subject'] = $this->parseCode(Arr::get($email, 'subject', $defaults['subject']), $userObj);
+
+        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $userObj), '', $userObj);
+
+        if (!is_array($defaults['headers'])) {
+            $defaults['headers'] = [];
+        }
+
+        $defaults['headers'][] = 'Content-Type: text/html; charset=UTF-8';
+
+        return $defaults;
+    }
+
+    public function maybeAlterUserRegistrationEmailToAdmin($defaults, $userObj, $blogname)
+    {
+        $setting = SystemEmailService::getEmailSettingsByType('user_registration_to_admin');
+
+        if (!$setting || Arr::get($setting, 'status', '') !== 'active') {
+            return $defaults;
+        }
+
+        // Let's change these now
+        $email = Arr::get($setting, 'email', []);
+        $defaults['subject'] = $this->parseCode(Arr::get($email, 'subject', $defaults['subject']), $userObj);
+        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $userObj), '', $userObj);
+
+        if (!is_array($defaults['headers'])) {
+            $defaults['headers'] = [];
+        }
+
+        $defaults['headers'][] = 'Content-Type: text/html; charset=UTF-8';
+
+        return $defaults;
     }
 
     public function alterEmailChangeNotificationEmailSubjectHeader($atts)

@@ -10,40 +10,40 @@ class SystemEmailService
     {
         $systemEmails = [
             // User Account Management Emails
-            'user_registration_to_user'          => [
+            'user_registration_to_user'                   => [
                 'name'        => 'user_registration_to_user',
                 'title'       => 'New User Registration Notification',
                 'description' => 'An essential email sent to new users upon account signup.',
                 'recipient'   => 'user',
                 'hook'        => 'wp_new_user_notification'
             ],
-            'password_reset_to_user'             => [
+            'password_reset_to_user'                      => [
                 'name'        => 'password_reset_to_user',
                 'title'       => 'Password Reset Request Email',
                 'description' => 'A security-critical email sent when a user requests to reset their password, containing a unique reset link with time-limited access.',
                 'hook'        => 'retrieve_password',
                 'recipient'   => 'user',
             ],
-            'email_change_notification_to_user'  => [
+            'email_change_notification_to_user'           => [
                 'name'        => 'email_change_notification_to_user',
                 'title'       => 'Email Address Change Confirmation',
                 'description' => 'Sent to the new email addresses to confirm and validate an email address change, providing security against unauthorized modifications.',
                 'hook'        => 'wp_email_change_notification',
                 'recipient'   => 'user',
             ],
-            'user_registration_to_admin'         => [
+            'email_change_notification_after_confimation' => [
+                'name'        => 'email_change_notification_after_confimation',
+                'title'       => 'Email Address Change Notification After Confimration',
+                'description' => 'Send email notification to the old email address of the user after confirmation.',
+                'hook'        => 'wp_email_change_notification',
+                'recipient'   => 'user',
+            ],
+            'user_registration_to_admin'                  => [
                 'name'        => 'user_registration_to_admin',
                 'title'       => 'New User Registration Notification',
                 'description' => 'An essential email sent to the admin when someone signup.',
                 'recipient'   => 'site_admin',
                 'hook'        => 'wp_new_user_notification'
-            ],
-            'email_change_notification_to_admin' => [
-                'name'        => 'email_change_notification_to_admin',
-                'title'       => 'Email Address Change Confirmation',
-                'description' => 'Send email notification to admin when a user changes their email address.',
-                'hook'        => 'wp_email_change_notification',
-                'recipient'   => 'site_admin',
             ],
         ];
 
@@ -65,39 +65,39 @@ class SystemEmailService
         }
 
         $emailsDefault = [
-            'user_registration_to_user'          => [
+            'user_registration_to_user'                   => [
                 'status' => 'system',
                 'email'  => [
                     'subject' => '[{site.title}] - Set Up Your Password',
                     'body'    => self::getDefaultEmailBody('user_registration_to_user')
                 ]
             ],
-            'password_reset_to_user'             => [
+            'password_reset_to_user'                      => [
                 'status' => 'system',
                 'email'  => [
                     'subject' => '[{{site.title}}] Password Reset',
                     'body'    => self::getDefaultEmailBody('password_reset_to_user'),
                 ]
             ],
-            'email_change_notification_to_user'  => [
+            'email_change_notification_to_user'           => [
                 'status' => 'system',
                 'email'  => [
                     'subject' => '[{{site.name}}] Email Change Request',
                     'body'    => self::getDefaultEmailBody('email_change_notification_to_user'),
                 ]
             ],
-            'user_registration_to_admin'         => [
+            'email_change_notification_after_confimation' => [
                 'status' => 'system',
                 'email'  => [
-                    'subject' => '',
-                    'body'    => '',
+                    'subject' => '[{{site.name}}] Your email address has been changed',
+                    'body'    => self::getDefaultEmailBody('email_change_notification_after_confimation'),
                 ]
             ],
-            'email_change_notification_to_admin' => [
+            'user_registration_to_admin'                  => [
                 'status' => 'system',
                 'email'  => [
-                    'subject' => '',
-                    'body'    => '',
+                    'subject' => 'New User Registration: {{user.display_name}} has joined {{site.name}}',
+                    'body'    => self::getDefaultEmailBody('user_registration_to_admin'),
                 ]
             ],
         ];
@@ -182,6 +182,8 @@ class SystemEmailService
             <hr/>
             <p>If you didn't request this email, please contact the site administrator.</p>
             <p>&nbsp;</p>
+            <p>Regards</p>
+            <p>All at {{site.name}}<br/>{{site.url}}</p>
             <?php
             return ob_get_clean();
         }
@@ -211,6 +213,9 @@ class SystemEmailService
             <hr/>
             <p>If you did not initiate this request, please review your account security and consider changing your
                 password.</p>
+            <p>&nbsp;</p>
+            <p>Regards</p>
+            <p>All at {{site.name}}<br/>{{site.url}}</p>
             <?php
             return ob_get_clean();
         }
@@ -247,6 +252,53 @@ class SystemEmailService
             <?php
             return ob_get_clean();
         }
+
+        if ($type == 'email_change_notification_after_confimation') {
+            ob_start();
+            ?>
+            <p>Hello {{user.display_name}},</p>
+            <p>This is a confirmation that the email address for your account on<strong> {{site.name}}</strong> has been
+                successfully changed.</p>
+            <p><strong>Email Change Details:</strong></p>
+            <blockquote>
+                <p><strong>Previous Email:</strong> {{user._previous_email_address_}}<br/><strong>New Email:</strong>
+                    {{user.user_email}}</p>
+            </blockquote>
+            <p>All future communications will be sent to your new email address. You can continue to use your account
+                with the same username and password.</p>
+            <blockquote>
+                <p><strong>Important:</strong> If you did not authorize this change, please contact the Site
+                    Administrator immediately at {{site.admin_email}}.</p>
+            </blockquote>
+            <p>This notification has been sent to your previous email address ({{user._previous_email_address_}}) for
+                security purposes.</p>
+            <p>&nbsp;</p>
+            <p>Regards</p>
+            <p>All at {{site.name}}<br/>{{site.url}}</p>
+            <?php
+            return ob_get_clean();
+        } else if ($type == 'user_registration_to_admin') {
+            ob_start();
+            ?>
+            <p>Hello there,</p>
+            <p>A new user has registered on your website ({{site.name}}).</p>
+            <p><strong>New User Details:</strong></p>
+            <blockquote>
+                <p><strong>Username: </strong>{{user.user_login}}</p>
+                <p><strong>User Email:</strong> {{user.user_email}}</p>
+                <p><strong>Display Name:</strong> {{user.display_name}}</p>
+                <p><strong>User Role:</strong> {{user.roles}}</p>
+            </blockquote>
+            <p>
+                <a style="color: #ffffff; background-color: #0072ff; font-size: 16px; border-radius: 5px; text-decoration: none; font-weight: bold; font-style: normal; padding: 0.8rem 1rem; border-color: #0072ff;"
+                   href="##user.profile_edit_url##">View User Profile</a></p>
+            <hr/>
+            <p>This is an automated message from the fluentAuth plugin.</p>
+            <?php
+            return ob_get_clean();
+        }
+
+        return '';
 
     }
 
