@@ -133,6 +133,7 @@ class MagicLoginHandler
             'success_icon' => FLUENT_AUTH_PLUGIN_URL . 'dist/images/success.png',
             'empty_text'   => __('Please provide username / email to get magic login link', 'fluent-security'),
             'wait_text'    => __('Please Wait...', 'fluent-security'),
+            'is_primary' => Helper::getSetting('magic_link_primary') === 'yes'
         ]);
 
         $this->assetLoaded = true;

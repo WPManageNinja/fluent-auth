@@ -28,6 +28,11 @@ class AuthService
             return self::makeLogin($userExist, $provider);
         }
 
+        $signupEnabled = apply_filters('fluent_auth/signup_enabled', get_option('users_can_register'));
+        if (!$signupEnabled) {
+            return new \WP_Error('signup_disabled', __('User registration is disabled', 'fluent-security'));
+        }
+
         // let's create the user here
         $createUserData = [
             'email'    => $userData['email'],
@@ -47,6 +52,7 @@ class AuthService
         }
 
         $setRole = apply_filters('fluent_auth/user_role', $defaultRole);
+
 
         $userId = self::registerNewUser($createUserData['username'], $createUserData['email'], $createUserData['password'], [
             'role'        => $setRole,
@@ -151,7 +157,6 @@ class AuthService
     {
         $user_email = apply_filters('user_registration_email', $user_email);
 
-
         if (empty($extraData['__validated'])) {
             $errors = self::checkUserRegDataErrors($user_login, $user_email);
             if ($errors->has_errors()) {
@@ -205,8 +210,10 @@ class AuthService
             $data['role'] = $extraData['role'];
         }
 
-        $user_id = wp_insert_user($data);
 
+        do_action('fluent_auth/before_creating_user', $data);
+
+        $user_id = wp_insert_user($data);
         if (!$user_id || is_wp_error($user_id)) {
             $errors->add('registerfail', __('<strong>Error</strong>: Could not register you. Please contact the site admin!', 'fluent-security')
             );
@@ -219,6 +226,15 @@ class AuthService
                 update_user_meta($user_id, 'locale', $wp_lang); // Set user locale if defined on registration.
             }
         }
+
+        /*
+         * Action After creating WP user from sign up form
+         *
+         * @since v1.0.0
+         * @param int $user_id User ID of the created user
+         * @param array $data User data array that was used to create the user
+         */
+        do_action('fluent_auth/after_creating_user', $user_id, $data);
 
         do_action('register_new_user', $user_id);
 

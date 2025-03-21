@@ -19,12 +19,44 @@ class CoreIntegrityChecker
 
     public function checkAdminFolder()
     {
+        $adminFolder = ABSPATH . 'wp-admin';
 
+        $localFileHashes = (new Hasher($adminFolder))->generateBaselineHash()->getBaselineHases();
+        $remoteAllHashes = $this->getRemoteHashes();
+        $remoteAdminHashes = \FluentAuth\App\Helpers\Arr::get($remoteAllHashes, 'fileHashes.wp-admin.files', []);
+
+
+        $diffs = (new Hasher($adminFolder))->compareHashes($localFileHashes, $remoteAdminHashes);
+
+        $diffs = array_filter($diffs);
+
+        if ($diffs) {
+            $this->hasIssues = true;
+            $this->result['wp-admin'] = $diffs;
+        }
+
+        return $this;
     }
 
     public function checkIncFolder()
     {
+        $adminFolder = ABSPATH . WPINC;
 
+        $localFileHashes = (new Hasher($adminFolder))->generateBaselineHash()->getBaselineHases();
+        $remoteAllHashes = $this->getRemoteHashes();
+        $remoteIncHashes = \FluentAuth\App\Helpers\Arr::get($remoteAllHashes, 'fileHashes.wp-includes.files', []);
+
+
+        $diffs = (new Hasher($adminFolder))->compareHashes($localFileHashes, $remoteIncHashes);
+
+        $diffs = array_filter($diffs);
+
+        if ($diffs) {
+            $this->hasIssues = true;
+            $this->result['wp-includes'] = $diffs;
+        }
+
+        return $this;
     }
 
     public function checkRootFolder()

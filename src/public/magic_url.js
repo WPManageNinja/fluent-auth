@@ -2,6 +2,12 @@ require('./magic_url.scss');
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginform');
+
+    const initialWrapper = document.querySelector('.fls_magic_initial');
+    const magicFormWrapper = document.querySelector('.fls_magic_login_form');
+
+    const magicBtnShow = document.querySelector('.fls_magic_show_btn');
+
     if(loginForm) {
         loginForm.appendChild(document.getElementById('fls_magic_login'));
         loginForm.addEventListener('submit', function(e) {
@@ -10,14 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return false;
             }
         });
+
+        if(window.fls_magic_login_vars.is_primary) {
+            initialWrapper.style.display = 'none';
+            magicFormWrapper.style.display = 'block';
+            loginForm.classList.add('showing_magic_form');
+        }
     }
 
     document.getElementById('fls_magic_login').style.display = 'block';
-
-    const initialWrapper = document.querySelector('.fls_magic_initial');
-    const magicFormWrapper = document.querySelector('.fls_magic_login_form');
-
-    const magicBtnShow = document.querySelector('.fls_magic_show_btn');
 
     if(magicBtnShow) {
         magicBtnShow.addEventListener('click', function(e) {
@@ -36,9 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
             initialWrapper.style.display = 'block';
             magicFormWrapper.style.display = 'none';
             loginForm.classList.remove('showing_magic_form');
+
+            const passWordField = document.getElementById('user_pass');
+            if (passWordField) {
+                passWordField.disabled = false;
+            }
         });
     }
-
 
     document.getElementById('fls_magic_logon').addEventListener('keyup', function(e) {
         if (e.keyCode === 13) {

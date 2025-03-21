@@ -60,7 +60,6 @@ class SettingsController
 
         $errors = [];
 
-
         if ($settings['enable_auth_logs'] == 'yes') {
             if (!$settings['login_try_limit']) {
                 $errors['login_try_limit'] = [

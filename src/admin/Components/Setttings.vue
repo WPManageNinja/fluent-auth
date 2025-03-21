@@ -66,17 +66,23 @@
                                     {{ $t('enable_magic_login') }}
                                 </el-checkbox>
                             </el-form-item>
-                            <el-form-item style="background: white; padding: 10px 20px;"
-                                          v-if="settings.magic_login == 'yes'">
-                                <template #label>
-                                    {{ $t('user_role_magic_disable') }}
-                                </template>
-                                <el-select placeholder="Select disable roles" clearable
-                                           v-model="settings.magic_restricted_roles" :multiple="true">
-                                    <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
-                                               :key="role.id"></el-option>
-                                </el-select>
-                            </el-form-item>
+                            <template v-if="settings.magic_login == 'yes'">
+                                <el-form-item style="background: white; padding: 10px 20px;">
+                                    <template #label>
+                                        {{ $t('user_role_magic_disable') }}
+                                    </template>
+                                    <el-select :placeholder="$t('Select disable roles')" clearable
+                                               v-model="settings.magic_restricted_roles" :multiple="true">
+                                        <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
+                                                   :key="role.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-checkbox true-value="yes" false-value="no" v-model="settings.magic_link_primary">
+                                        {{ $t('Make magic login as primary login method') }}
+                                    </el-checkbox>
+                                </el-form-item>
+                            </template>
                         </div>
 
                         <div class="fls_inner_group" :class="'fls_inner_group_' + settings.email2fa">
@@ -303,6 +309,7 @@ export default {
                 notify_on_blocked: 'no',
                 magic_login: 'no',
                 magic_restricted_roles: [],
+                magic_link_primary: 'no',
                 email2fa: 'yes',
                 email2fa_roles: ['administrator', 'editor', 'author'],
                 disable_admin_bar: 'yes',

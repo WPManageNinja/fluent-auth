@@ -105,7 +105,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .fcrm-smartcodes-popover {
     padding: 0;
     border-radius: 8px;

@@ -27,6 +27,7 @@ class Helper
             'digest_summary'          => '',
             'magic_login'             => 'no',
             'magic_restricted_roles'  => [],
+            'magic_link_primary'      => 'no',
             'email2fa'                => 'no',
             'email2fa_roles'          => ['administrator', 'editor', 'author'],
             'disable_admin_bar'       => 'no',

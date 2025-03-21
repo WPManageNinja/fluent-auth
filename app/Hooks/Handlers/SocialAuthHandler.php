@@ -130,7 +130,7 @@ class SocialAuthHandler
         $token = GithubAuthService::getTokenByCode(Arr::get($data, 'code'));
         $userData = GithubAuthService::getDataByAccessToken($token);
 
-        if(is_wp_error($userData)) {
+        if (is_wp_error($userData)) {
             return $userData;
         }
 

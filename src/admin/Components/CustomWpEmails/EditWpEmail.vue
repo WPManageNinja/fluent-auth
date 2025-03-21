@@ -42,14 +42,31 @@
                         </div>
                         <template v-else-if="settings.status == 'active'">
                             <el-form-item label="Email Subject">
-                                <el-input size="large" placeholder="Your Email Subject"
-                                          v-model="settings.email.subject"/>
+                                <input-popover input_size="large" :input_placeholder="$t('Your Email Subject')" v-model="settings.email.subject" :data="smartcodes" />
                             </el-form-item>
                             <el-form-item label="Email Body">
-                                <WpEditor :editorShortcodes="smartcodes" v-model="settings.email.body"/>
+                                <WpEditor v-if="!disableEditor" :editorShortcodes="smartcodes" v-model="settings.email.body"/>
+                                <el-button @click="setDefaultContent()" v-if="default_content?.email?.body" style="margin-top: 10px;" size="small">
+                                    {{$t('Set Default Subject & Body')}}
+                                </el-button>
                             </el-form-item>
                         </template>
+                        <el-form-item style="text-align: right; margin-top: 40px;">
+                            <el-button :disabled="saving" :loading="saving" @click="saveEmail" type="success">Save Settings</el-button>
+                        </el-form-item>
+
                     </el-form>
+
+                    <div v-if="settings.status == 'active' && required_smartcodes && required_smartcodes.length" class="fls_errors">
+                        <p style="margin: 0; font-size: 14px;">
+                            <strong>{{$t('Please Provide the Required Smartcodes')}}</strong>
+                        </p>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li v-for="(code, index) in required_smartcodes" :key="index">
+                                <span v-html="'{{'+code+'}}'"></span> or <span v-html="'##'+code+'##'"></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -58,11 +75,13 @@
 
 <script type="text/babel">
 import WpEditor from './_wp_editor.vue';
+import InputPopover from './MCE/InputPopover.vue';
 
 export default {
     name: 'EditWpEmail',
     components: {
-        WpEditor
+        WpEditor,
+        InputPopover
     },
     props: {
         email_id: {
@@ -76,7 +95,10 @@ export default {
             settings: null,
             smartcodes: [],
             loading: false,
-            saving: false
+            saving: false,
+            required_smartcodes: [],
+            default_content: null,
+            disableEditor: false
         }
     },
     methods: {
@@ -89,6 +111,7 @@ export default {
                     this.smartcodes = response.smartcodes;
                     this.email = response.email;
                     this.settings = response.settings;
+                    this.default_content = response.default_content;
                 })
                 .catch((errors) => {
                     this.$handleError(errors);
@@ -98,6 +121,7 @@ export default {
                 });
         },
         saveEmail() {
+            this.required_smartcodes = [];
             this.saving = true;
             this.$post('wp-default-emails/save-email-settings', {
                 settings: this.settings,
@@ -108,10 +132,23 @@ export default {
                 })
                 .catch((errors) => {
                     this.$handleError(errors);
+
+                    if(errors?.data?.required_smartcodes) {
+                        this.required_smartcodes = errors?.data?.required_smartcodes;
+                    }
                 })
                 .finally(() => {
                     this.saving = false;
                 });
+        },
+        setDefaultContent() {
+            this.disableEditor = true;
+            this.settings.email.subject = this.default_content.email.subject;
+            this.settings.email.body = this.default_content.email.body;
+            this.$nextTick(() => {
+                this.disableEditor = false;
+                this.$notify.success(this.$t('Default content has been set successfully.'));
+            });
         }
     },
     mounted() {

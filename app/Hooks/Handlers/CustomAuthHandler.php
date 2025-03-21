@@ -854,6 +854,10 @@ class CustomAuthHandler
             }
         }
 
+        $userRole = apply_filters('fluent_auth/signup_default_role', get_option('default_role'), $formData);
+
+        do_action('fluent_auth/before_creating_user', $formData);
+
         $userId = AuthService::registerNewUser($formData['username'], $formData['email'], $formData['password'], [
             'role'        => apply_filters('fluent_auth/signup_default_role', get_option('default_role'), $formData),
             'first_name'  => Arr::get($formData, 'first_name'),
@@ -866,14 +870,6 @@ class CustomAuthHandler
                 'message' => $userId->get_error_message()
             ], 422);
         }
-
-        /*
-         * Action After creating WP user from ticket sign up form
-         *
-         * @since v1.0.0
-         * @param array $formData
-         */
-        do_action('fluent_auth/after_creating_user', $userId, $formData);
 
         $user = get_user_by('ID', $userId);
 

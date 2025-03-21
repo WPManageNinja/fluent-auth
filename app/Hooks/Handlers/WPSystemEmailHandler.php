@@ -26,6 +26,9 @@ class WPSystemEmailHandler
         add_filter('email_change_email', [$this, 'maybeAlterEmailChangedEmailToUser'], 99, 3);
 
         add_filter('wp_new_user_notification_email_admin', [$this, 'maybeAlterUserRegistrationEmailToAdmin'], 99, 3);
+
+        add_action('fluent_auth/after_creating_user', [$this, 'maybeSendCustomizedEmailOnFluentAuthSignup'], 10, 1);
+
     }
 
     public function maybeAlterPasswordResetEmail($defaults, $key, $user_login, $user_data)
@@ -177,6 +180,47 @@ class WPSystemEmailHandler
 
         return $atts;
 
+    }
+
+    public function maybeSendCustomizedEmailOnFluentAuthSignup($userId)
+    {
+        $setting = SystemEmailService::getEmailSettingsByType('fluent_auth_welocme_email_to_user');
+
+
+        $status = Arr::get($setting, 'status', '');
+
+        if ($status === 'system') {
+            return; // it's system default. We don't have to do anything here.
+        }
+
+        // We will just disable the welcome email by WP
+        add_filter('wp_send_new_user_notification_to_user', '__return_false', 99);
+
+        if ($status == 'disabled') {
+            return; // it's disabled. We don't have to do anything here.
+        }
+
+        $userObj = get_user_by('ID', $userId);
+
+        // Let's change these now
+        $email = Arr::get($setting, 'email', []);
+        $subject = $this->parseCode(Arr::get($email, 'subject', ''), $userObj);
+        $emailBody = Arr::get($email, 'body', '');
+        if (!$subject || !$emailBody) {
+            return;
+        }
+        $emailBody = $this->withHtmlTemplate($this->parseCode($emailBody, $userObj), '', $userObj);
+        $headers = [
+            'Content-Type: text/html; charset=UTF-8'
+        ];
+
+        $to = $userObj->user_email;
+
+        if ($userObj->display_name) {
+            $to = $userObj->display_name . ' <' . $userObj->user_email . '>';
+        }
+
+        wp_mail($to, $subject, $emailBody, $headers);
     }
 
     protected function parseCode($code, $wpUser)

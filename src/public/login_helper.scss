@@ -1,5 +1,8 @@
 .fls_login_wrapper{
     max-width: 500px;
+    * {
+        box-sizing: border-box;
+    }
     form#loginform > p, #fls_2fa_form > p {
         display: block;
         margin-bottom: 15px;
@@ -16,12 +19,11 @@
         font-weight: 500;
     }
 
-    form#loginform .input, #fls_2fa_form .input {
+    form#loginform .input, #fls_2fa_form .input, .fls_magic_input {
         padding: 10px;
         width: 100%;
         margin-top: 10px;
     }
-
 
     form#loginform, #fls_2fa_form {
         display: block;
@@ -30,7 +32,7 @@
         box-sizing: border-box;
     }
 
-    input#wp-submit {
+    input#wp-submit, #fls_magic_submit {
         width: 100%;
         padding: 15px;
         background: #0275ff;
