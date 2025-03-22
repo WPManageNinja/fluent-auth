@@ -195,7 +195,7 @@ class SystemEmailsController
 
         $emailFooter = SystemEmailService::getEmailFooter();
 
-        if(!$emailFooter) {
+        if (!$emailFooter) {
             $emailFooter = 'Email Footer Placeholder';
         }
 
@@ -204,7 +204,15 @@ class SystemEmailsController
 
         return [
             'settings'        => $settings,
-            'default_content' => $defaultContent
+            'default_content' => $defaultContent,
+            'default_colors'  => [
+                'body_bg'              => '#f3f4f6',
+                'content_bg'           => '#ffffff',
+                'content_color'        => '#374151',
+                'footer_content_color' => '#6b7280',
+                'highlight_bg'         => 'rgb(249, 250, 251)',
+                'highlight_color'      => '#374151',
+            ]
         ];
     }
 
@@ -218,23 +226,23 @@ class SystemEmailsController
         $newSettings['footer_text'] = wp_kses_post($newSettings['footer_text']);
 
         // Validate the data
-        if(!empty($newSettings['from_email'])) {
+        if (!empty($newSettings['from_email'])) {
             if (!is_email($newSettings['from_email'])) {
                 return new \WP_Error('invalid_email', __('From email is not valid', 'fluent-security'), ['status' => 400]);
             }
         }
 
-        if(!empty($newSettings['from_name'])) {
+        if (!empty($newSettings['from_name'])) {
             $newSettings['from_name'] = sanitize_text_field($newSettings['from_name']);
         }
 
-        if(!empty($newSettings['reply_to_email'])) {
+        if (!empty($newSettings['reply_to_email'])) {
             if (!is_email($newSettings['reply_to_email'])) {
                 return new \WP_Error('invalid_email', __('Reply to email is not valid', 'fluent-security'), ['status' => 400]);
             }
         }
 
-        if(!empty($newSettings['reply_to_name'])) {
+        if (!empty($newSettings['reply_to_name'])) {
             $newSettings['reply_to_name'] = sanitize_text_field($newSettings['reply_to_name']);
         }
 
