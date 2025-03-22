@@ -8,7 +8,7 @@
                         WordPress. Make it beautiful, use your own contents.</p>
                 </div>
                 <div style="display: flex;" class="box_actions">
-
+                    <el-button @click="$router.push({name: 'template_settings'})" type="primary">Template Settings</el-button>
                 </div>
             </div>
             <div v-loading="loading" class="box_body_x">
@@ -82,7 +82,8 @@ export default {
     data() {
         return {
             emailIndexes: [],
-            loading: false
+            loading: false,
+            showTemplateSettings: false
         }
     },
     computed: {

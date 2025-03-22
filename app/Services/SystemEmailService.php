@@ -3,6 +3,8 @@
 namespace FluentAuth\App\Services;
 
 use FluentAuth\App\Helpers\Arr;
+use FluentAuth\App\Helpers\Helper;
+use FluentAuth\App\Services\Libs\Emogrifier\Emogrifier;
 
 class SystemEmailService
 {
@@ -22,12 +24,12 @@ class SystemEmailService
                 ]
             ],
             'password_reset_to_user'                      => [
-                'name'                => 'password_reset_to_user',
-                'title'               => 'Password Reset Request Email',
-                'description'         => 'A security-critical email sent when a user requests to reset their password, containing a unique reset link with time-limited access.',
-                'hook'                => 'retrieve_password',
-                'recipient'           => 'user',
-                'required_smartcodes' => [
+                'name'                  => 'password_reset_to_user',
+                'title'                 => 'Password Reset Request Email',
+                'description'           => 'A security-critical email sent when a user requests to reset their password, containing a unique reset link with time-limited access.',
+                'hook'                  => 'retrieve_password',
+                'recipient'             => 'user',
+                'required_smartcodes'   => [
                     'user.password_reset_url'
                 ],
                 'additional_smartcodes' => [
@@ -35,26 +37,26 @@ class SystemEmailService
                 ]
             ],
             'email_change_notification_to_user'           => [
-                'name'                => 'email_change_notification_to_user',
-                'title'               => 'Email Address Change Confirmation',
-                'description'         => 'Sent to the new email addresses to confirm and validate an email address change, providing security against unauthorized modifications.',
-                'hook'                => 'wp_email_change_notification',
-                'recipient'           => 'user',
-                'required_smartcodes' => [
+                'name'                  => 'email_change_notification_to_user',
+                'title'                 => 'Email Address Change Confirmation',
+                'description'           => 'Sent to the new email addresses to confirm and validate an email address change, providing security against unauthorized modifications.',
+                'hook'                  => 'wp_email_change_notification',
+                'recipient'             => 'user',
+                'required_smartcodes'   => [
                     'user.confirm_email_change_url'
                 ],
                 'additional_smartcodes' => [
                     '##user.confirm_email_change_url##' => __('Confirm Email Change URL', 'fluent-security'),
-                    '{{new_changing_email_id}}' => __('New Email Address', 'fluent-security'),
+                    '{{new_changing_email_id}}'         => __('New Email Address', 'fluent-security'),
                 ]
             ],
             'email_change_notification_after_confimation' => [
-                'name'                => 'email_change_notification_after_confimation',
-                'title'               => 'Email Address Change Notification After Confimration',
-                'description'         => 'Send email notification to the old email address of the user after confirmation.',
-                'hook'                => 'wp_email_change_notification',
-                'recipient'           => 'user',
-                'required_smartcodes' => [],
+                'name'                  => 'email_change_notification_after_confimation',
+                'title'                 => 'Email Address Change Notification After Confimration',
+                'description'           => 'Send email notification to the old email address of the user after confirmation.',
+                'hook'                  => 'wp_email_change_notification',
+                'recipient'             => 'user',
+                'required_smartcodes'   => [],
                 'additional_smartcodes' => [
                     '{{user._previous_email_address_}}' => __('Previous Email Address', 'fluent-security'),
                 ]
@@ -69,13 +71,13 @@ class SystemEmailService
                 'required_smartcodes' => []
             ],
             'user_registration_to_admin'                  => [
-                'name'                => 'user_registration_to_admin',
-                'title'               => 'New User Registration Notification',
-                'description'         => 'An essential email sent to the admin when someone signup.',
-                'recipient'           => 'site_admin',
-                'hook'                => 'wp_new_user_notification',
-                'can_disable'         => 'yes',
-                'required_smartcodes' => [],
+                'name'                  => 'user_registration_to_admin',
+                'title'                 => 'New User Registration Notification',
+                'description'           => 'An essential email sent to the admin when someone signup.',
+                'recipient'             => 'site_admin',
+                'hook'                  => 'wp_new_user_notification',
+                'can_disable'           => 'yes',
+                'required_smartcodes'   => [],
                 'additional_smartcodes' => [
                     '##user.profile_edit_url##' => __('User Profile Edit URL', 'fluent-security'),
                 ]
@@ -102,16 +104,20 @@ class SystemEmailService
         $emailsDefault = self::getEmailDefaults();
 
         $emailConfig = [
-            'logo'            => '',
-            'primary_color'   => '#0073aa',
-            'secondary_color' => '#ffffff',
-            'font_family'     => 'Arial, sans-serif',
-            'template'        => '',
-            'email_footer'    => '',
-            'from_name'       => '',
-            'from_email'      => '',
-            'reply_to_name'   => '',
-            'reply_to_email'  => ''
+            'logo'                 => '',
+            'body_bg'              => '#f3f4f6',
+            'content_bg'           => '#ffffff',
+            'content_color'        => '#374151',
+            'footer_content_color' => '#6b7280',
+            'highlight_bg'         => 'rgb(249, 250, 251)',
+            'highlight_color'      => '#374151',
+            'font_family'          => '',
+            'template'             => 'default',
+            'email_footer'         => '',
+            'from_name'            => '',
+            'from_email'           => '',
+            'reply_to_name'        => '',
+            'reply_to_email'       => ''
         ];
 
         $settings = get_option('fa_system_email_settings', []);
@@ -126,14 +132,14 @@ class SystemEmailService
         }
 
         $emails = $settings['emails'] ?? [];
-        $globalSettings = $settings['global_settings'] ?? [];
+        $globalSettings = $settings['template_settings'] ?? [];
 
         $emails = wp_parse_args($emails, $emailsDefault);
         $globalSettings = wp_parse_args($globalSettings, $emailConfig);
 
         $formattedSettings = [
-            'emails'          => $emails,
-            'global_settings' => $globalSettings
+            'emails'            => $emails,
+            'template_settings' => $globalSettings
         ];
 
         return $formattedSettings;
@@ -203,7 +209,7 @@ class SystemEmailService
         if ($type == 'user_registration_to_user') {
             ob_start();
             ?>
-            <p>Hello<strong>{{user.display_name}}</strong>,</p>
+            <p>Hello<strong> {{user.display_name}}</strong>,</p>
             <p>Your account has been created on<strong>{{site.title}}</strong>. To set up your password and complete
                 your registration, please click the button below:</p>
             <p>&nbsp;</p>
@@ -215,16 +221,10 @@ class SystemEmailService
             <p>##user.password_set_url##</p>
             <p>This password reset link will expire in 24 hours for security reasons.</p>
             <p>Here's your login information:</p>
-            <table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
-                <tbody>
-                <tr>
-                    <td>
-                        <p><strong>Username:</strong> {{user.username}}</p>
-                        <p><strong>Login URL:</strong> {{site.login_url}}</p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <blockquote>
+                <p><strong>Username:</strong> {{user.user_login}}</p>
+                <p><strong>Login URL:</strong> {{site.login_url}}</p>
+            </blockquote>
             <p>&nbsp;</p>
             <hr/>
             <p>If you didn't request this email, please contact the site administrator.</p>
@@ -271,7 +271,7 @@ class SystemEmailService
             ob_start();
             ?>
             <p>Hello<b> {{user.display_name}}</b>,</p>
-            <p>We received a request to change the email address associated with your <strong>{{site.name}}</strong>
+            <p>We received a request to change the email address associated with your <strong> {{site.name}}</strong>
                 account.</p>
             <p><span style="text-decoration: underline;"><strong>Your account change details:</strong></span></p>
             <blockquote>
@@ -368,6 +368,30 @@ class SystemEmailService
 
         return '';
 
+    }
+
+    public static function withHtmlTemplate($body, $footer = null, $wpUser = null)
+    {
+        $templateConfig = Arr::get(self::getGlobalSettings(), 'template_settings', []);
+
+        if ($footer === null) {
+            $footer = Arr::get($templateConfig, 'footer_text', '');
+        }
+
+        $html = (string)Helper::loadView('email_template', [
+            'body'            => $body,
+            'footer'          => $footer,
+            'user'            => $wpUser,
+            'template_config' => $templateConfig,
+        ]);
+
+        return (string)(new Emogrifier($html))->emogrify();
+    }
+
+    public static function getEmailFooter()
+    {
+        $globalSettings = self::getGlobalSettings();
+        return Arr::get($globalSettings, 'template_settings.footer_text', '');
     }
 
 }

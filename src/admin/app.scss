@@ -67,7 +67,7 @@ $bodyBg: #f1f2f5;
         padding: 0;
         margin: 0;
 
-        a.router-link-exact-active {
+        a.router-link-exact-active, &.router-current-active_li a {
           border-bottom: 2px solid #9d95d8;
           color: black;
         }
@@ -78,7 +78,7 @@ $bodyBg: #f1f2f5;
         }
 
         .#{$slug}menu_primary {
-          padding: 20px 20px;
+          padding: 20px 15px;
           display: block;
           font-size: 14px;
           line-height: 100%;

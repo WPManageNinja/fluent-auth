@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var $template_config array
+ * @var $body string
+ * @var $footer string
+ **/
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -8,7 +15,21 @@
     <style>
         body {
             margin: 0;
-            font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+            line-height: 1.5;
+        }
+
+        .body_wrap {
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 24px;
+        }
+
+        ul, li {
+            font-size: 16px;
+            line-height: 24px;
         }
 
         blockquote {
@@ -17,7 +38,6 @@
             border-radius: 4px;
             margin: 24px 0;
             border-left-width: 4px;
-            border-color: rgb(59, 130, 246);
         }
 
         hr {
@@ -35,19 +55,57 @@
             margin: 0px;
             line-height: 24px;
         }
+
+        .footer_text {
+            font-size: 14px;
+            line-height: 20px;
+            text-align: center;
+        }
     </style>
+
+    <?php if ($template_config): ?>
+        <style id="pref_style">
+            <?php if(!empty($template_config['body_bg'])) : ?>
+            body, .body_wrap {
+                background-color: <?php echo esc_html($template_config['body_bg']); ?>;
+            }
+
+            <?php endif; ?>
+            <?php if(!empty($template_config['footer_content_color'])) : ?>
+            .footer_table {
+                color: <?php echo esc_html($template_config['footer_content_color']); ?>;
+            }
+
+            <?php endif; ?>
+
+            .content_wrap {
+                background-color: <?php echo esc_html($template_config['content_bg']); ?>;
+                color: <?php echo esc_html($template_config['content_color']); ?>;
+            }
+
+            blockquote {
+                background-color: <?php echo esc_html($template_config['highlight_bg']); ?>;
+                color: <?php echo esc_html($template_config['highlight_color']); ?>;
+            }
+
+            blockquote p {
+                color: <?php echo esc_html($template_config['highlight_color']); ?>;
+            }
+        </style>
+    <?php endif; ?>
+
+    <?php do_action('fluent_auth/wp_system_email_head'); ?>
 </head>
-<body
-    style="background-color:#f3f4f6;font-family:ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'">
-<div
-    style="background-color:#f3f4f6;font-family:ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'">
+<body>
+<div class="body_wrap">
     <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
            style="margin-left:auto;margin-right:auto;padding-top:32px;padding-bottom:32px;padding-left:16px;padding-right:16px;max-width:600px">
         <tbody>
         <tr style="width:100%">
             <td>
-                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
-                       style="background-color:rgb(255,255,255);border-radius:8px;padding:32px;box-shadow:0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgb(0,0,0,0.05)">
+                <table class="content_wrap" align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
+                       role="presentation"
+                       style="border-radius:8px;padding:32px;box-shadow:0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgb(0,0,0,0.05)">
                     <tbody>
                     <tr>
                         <td>
@@ -57,11 +115,11 @@
                     </tbody>
                 </table>
                 <?php if (!empty($footer)): ?>
-                    <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"
-                           style="margin-top:32px;text-align:center;color:rgb(107,114,128)">
+                    <table class="footer_table" align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
+                           role="presentation" style="margin-top:32px;text-align:center;">
                         <tbody>
                         <tr>
-                            <td>
+                            <td class="footer_text">
                                 <?php echo $footer; ?>
                             </td>
                         </tr>

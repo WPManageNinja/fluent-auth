@@ -46,13 +46,9 @@ class WPSystemEmailHandler
 
         $defaults['subject'] = $this->parseCode(Arr::get($email, 'subject', $defaults['subject']), $user_data);
 
-        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $user_data), '', $user_data);
+        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $user_data), null, $user_data);
 
-        if (!is_array($defaults['headers'])) {
-            $defaults['headers'] = [];
-        }
-
-        $defaults['headers'][] = 'Content-Type: text/html; charset=UTF-8';
+        $defaults['headers'] = $this->getEmailHeaders($defaults['headers']);
 
         return $defaults;
     }
@@ -75,13 +71,9 @@ class WPSystemEmailHandler
         // Let's change these now
         $email = Arr::get($setting, 'email', []);
         $defaults['subject'] = $this->parseCode(Arr::get($email, 'subject', $defaults['subject']), $user);
-        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $user), '', $user);
+        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $user), null, $user);
 
-        if (!is_array($defaults['headers'])) {
-            $defaults['headers'] = [];
-        }
-
-        $defaults['headers'][] = 'Content-Type: text/html; charset=UTF-8';
+        $defaults['headers'] = $this->getEmailHeaders($defaults['headers']);
 
         return $defaults;
     }
@@ -98,7 +90,7 @@ class WPSystemEmailHandler
         // Let's change these now
         $email = Arr::get($setting, 'email', []);
         $emailSubject = $this->parseCode(Arr::get($email, 'subject', ''), $wpUser);
-        $newEmailBody = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', ''), $wpUser), '', $wpUser);
+        $newEmailBody = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', ''), $wpUser), null, $wpUser);
 
         if (!$emailBody) {
             return $emailBody;
@@ -128,13 +120,9 @@ class WPSystemEmailHandler
 
         $defaults['subject'] = $this->parseCode(Arr::get($email, 'subject', $defaults['subject']), $userObj);
 
-        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $userObj), '', $userObj);
+        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $userObj), null, $userObj);
 
-        if (!is_array($defaults['headers'])) {
-            $defaults['headers'] = [];
-        }
-
-        $defaults['headers'][] = 'Content-Type: text/html; charset=UTF-8';
+        $defaults['headers'] = $this->getEmailHeaders($defaults['headers']);
 
         return $defaults;
     }
@@ -150,13 +138,9 @@ class WPSystemEmailHandler
         // Let's change these now
         $email = Arr::get($setting, 'email', []);
         $defaults['subject'] = $this->parseCode(Arr::get($email, 'subject', $defaults['subject']), $userObj);
-        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $userObj), '', $userObj);
+        $defaults['message'] = $this->withHtmlTemplate($this->parseCode(Arr::get($email, 'body', $defaults['message']), $userObj), null, $userObj);
 
-        if (!is_array($defaults['headers'])) {
-            $defaults['headers'] = [];
-        }
-
-        $defaults['headers'][] = 'Content-Type: text/html; charset=UTF-8';
+        $defaults['headers'] = $this->getEmailHeaders($defaults['headers']);
 
         return $defaults;
     }
@@ -169,11 +153,7 @@ class WPSystemEmailHandler
 
         $atts['subject'] = $this->tempEmailSubjectForEmailChange;
 
-        if (!is_array($atts['headers'])) {
-            $atts['headers'] = [];
-        }
-
-        $atts['headers'][] = 'Content-Type: text/html; charset=UTF-8';
+        $atts['headers'] = $this->getEmailHeaders($atts['headers']);
 
         $this->tempEmailSubjectForEmailChange = '';
         remove_filter('wp_mail', [$this, 'alterEmailChangeNotificationEmailSubjectHeader'], 99);
@@ -209,10 +189,8 @@ class WPSystemEmailHandler
         if (!$subject || !$emailBody) {
             return;
         }
-        $emailBody = $this->withHtmlTemplate($this->parseCode($emailBody, $userObj), '', $userObj);
-        $headers = [
-            'Content-Type: text/html; charset=UTF-8'
-        ];
+        $emailBody = $this->withHtmlTemplate($this->parseCode($emailBody, $userObj), null, $userObj);
+        $headers = $this->getEmailHeaders([]);
 
         $to = $userObj->user_email;
 
@@ -228,16 +206,41 @@ class WPSystemEmailHandler
         return (new SmartCodeParser())->parse($code, $wpUser);
     }
 
-    protected function withHtmlTemplate($body, $preHeader = '', $wpUser)
+    protected function withHtmlTemplate($body, $footer = null, $wpUser = null)
     {
-
-        $html = (string)Helper::loadView('email_template', [
-            'body'       => $body,
-            'pre_header' => $preHeader
-        ]);
-
-
-        return (string)(new Emogrifier($html))->emogrify();
+        return SystemEmailService::withHtmlTemplate($body, $footer, $wpUser);
     }
 
+    protected function getEmailHeaders($defaulHeaders = [])
+    {
+        if (!is_array($defaulHeaders) || !$defaulHeaders) {
+            $defaulHeaders = [];
+        }
+
+        $defaulHeaders[] = 'Content-Type: text/html; charset=UTF-8';
+
+        $templateSettings = Arr::get(SystemEmailService::getGlobalSettings(), 'template_settings', []);
+
+
+        if (!empty($templateSettings['from_email'])) {
+            $fromName = Arr::get($templateSettings, 'from_name', '');
+            if ($fromName) {
+                $defaulHeaders[] = 'From: ' . $fromName . ' <' . $templateSettings['from_email'] . '>';
+            } else {
+                $defaulHeaders[] = 'From: <' . $templateSettings['from_email'] . '>';
+            }
+        }
+
+        if (!empty($templateSettings['reply_to_email'])) {
+            $replyToName = Arr::get($templateSettings, 'reply_to_name', '');
+            if ($replyToName) {
+                $defaulHeaders[] = 'Reply-To: ' . $replyToName . ' <' . $templateSettings['reply_to_email'] . '>';
+            } else {
+                $defaulHeaders[] = 'Reply-To: <' . $templateSettings['reply_to_email'] . '>';
+            }
+        }
+
+        return $defaulHeaders;
+
+    }
 }

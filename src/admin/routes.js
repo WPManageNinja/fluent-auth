@@ -7,6 +7,7 @@ import LoginRedirects from './Components/LoginRedirects.vue';
 
 import CustomWpEmails from './Components/CustomWpEmails/AllEmails.vue';
 import EditWpEmail from './Components/CustomWpEmails/EditWpEmail.vue';
+import TemplateSettings from "./Components/CustomWpEmails/TemplateSettings.vue";
 
 export var routes = [
     {
@@ -61,6 +62,14 @@ export var routes = [
         path: '/custom-wp-emails',
         name: 'custom_wp_emails',
         component: CustomWpEmails,
+        meta: {
+            active: 'custom_wp_emails'
+        }
+    },
+    {
+        path: '/template-settings',
+        name: 'template_settings',
+        component: TemplateSettings,
         meta: {
             active: 'custom_wp_emails'
         }

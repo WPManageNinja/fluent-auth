@@ -6,7 +6,7 @@
             </div>
             <div class="fframe_handheld"><span class="dashicons dashicons-menu-alt3"></span></div>
             <ul class="fframe_menu">
-                <li v-for="item in menuItems" :key="item.route" class="fframe_menu_item">
+                <li v-for="item in menuItems" :key="item.route" :class="'fframe_route_'+item.route" class="fframe_menu_item">
                     <router-link :to="{ name: item.route }" class="fframe_menu_primary">
                         {{item.title}}
                     </router-link>
@@ -55,6 +55,12 @@ export default {
                     title: this.$t('Customize WP Emails')
                 }
             ]
+        }
+    },
+    watch: {
+        $route(to, from) {
+            jQuery('.fframe_menu_item').removeClass('router-current-active_li');
+            jQuery('.fframe_route_' + to.meta.active).addClass('router-current-active_li');
         }
     },
     created() {

@@ -46,9 +46,12 @@
                             </el-form-item>
                             <el-form-item label="Email Body">
                                 <WpEditor v-if="!disableEditor" :editorShortcodes="smartcodes" v-model="settings.email.body"/>
-                                <el-button @click="setDefaultContent()" v-if="default_content?.email?.body" style="margin-top: 10px;" size="small">
-                                    {{$t('Set Default Subject & Body')}}
-                                </el-button>
+                                <div v-if="default_content?.email?.body" style="margin-top: 10px;">
+                                    <el-button @click="setDefaultContent()" size="small">
+                                        {{$t('Set Default Subject & Body')}}
+                                    </el-button>
+                                    <el-button @click="previewEmail()" size="small">{{$t('Preview Email')}}</el-button>
+                                </div>
                             </el-form-item>
                         </template>
                         <el-form-item style="text-align: right; margin-top: 40px;">
@@ -70,16 +73,41 @@
                 </div>
             </div>
         </div>
+
+        <el-dialog
+            v-model="showPreview"
+            :title="$t('Previewing Email')"
+            :width="800"
+            :close-on-click-modal="true"
+            :close-on-press-escape="true"
+            :before-close="() => { showPreview = false; }"
+        >
+            <PreviewEmail
+                v-if="showPreview"
+                :email_id="email_id"
+                :email_data="{subject: settings?.email?.subject, body: settings?.email?.body}"
+            />
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="showPreview = false">
+                        Close
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
+
     </div>
 </template>
 
 <script type="text/babel">
 import WpEditor from './_wp_editor.vue';
 import InputPopover from './MCE/InputPopover.vue';
+import PreviewEmail from "./PreviewEmail.vue";
 
 export default {
     name: 'EditWpEmail',
     components: {
+        PreviewEmail,
         WpEditor,
         InputPopover
     },
@@ -98,7 +126,8 @@ export default {
             saving: false,
             required_smartcodes: [],
             default_content: null,
-            disableEditor: false
+            disableEditor: false,
+            showPreview: false
         }
     },
     methods: {
@@ -149,6 +178,9 @@ export default {
                 this.disableEditor = false;
                 this.$notify.success(this.$t('Default content has been set successfully.'));
             });
+        },
+        previewEmail() {
+            this.showPreview = true;
         }
     },
     mounted() {

@@ -168,6 +168,11 @@ class SmartCodeParser
         }
 
         if ($valueKey == 'new_changing_email_id') {
+
+            if (defined('FLUENTAUTH_PREVIEWING_EMAIL')) {
+                return 'new_email_will_be_inserted_on_real_email';
+            }
+
             $userMeta = get_user_meta($wpUser->ID, '_new_email', true);
             if ($userMeta) {
                 return Arr::get($userMeta, 'newemail', $defaultValue);
