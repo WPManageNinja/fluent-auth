@@ -1,0 +1,120 @@
+<template>
+    <div class="fls_register_box">
+        <h2>Let's Secure your site by checking unauthorized changes of WP Core Files</h2>
+        <p style="border-bottom: 1px solid #dddfe6;padding-bottom: 20px;">Please fill up the form and get a free API key
+            to enable Security Scan. (You need the free API key just
+            once)</p>
+
+        <div class="fls_onboard_form">
+            <el-form label-position="top" v-model="onboardForm">
+                <template v-if="settings.status == 'unregistered'">
+                    <el-row :gutter="30">
+                        <el-col :md="12" sm="12" xs="24">
+                            <el-form-item label="Your Name" prop="full_name">
+                                <el-input size="large" v-model="onboardForm.full_name" type="text"
+                                          :placeholder="$t('Your Full Name')"/>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :md="12" sm="12" xs="24">
+                            <el-form-item label="Your Email Address" prop="email">
+                                <el-input size="large" v-model="onboardForm.email" type="text"
+                                          :placeholder="$t('Your Email')"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-form-item>
+                        <el-button @click="registerSite" :loading="submitting" :disabled="submitting" size="large"
+                                   type="primary">
+                            {{ $t('Continue & Set API Key') }}
+                        </el-button>
+                    </el-form-item>
+                    <p style="margin-top: 40px; font-size: 12px;">Provide a valid email to receive your free API key and
+                        security notifications. By submitting, you agree to our <a style="color:#3c434a;"
+                                                                                   href="https://fluentauth.com/privacy-policy/">privacy
+                            policy and terms and conditions</a>. Your email will only be used for API key generation and
+                        security updates.</p>
+                </template>
+                <template v-else>
+                    <h3>The Last Step!</h3>
+                    <p>We just sent you an email with API key. Please check your <b>email
+                        ({{ settings.account_email_id }}) inbox</b> and provide the API key</p>
+                    <el-form-item>
+                        <el-input size="large" :placeholder="$t('Provide API Key')" v-model="onboardForm.api_key"/>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button @click="registerSite" :loading="submitting" :disabled="submitting" size="large"
+                                   type="primary">
+                            {{ $t('Start Scan Your Site') }}
+                        </el-button>
+                    </el-form-item>
+                    <p style="margin-top: 40px; font-size: 12px;">
+                        You should get the API key in your email. If you don't see it, please check your spam folder. If
+                        you still don't see it, please <a href="#" @click.prevent="settings.status = 'unregistered'">start
+                        over with a different email address.</a>.
+                    </p>
+                    <pre>{{ settings }}</pre>
+                </template>
+            </el-form>
+        </div>
+
+    </div>
+</template>
+
+<script type="text/babel">
+export default {
+    name: 'RegisterPrompt',
+    props: ['settings'],
+    emits: ['registered'],
+    data() {
+        return {
+            onboardForm: {
+                full_name: '',
+                email: '',
+                api_key: this.settings.api_key,
+                api_id: this.settings.api_id
+            },
+            submitting: false
+        }
+    },
+    methods: {
+        registerSite() {
+            if (!this.onboardForm.full_name || !this.onboardForm.email) {
+                this.$notify.error(this.$t('Please provide valid name and email address'));
+                return;
+            }
+
+            if (this.settings.status == 'pending') {
+                if (!this.onboardForm.api_key) {
+                    this.$notify.error(this.$t('Please provide valid API key'));
+                    return;
+                }
+            }
+
+            this.submitting = true;
+            this.$post('security-scan-settings/register', {
+                info: this.onboardForm
+            })
+                .then(response => {
+                    this.$notify.success(response.message);
+                    this.settings.status = response.settings.status;
+                    this.settings.api_key = response.settings.api_key;
+                    this.settings.api_id = response.settings.api_id;
+
+                    if(response.settings.status == 'active') {
+                        this.$emit('registered', response.settings);
+                    }
+                })
+                .catch((errors) => {
+                    this.$handleError(errors);
+                })
+                .finally(() => {
+                    this.submitting = false;
+                });
+        }
+    },
+    mounted() {
+        this.onboardForm.full_name = this.appVars.me.full_name
+        this.onboardForm.email = this.appVars.me.email
+    }
+}
+</script>

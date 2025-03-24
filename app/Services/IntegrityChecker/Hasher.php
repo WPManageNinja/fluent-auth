@@ -128,32 +128,24 @@ class Hasher
 
     public function compareHashes($currentHashes, $referenceHases)
     {
-        $newFiles = [];
-        $mofifiedFiles = [];
+        $fileLists = [];
 
         // Compare hashes
         foreach ($currentHashes as $file => $hash) {
             if (!isset($referenceHases[$file])) {
-                $newFiles[$file] = $hash;
+                $fileLists[$file] = 'new';
             } elseif ($referenceHases[$file] !== $hash) {
-                // File has been modified
-                $mofifiedFiles[$file] = $hash;
+                $fileLists[$file] = 'modified';
             }
         }
 
-        $deletedFiles = [];
         // Check for deleted files
         foreach ($referenceHases as $file => $hash) {
             if (!isset($currentHashes[$file])) {
-                // File has been deleted
-                $deletedFiles[$file] = $hash;
+                $fileLists[$file] = 'deleted';
             }
         }
 
-        return [
-            'newFiles'      => $newFiles,
-            'modifiedFiles' => $mofifiedFiles,
-            'deletedFiles'  => $deletedFiles
-        ];
+        return $fileLists;
     }
 }

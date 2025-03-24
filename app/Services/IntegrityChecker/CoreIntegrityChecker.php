@@ -2,37 +2,41 @@
 
 namespace FluentAuth\App\Services\IntegrityChecker;
 
+use FluentAuth\App\Helpers\Arr;
+
 class CoreIntegrityChecker
 {
     private $hasIssues = false;
 
     private $result = [];
 
+    private $remoteHashes = [];
+
     public function checkAll()
     {
-        $this->checkRootFolder();
+        $remoteHashes = $this->getRemoteHashes();
+        if (is_wp_error($remoteHashes)) {
+            return $remoteHashes;
+        }
+
         $this->checkAdminFolder();
         $this->checkIncFolder();
+        $this->checkRootFolder();
 
         return $this->result;
     }
 
     public function checkAdminFolder()
     {
-        $adminFolder = ABSPATH . 'wp-admin';
-
-        $localFileHashes = (new Hasher($adminFolder))->generateBaselineHash()->getBaselineHases();
-        $remoteAllHashes = $this->getRemoteHashes();
-        $remoteAdminHashes = \FluentAuth\App\Helpers\Arr::get($remoteAllHashes, 'fileHashes.wp-admin.files', []);
-
-
-        $diffs = (new Hasher($adminFolder))->compareHashes($localFileHashes, $remoteAdminHashes);
-
+        $folder = ABSPATH . 'wp-admin';
+        $localFileHashes = (new Hasher($folder))->generateBaselineHash()->getBaselineHases();
+        $remoteAdminHashes = \FluentAuth\App\Helpers\Arr::get($this->remoteHashes, 'wp-admin.files', []);
+        $diffs = (new Hasher($folder))->compareHashes($localFileHashes, $remoteAdminHashes);
         $diffs = array_filter($diffs);
 
         if ($diffs) {
             $this->hasIssues = true;
-            $this->result['wp-admin'] = $diffs;
+            $this->result['wp_admin'] = $diffs;
         }
 
         return $this;
@@ -40,20 +44,18 @@ class CoreIntegrityChecker
 
     public function checkIncFolder()
     {
-        $adminFolder = ABSPATH . WPINC;
+        $folder = ABSPATH . WPINC;
 
-        $localFileHashes = (new Hasher($adminFolder))->generateBaselineHash()->getBaselineHases();
-        $remoteAllHashes = $this->getRemoteHashes();
-        $remoteIncHashes = \FluentAuth\App\Helpers\Arr::get($remoteAllHashes, 'fileHashes.wp-includes.files', []);
+        $localFileHashes = (new Hasher($folder))->generateBaselineHash()->getBaselineHases();
+        $remoteIncHashes = \FluentAuth\App\Helpers\Arr::get($this->getRemoteHashes(), 'wp-includes.files', []);
 
-
-        $diffs = (new Hasher($adminFolder))->compareHashes($localFileHashes, $remoteIncHashes);
+        $diffs = (new Hasher($folder))->compareHashes($localFileHashes, $remoteIncHashes);
 
         $diffs = array_filter($diffs);
 
         if ($diffs) {
             $this->hasIssues = true;
-            $this->result['wp-includes'] = $diffs;
+            $this->result['wp_includes'] = $diffs;
         }
 
         return $this;
@@ -102,7 +104,7 @@ class CoreIntegrityChecker
             $localFileHashes[$file] = $hasher->getFileHash(ABSPATH . $file);
         }
 
-        $remoteRootHashes = $this->getRemoteRootFileHashes();
+        $remoteRootHashes = Arr::get($this->getRemoteHashes(), 'root_files', []);
 
         if (!$remoteRootHashes) {
             throw new \Exception('Remote root hashes not found');
@@ -119,6 +121,7 @@ class CoreIntegrityChecker
         if ($diffs) {
             $this->hasIssues = true;
             $this->result['root'] = $diffs;
+            $this->result['extra_root_folders'] = $extraFolders;
         }
 
         return $this;
@@ -132,7 +135,7 @@ class CoreIntegrityChecker
             return;
         }
 
-        $remoteFileHashes = \FluentAuth\App\Helpers\Arr::get($remoteSummary, 'hashes', []);
+        $remoteFileHashes = \FluentAuth\App\Helpers\Arr::get($remoteSummary, 'data.root_hashes', []);
 
         $remoteFileHashes = array_filter($remoteFileHashes, function ($key) {
             return !in_array($key, ['wp-admin', 'wp-includes']);
@@ -154,12 +157,23 @@ class CoreIntegrityChecker
 
     public function getRemoteHashes()
     {
-        static $remoteHashes = null;
-
-        if ($remoteHashes === null) {
-            $remoteHashes = Api::getRemoteHashes(true);
+        if (!$this->remoteHashes) {
+            $this->setRemoteHashes();
         }
 
-        return $remoteHashes;
+        return $this->remoteHashes;
     }
+
+    public function setRemoteHashes()
+    {
+        $remoteHashes = Api::getRemoteHashes(true);
+        if (is_wp_error($remoteHashes)) {
+            $this->remoteHashes = $remoteHashes;
+            return $this;
+        }
+
+        $this->remoteHashes = Arr::get($remoteHashes, 'data.hashes', []);
+        return $this;
+    }
+
 }

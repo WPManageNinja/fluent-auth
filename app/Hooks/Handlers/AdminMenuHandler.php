@@ -40,6 +40,15 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
+            __('Logs', 'fluent-security'),
+            __('Logs', 'fluent-security'),
+            $permission,
+            'fluent-auth#/logs',
+            array($this, 'render')
+        );
+
+        add_submenu_page(
+            'fluent-auth',
             __('Security Settings', 'fluent-security'),
             __('Security Settings', 'fluent-security'),
             $permission,
@@ -49,10 +58,10 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
-            __('Social Login', 'fluent-security'),
-            __('Social Login', 'fluent-security'),
+            __('Login/Signup Forms', 'fluent-security'),
+            __('Login/Signup Forms', 'fluent-security'),
             $permission,
-            'fluent-auth#/social-login-settings',
+            'fluent-auth#/auth-shortcodes',
             array($this, 'render')
         );
 
@@ -67,15 +76,6 @@ class AdminMenuHandler
 
         add_submenu_page(
             'fluent-auth',
-            __('Logs', 'fluent-security'),
-            __('Logs', 'fluent-security'),
-            $permission,
-            'fluent-auth#/logs',
-            array($this, 'render')
-        );
-
-        add_submenu_page(
-            'fluent-auth',
             __('Customize WP Emails', 'fluent-security'),
             __('Customize WP Emails', 'fluent-security'),
             $permission,
@@ -83,6 +83,14 @@ class AdminMenuHandler
             array($this, 'render')
         );
 
+        add_submenu_page(
+            'fluent-auth',
+            __('Security Scans', 'fluent-security'),
+            __('Security Scans', 'fluent-security'),
+            $permission,
+            'fluent-auth#/security-scans',
+            array($this, 'render')
+        );
     }
 
     public function render()
@@ -103,29 +111,35 @@ class AdminMenuHandler
 
         wp_enqueue_script('fluent_auth_app', FLUENT_AUTH_PLUGIN_URL . 'dist/admin/app.js', ['jquery'], '1.0', true);
 
+        $fullName = trim($currentUser->first_name . ' ' . $currentUser->last_name);
+
+        if (!$fullName) {
+            $fullName = $currentUser->display_name;
+        }
+
         wp_localize_script('fluent_auth_app', 'fluentAuthAdmin', [
-            'slug'            => 'fluent-security',
-            'nonce'           => wp_create_nonce('fluent-security'),
-            'rest'            => [
+            'slug'          => 'fluent-security',
+            'nonce'         => wp_create_nonce('fluent-security'),
+            'rest'          => [
                 'base_url'  => esc_url_raw(rest_url()),
                 'url'       => rest_url('fluent-auth'),
                 'nonce'     => wp_create_nonce('wp_rest'),
                 'namespace' => 'fluent-auth',
                 'version'   => '1'
             ],
-            'auth_statuses'   => [
+            'auth_statuses' => [
                 'failed'  => __('Failed', 'fluent-security'),
                 'blocked' => __('Blocked', 'fluent-security'),
                 'success' => __('Successful', 'fluent-security')
             ],
-            'auth_settings'   => Helper::getAuthSettings(),
-            'asset_url'       => FLUENT_AUTH_PLUGIN_URL . 'dist/',
-            'me'              => [
+            'auth_settings' => Helper::getAuthSettings(),
+            'asset_url'     => FLUENT_AUTH_PLUGIN_URL . 'dist/',
+            'me'            => [
                 'id'        => $currentUser->ID,
-                'full_name' => trim($currentUser->first_name . ' ' . $currentUser->last_name),
+                'full_name' => $fullName,
                 'email'     => $currentUser->user_email
             ],
-            'i18n'            => [
+            'i18n'          => [
                 'Dashboard'                     => __('Dashboard', 'fluent-security'),
                 'Logs'                          => __('Logs', 'fluent-security'),
                 'Settings'                      => __('Settings', 'fluent-security'),
@@ -163,7 +177,7 @@ class AdminMenuHandler
                 'system_will_block'             => __('minutes, the system will block the user for', 'fluent-security'),
                 'minutes'                       => __('minutes', 'fluent-security'),
                 'extended_login_options'        => __('Extended Login Options', 'fluent-security'),
-                'enable_magic_login'           => __('Enable Magic Login (User can login via url sent to email)', 'fluent-security'),
+                'enable_magic_login'            => __('Enable Magic Login (User can login via url sent to email)', 'fluent-security'),
                 'Extended Login Security'       => __('Extended Login Security', 'fluent-security'),
                 'Standard'                      => __('Standard', 'fluent-security'),
                 'With Login Security Code'      => __('With Login Security Code', 'fluent-security'),

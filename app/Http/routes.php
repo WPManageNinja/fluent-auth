@@ -19,4 +19,7 @@ $router->get('settings', ['\FluentAuth\App\Http\Controllers\SettingsController',
     ->post('wp-default-emails/preview', ['\FluentAuth\App\Http\Controllers\SystemEmailsController', 'previewEmail'], $permissions)
     ->get('wp-default-emails/template-settings', ['\FluentAuth\App\Http\Controllers\SystemEmailsController', 'getTemplateSettings'], $permissions)
     ->post('wp-default-emails/save-template-settings', ['\FluentAuth\App\Http\Controllers\SystemEmailsController', 'saveTemplateSettings'], $permissions)
-    ->post('wp-default-emails/save-email-settings', ['\FluentAuth\App\Http\Controllers\SystemEmailsController', 'saveEmailSettings'], $permissions);
+    ->post('wp-default-emails/save-email-settings', ['\FluentAuth\App\Http\Controllers\SystemEmailsController', 'saveEmailSettings'], $permissions)
+    ->get('security-scan-settings', ['\FluentAuth\App\Http\Controllers\SecurityScanController', 'getSettings'], $permissions)
+    ->post('security-scan-settings/register', ['\FluentAuth\App\Http\Controllers\SecurityScanController', 'registerSite'], $permissions)
+    ->get('security-scan-settings/scan', ['\FluentAuth\App\Http\Controllers\SecurityScanController', 'scanSite'], $permissions);

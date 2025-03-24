@@ -49,7 +49,6 @@ class FluentAuthPlugin
 
     private function autoLoad()
     {
-
         spl_autoload_register(function($class) {
             $match = 'FluentAuth';
 

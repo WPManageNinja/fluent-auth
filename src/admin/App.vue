@@ -2,13 +2,16 @@
     <div class="fframe_app">
         <div class="fframe_main-menu-items">
             <div class="menu_logo_holder">
-                <h3 style="margin: 10px 0; display: flex;align-items: center;"><img :src="appVars.asset_url + '/images/logo.png'" style="width: 150px; margin-top: -10px; margin-right: 7px;" /></h3>
+                <h3 style="margin: 10px 0; display: flex;align-items: center;"><img
+                    :src="appVars.asset_url + '/images/logo.png'"
+                    style="width: 150px; margin-top: -10px; margin-right: 7px;"/></h3>
             </div>
             <div class="fframe_handheld"><span class="dashicons dashicons-menu-alt3"></span></div>
             <ul class="fframe_menu">
-                <li v-for="item in menuItems" :key="item.route" :class="'fframe_route_'+item.route" class="fframe_menu_item">
+                <li v-for="item in menuItems" :key="item.route" :class="'fframe_route_'+item.route"
+                    class="fframe_menu_item">
                     <router-link :to="{ name: item.route }" class="fframe_menu_primary">
-                        {{item.title}}
+                        {{ item.title }}
                     </router-link>
                 </li>
             </ul>
@@ -39,12 +42,8 @@ export default {
                     title: this.$t('Settings')
                 },
                 {
-                    route: 'social_auth_settings',
-                    title: this.$t('Social Login')
-                },
-                {
                     route: 'auth_shortcodes',
-                    title: this.$t('Login/Signup Forms')
+                    title: this.$t('Login/Signip Forms')
                 },
                 {
                     route: 'login_redirects',
@@ -52,7 +51,11 @@ export default {
                 },
                 {
                     route: 'custom_wp_emails',
-                    title: this.$t('Customize WP Emails')
+                    title: this.$t('System Emails')
+                },
+                {
+                    route: 'security_scans',
+                    title: this.$t('Security Scans')
                 }
             ]
         }
@@ -61,6 +64,8 @@ export default {
         $route(to, from) {
             jQuery('.fframe_menu_item').removeClass('router-current-active_li');
             jQuery('.fframe_route_' + to.meta.active).addClass('router-current-active_li');
+            document.title = this.$t(to.meta.title) + ' | ' + this.$t('FluentAuth');
+
         }
     },
     created() {

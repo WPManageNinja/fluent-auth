@@ -6,6 +6,8 @@ import {ElNotification, ElLoading, ElMessageBox} from 'element-plus'
 import Storage from '@/Bits/Storage';
 import App from './App.vue';
 
+import {FolderOpened, Document, DocumentAdd, DocumentDelete, Warning, MuteNotification} from '@element-plus/icons-vue';
+
 require('./app.scss');
 
 function convertToText(obj) {
@@ -29,6 +31,13 @@ function convertToText(obj) {
 
 const app = createApp(App);
 app.use(ElLoading);
+
+app.component(FolderOpened.name, FolderOpened);
+app.component(Document.name, Document);
+app.component(DocumentAdd.name, DocumentAdd);
+app.component(DocumentDelete.name, DocumentDelete);
+app.component(Warning.name, Warning);
+app.component(MuteNotification.name, MuteNotification);
 
 app.config.globalProperties.appVars = window.fluentAuthAdmin;
 

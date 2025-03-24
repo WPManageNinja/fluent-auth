@@ -8,6 +8,7 @@ import LoginRedirects from './Components/LoginRedirects.vue';
 import CustomWpEmails from './Components/CustomWpEmails/AllEmails.vue';
 import EditWpEmail from './Components/CustomWpEmails/EditWpEmail.vue';
 import TemplateSettings from "./Components/CustomWpEmails/TemplateSettings.vue";
+import SecurityScans from "./Components/SecurityScan/index.vue";
 
 export var routes = [
     {
@@ -15,7 +16,8 @@ export var routes = [
         name: 'dashboard',
         component: Dashboard,
         meta: {
-            active: 'dashboard'
+            active: 'dashboard',
+            title: 'Dashboard'
         }
     },
     {
@@ -23,7 +25,8 @@ export var routes = [
         name: 'logs',
         component: Logs,
         meta: {
-            active: 'logs'
+            active: 'logs',
+            title: 'Auth Logs'
         }
     },
     {
@@ -31,7 +34,8 @@ export var routes = [
         name: 'settings',
         component: Settings,
         meta: {
-            active: 'settings'
+            active: 'settings',
+            title: 'Settings'
         }
     },
     {
@@ -39,7 +43,8 @@ export var routes = [
         name: 'social_auth_settings',
         component: SocialAuthSettings,
         meta: {
-            active: 'social_auth_settings'
+            active: 'social_auth_settings',
+            title: 'Social Login Settings'
         }
     },
     {
@@ -47,7 +52,8 @@ export var routes = [
         name: 'auth_shortcodes',
         component: AuthShortcodes,
         meta: {
-            active: 'auth_shortcodes'
+            active: 'auth_shortcodes',
+            title: 'Auth Shortcodes'
         }
     },
     {
@@ -55,7 +61,8 @@ export var routes = [
         name: 'login_redirects',
         component: LoginRedirects,
         meta: {
-            active: 'login_redirects'
+            active: 'login_redirects',
+            title: 'Login Redirects'
         }
     },
     {
@@ -63,7 +70,8 @@ export var routes = [
         name: 'custom_wp_emails',
         component: CustomWpEmails,
         meta: {
-            active: 'custom_wp_emails'
+            active: 'custom_wp_emails',
+            title: 'System Emails Customizations'
         }
     },
     {
@@ -71,7 +79,8 @@ export var routes = [
         name: 'template_settings',
         component: TemplateSettings,
         meta: {
-            active: 'custom_wp_emails'
+            active: 'custom_wp_emails',
+            title: 'Template Settings'
         }
     },
     {
@@ -80,7 +89,17 @@ export var routes = [
         component: EditWpEmail,
         props: true,
         meta: {
-            active: 'custom_wp_emails'
+            active: 'custom_wp_emails',
+            title: 'Edit Email'
+        }
+    },
+    {
+        path: '/security-scans',
+        name: 'security_scans',
+        component: SecurityScans,
+        meta: {
+            active: 'security_scans',
+            title: 'Security Scans'
         }
     }
 ];

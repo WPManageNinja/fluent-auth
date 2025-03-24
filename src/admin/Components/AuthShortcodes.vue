@@ -1,4 +1,5 @@
 <template>
+    <social-auth-settings />
     <div class="dashboard box_wrapper">
         <div class="box dashboard_box box_narrow">
             <div v-loading="loading" class="box_header" style="padding: 15px;font-size: 16px;">
@@ -64,8 +65,12 @@
 </template>
 
 <script type="text/babel">
+import SocialAuthSettings from "./SocialAuthSettings.vue";
 export default {
-    name: 'SocialAuthSettings',
+    name: 'AuthShortcodes',
+    components : {
+        SocialAuthSettings
+    },
     data() {
         return {
             loading: false,
