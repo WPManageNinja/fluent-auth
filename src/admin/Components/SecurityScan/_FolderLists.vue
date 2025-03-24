@@ -1,16 +1,12 @@
 <template>
     <div class="box dashboard_box">
         <div class="box_header" style="padding: 10px 15px; font-weight: bold; font-size: 16px;">
-            <el-icon>
-                <FolderOpened/>
-            </el-icon>
-            {{ rootPath }}
+            Extra Folders in Root
         </div>
         <div class="box_body">
             <div class="fls_file_lists">
                 <div class="fls_file_item" v-for="file in formattedFiles"
                      :class="[
-                         'fls_file_list_status_' + file.status,
                           (file.isIgnored) ? 'fls_file_ignored' : ''
                      ]"
                      :key="file"
@@ -19,17 +15,14 @@
                         <el-tag size="small" type="info" :class="'fls_file_icon_type_' + file.status"
                                 class="fls_file_icon">
                             <el-icon>
-                                <DocumentAdd v-if="file.status == 'new'"/>
-                                <Warning v-else-if="file.status == 'modified'"/>
-                                <DocumentDelete v-else-if="file.status == 'deleted'"/>
+                                <FolderOpened/>
                             </el-icon>
-                            <span>{{ file.status }}</span>
                         </el-tag>
+                        <span>{{ file.file }}</span>
                         <el-tag v-if="file.isIgnored" size="small" type="info" class="fls_file_icon">
                             <MuteNotification/>
                             <span>Ignored</span>
                         </el-tag>
-                        <span>{{ file.relativeName }}</span>
                     </div>
                     <div v-loading="workingFile == file.file" class="fls_file_status">
                         <el-dropdown @command="handleCommand" trigger="click">
@@ -62,7 +55,7 @@
 import each from 'lodash/each';
 
 export default {
-    name: 'FileLists',
+    name: 'FolderLists',
     props: {
         files: {
             type: Object,
@@ -83,21 +76,6 @@ export default {
         }
     },
     computed: {
-        stats() {
-            let statuses = {};
-            each(this.files, (fileStatus, file) => {
-                file = this.rootPath ? this.rootPath + file : file;
-                if (this.ignoredFiles.includes(file)) {
-                    fileStatus = 'ignored';
-                }
-                if (!statuses[fileStatus]) {
-                    statuses[fileStatus] = 0;
-                }
-                statuses[fileStatus] += 1;
-            });
-
-            return statuses;
-        },
         formattedFiles() {
             let formatted = [];
 
@@ -107,13 +85,12 @@ export default {
                 ignoredFiles = [];
             }
 
-            each(this.files, (fileStatus, file) => {
+            each(this.files, (file) => {
                 let fullName = this.rootPath ? this.rootPath + file : file;
                 formatted.push({
                     file: fullName,
                     relativeName: file,
-                    status: fileStatus,
-                    isIgnored: ignoredFiles.includes(fullName)
+                    isIgnored: ignoredFiles.includes(fullName),
                 });
             });
 
@@ -126,7 +103,8 @@ export default {
             let willRemove = file.isIgnored;
             this.$post('security-scan-settings/scan/toggle-ignore', {
                 will_remove: willRemove ? 'yes' : 'no',
-                file: file.file
+                file: file.file,
+                is_folder: 'yes'
             })
                 .then((response) => {
                     this.$notify.success(response.message);

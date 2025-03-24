@@ -17,7 +17,7 @@
                                 v-if="settings.status == 'unregistered' || settings.status == 'pending'"
                                 :settings="settings"/>
 
-                <scanner v-if="settings.status == 'active'" :settings="settings"/>
+                <scanner :ignores="ignores" v-if="settings.status == 'active'" :settings="settings"/>
 
                 <pre v-else>{{ settings }}</pre>
 
@@ -43,7 +43,11 @@ export default {
         return {
             loading: false,
             settings: null,
-            saving: false
+            saving: false,
+            ignores: {
+                files: [],
+                folders: []
+            }
         }
     },
     methods: {
@@ -52,6 +56,7 @@ export default {
             this.$get('security-scan-settings')
                 .then(response => {
                     this.settings = response.settings
+                    this.ignores = response.ignores
                 })
                 .catch((errors) => {
                     this.$handleError(errors)

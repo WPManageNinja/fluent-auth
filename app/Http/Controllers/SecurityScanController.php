@@ -17,7 +17,8 @@ class SecurityScanController
         }
 
         return [
-            'settings' => $settings
+            'settings' => $settings,
+            'ignores'  => IntegrityHelper::getIgnoreLists(),
         ];
     }
 
@@ -84,8 +85,48 @@ class SecurityScanController
         $hasIssues = !!$result;
 
         return [
-            'scan_results' => $result,
-            'has_issues'   => $hasIssues
+            'scan_results'  => $result,
+            'activeChanges' => IntegrityHelper::getActiveModifiedFilesFolders($result),
+            'has_issues'    => $hasIssues
+        ];
+    }
+
+    public static function toggleIgnore(\WP_REST_Request $request)
+    {
+        $willRemove = $request->get_param('will_remove') == 'yes';
+        $file = $request->get_param('file');
+
+        if (!is_string($file) || empty($file)) {
+            return new \WP_Error('invalid_data', __('Please provide a valid file name.', 'fluent-security'), ['status' => 400, 'data' => $file]);
+        }
+
+        $isFolder = $request->get_param('is_folder') == 'yes';
+
+        $settings = IntegrityHelper::getIgnoreLists();
+
+        if ($isFolder) {
+            $ignoreLists = $settings['folders'];
+        } else {
+            $ignoreLists = $settings['files'];
+        }
+
+        if ($willRemove) {
+            $ignoreLists = array_diff($ignoreLists, [$file]);
+        } else {
+            $ignoreLists[] = $file;
+        }
+
+        if ($isFolder) {
+            $settings['folders'] = array_values(array_unique($ignoreLists));
+        } else {
+            $settings['files'] = array_values(array_unique($ignoreLists));
+        }
+
+        IntegrityHelper::updateIgnoreLists($settings);
+
+        return [
+            'message' => __('Ignore status has been updated.', 'fluent-security'),
+            'lists'   => $settings
         ];
     }
 }

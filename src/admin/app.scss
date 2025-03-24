@@ -808,6 +808,10 @@ ul.fls_listed_data {
       column-gap: 5px;
     }
 
+    &.fls_file_ignored {
+      opacity: 0.4;
+    }
+
     .fls_file_icon {
       .el-tag__content {
         display: flex;
