@@ -89,11 +89,17 @@ class CoreIntegrityChecker
 
         $files = [];
         $extraFolders = [];
-
         foreach ($rootFiles as $file) {
             if (is_file($rootFolder . '/' . $file)) {
                 $files[] = $file;
             } elseif (is_dir($rootFolder . '/' . $file)) {
+                $xcloudDirs = ['before', 'after', 'server'];
+                if (in_array($file, $xcloudDirs)) {
+                    if ($this->isConfFolder($rootFolder . '/' . $file)) {
+                        continue;
+                    }
+                }
+
                 $extraFolders[] = $file;
             }
         }
@@ -102,6 +108,9 @@ class CoreIntegrityChecker
 
         $hasher = new Hasher();
         foreach ($files as $file) {
+            if (preg_match('/^(file-manager-|adminer-).*\.php$|\.conf$/i', $file)) {
+                continue; // we are ignoring known useful files
+            }
             $localFileHashes[$file] = $hasher->getFileHash(ABSPATH . $file);
         }
 
@@ -175,6 +184,43 @@ class CoreIntegrityChecker
 
         $this->remoteHashes = Arr::get($remoteHashes, 'data.hashes', []);
         return $this;
+    }
+
+    private function isConfFolder($folderPath)
+    {
+        // Check if directory exists
+        if (!is_dir($folderPath)) {
+            return true;
+        }
+
+        // Get all files in directory
+        $files = scandir($folderPath);
+
+        // Remove . and .. from the list
+        $files = array_diff($files, array('.', '..'));
+
+        // If directory is empty, return true
+        if (empty($files)) {
+            return true;
+        }
+
+        // Check each file
+        foreach ($files as $file) {
+            $fullPath = $folderPath . DIRECTORY_SEPARATOR . $file;
+
+            // If it's a directory, return false
+            if (is_dir($fullPath)) {
+                return false;
+            }
+
+            // If it's not a .conf file, return false
+            if (!preg_match('/\.conf$/i', $file)) {
+                return false;
+            }
+        }
+
+        // If we made it through all checks, return true
+        return true;
     }
 
 }
