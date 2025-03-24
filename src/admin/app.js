@@ -6,7 +6,7 @@ import {ElNotification, ElLoading, ElMessageBox} from 'element-plus'
 import Storage from '@/Bits/Storage';
 import App from './App.vue';
 
-import {FolderOpened, Document, MoreFilled, DocumentAdd, DocumentDelete, Warning, MuteNotification} from '@element-plus/icons-vue';
+import {FolderOpened, Document, MoreFilled, View, DocumentAdd, DocumentDelete, Warning, MuteNotification} from '@element-plus/icons-vue';
 
 require('./app.scss');
 
@@ -39,6 +39,7 @@ app.component(DocumentDelete.name, DocumentDelete);
 app.component(Warning.name, Warning);
 app.component(MuteNotification.name, MuteNotification);
 app.component(MoreFilled.name, MoreFilled);
+app.component(View.name, View);
 
 app.config.globalProperties.appVars = window.fluentAuthAdmin;
 

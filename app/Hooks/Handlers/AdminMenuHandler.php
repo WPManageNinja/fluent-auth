@@ -109,6 +109,8 @@ class AdminMenuHandler
             wp_enqueue_media();
         }
 
+        wp_enqueue_script('diff', FLUENT_AUTH_PLUGIN_URL . 'dist/libs/diff.js', [], '7.0.0', true);
+
         wp_enqueue_script('fluent_auth_app', FLUENT_AUTH_PLUGIN_URL . 'dist/admin/app.js', ['jquery'], '1.0', true);
 
         $fullName = trim($currentUser->first_name . ' ' . $currentUser->last_name);

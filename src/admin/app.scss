@@ -837,3 +837,12 @@ ul.fls_listed_data {
     }
   }
 }
+
+.fls_diff_view { word-wrap: break-word; }
+
+.fls_diff_view {
+    background: #f7f7fc;
+    padding: 10px 20px;
+    margin: 0;
+    overflow: auto;
+}

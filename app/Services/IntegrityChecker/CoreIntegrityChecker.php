@@ -79,6 +79,7 @@ class CoreIntegrityChecker
             'wp-includes',
             'wp-config.php',
             'wp-config-sample.php',
+            '.htaccess',
             WPINC,
             'wp-content',
             basename(WP_CONTENT_DIR)

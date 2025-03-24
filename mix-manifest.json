@@ -4,5 +4,8 @@
     "/dist/public/login_helper.js": "/dist/public/login_helper.js",
     "/dist/images/logo.png": "/dist/images/logo.png",
     "/dist/images/logo.svg": "/dist/images/logo.svg",
-    "/dist/images/success.png": "/dist/images/success.png"
+    "/dist/images/success.png": "/dist/images/success.png",
+    "/dist/libs/diff.js": "/dist/libs/diff.js",
+    "/dist/images/index.php": "/dist/images/index.php",
+    "/dist/libs/index.php": "/dist/libs/index.php"
 }

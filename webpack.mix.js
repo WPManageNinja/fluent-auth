@@ -34,4 +34,5 @@ mix
     .js('src/admin/app.js', 'dist/admin/app.js').vue({ version: 3 })
     .js('src/public/magic_url.js', 'dist/public/fls_login.js')
     .js('src/public/login_helper.js', 'dist/public/login_helper.js')
-    .copy('src/images', 'dist/images');
+    .copy('src/images', 'dist/images')
+    .copy('src/libs', 'dist/libs');

@@ -104,7 +104,7 @@ class IntegrityHelper
                 return in_array($folder, $ignores['folders']);
             });
         }
-        
+
         return [
             'files'   => $allFiles ? $allFiles : null,
             'folders' => $folders ? $folders : null,

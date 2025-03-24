@@ -129,4 +129,103 @@ class SecurityScanController
             'lists'   => $settings
         ];
     }
+
+    public static function viewFileDiff(\WP_REST_Request $request)
+    {
+        $fileConfig = $request->get_param('viewing_file');
+
+        if (!$fileConfig || empty($fileConfig['file']) || empty($fileConfig['status'])) {
+            return new \WP_Error('invalid_data', __('Please provide a valid file name and status.', 'fluent-security'), ['status' => 400, 'data' => $fileConfig]);
+        }
+
+        $file = $fileConfig['file'];
+        $status = $fileConfig['status'];
+        $folder = $fileConfig['folder'];
+
+        $validFolders = ['', 'wp-admin', 'wp-includes', WPINC];
+
+        if (!in_array($folder, $validFolders)) {
+            return new \WP_Error('invalid_data', __('Invalid folder name.', 'fluent-security'), ['status' => 400, 'data' => $fileConfig]);
+        }
+
+        $isInc = $folder == 'wp-includes';
+
+        if ($folder == 'wp-includes') {
+            $folder = WPINC;
+        }
+
+        if ($folder) {
+            $filePath = ABSPATH . $folder . '/' . $file;
+            if(realpath($filePath) != $filePath) {
+                return new \WP_Error('invalid_data', __('This file could not be viewed for security reason.', 'fluent-security'), ['status' => 400, 'data' => $file]);
+            }
+
+        } else {
+            $ignoredFiles = [
+                '.git',
+                '.gitignore',
+                '.DS_Store',
+                '.idea',
+                'wp-admin',
+                'wp-includes',
+                'wp-config.php',
+                'wp-config-sample.php',
+                '.htaccess',
+            ];
+
+            $file = basename($file);
+
+            if (in_array($file, $ignoredFiles)) {
+                return new \WP_Error('invalid_data', __('This file could not be viewed.', 'fluent-security'), ['status' => 400, 'data' => $file]);
+            }
+            $filePath = ABSPATH . $file;
+        }
+
+
+
+        if (!file_exists($filePath)) {
+            return new \WP_Error('invalid_data', __('This file could not be viewed.', 'fluent-security'), ['status' => 400, 'data' => $file]);
+        }
+
+        // check if the file size is greater than 1MB
+
+        $maxFileSize = 1 * 1024 * 1024; // 1MB
+        if (filesize($filePath) > $maxFileSize) {
+            return new \WP_Error('invalid_data', __('This file is too large to be viewed.', 'fluent-security'), ['status' => 400, 'data' => $file]);
+        }
+
+        // check if the file is readable
+        if (!is_readable($filePath)) {
+            return new \WP_Error('invalid_data', __('This file is not readable.', 'fluent-security'), ['status' => 400, 'data' => $file]);
+        }
+
+        // get file content using WP File System API
+
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        WP_Filesystem();
+        global $wp_filesystem;
+        $fileContent = $wp_filesystem->get_contents($filePath);
+
+        $remoteContent = '';
+        if ($status == 'modified') {
+            $originalRelativePath = str_replace(ABSPATH, '', $filePath);
+            if ($isInc) {
+                $originalRelativePath = str_replace(WPINC, 'wp-includes', $originalRelativePath);
+            }
+
+            $remoteContent = Api::getFileContentFromGithub($originalRelativePath);
+
+            if(is_wp_error($remoteContent)) {
+                return new \WP_Error('invalid_data', __('Sorry, we could not compare the changes via Github API.', 'fluent-security'), ['status' => 400]);
+            }
+        }
+
+        return [
+            'filePath'            => str_replace(ABSPATH, '/', $filePath),
+            'fileContent'         => $fileContent,
+            'hasDiff'             => !!$remoteContent,
+            'originalFileContent' => $remoteContent,
+        ];
+
+    }
 }

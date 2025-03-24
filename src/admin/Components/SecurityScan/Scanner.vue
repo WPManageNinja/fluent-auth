@@ -53,15 +53,15 @@
                 </div>
 
                 <div v-if="scan_results.root">
-                    <file-lists :ignored-files="ignores.files" :files="scan_results.root" root-path="/"/>
+                    <file-lists folderType="" :ignored-files="ignores.files" :files="scan_results.root" root-path="/"/>
                 </div>
 
                 <div v-if="scan_results.wp_admin">
-                    <file-lists :ignored-files="ignores.files" :files="scan_results.wp_admin" root-path="/wp-admin/"/>
+                    <file-lists folderType="wp-admin" :ignored-files="ignores.files" :files="scan_results.wp_admin" root-path="/wp-admin/"/>
                 </div>
 
                 <div v-if="scan_results.wp_includes">
-                    <file-lists :ignored-files="ignores.files" :files="scan_results.wp_includes"
+                    <file-lists folderType="wp-includes" :ignored-files="ignores.files" :files="scan_results.wp_includes"
                                 root-path="/wp-includes/"/>
                 </div>
 

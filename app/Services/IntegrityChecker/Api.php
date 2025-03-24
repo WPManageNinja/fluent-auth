@@ -52,7 +52,7 @@ class Api
                 'data'   => json_decode($body, true)
             ]);
         }
-        
+
         return json_decode($body, true);
     }
 
@@ -130,5 +130,42 @@ class Api
         }
 
         return $apiId;
+    }
+
+    public static function getFileContentFromGithub($filePath, $wpVersion = null)
+    {
+        if (!$wpVersion) {
+            global $wp_version;
+            $wpVersion = $wp_version;
+        }
+
+        $wpRepo = 'https://raw.githubusercontent.com/WordPress/WordPress/' . $wpVersion . '/';
+
+        $fileUrl = $wpRepo . $filePath;
+
+        $response = wp_remote_get($fileUrl, [
+            'timeout' => 15
+        ]);
+
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
+        $body = wp_remote_retrieve_body($response);
+
+        if (empty($body)) {
+            return new \WP_Error('invalid_response', __('Invalid response from the server. Please try again', 'fluent-security'), ['status' => 422]);
+        }
+
+        $responseCode = wp_remote_retrieve_response_code($response);
+
+        if ($responseCode !== 200) {
+            return new \WP_Error('invalid_response', __('Invalid response from the server. Please try again', 'fluent-security'), [
+                'status' => $responseCode,
+                'data'   => json_decode($body, true)
+            ]);
+        }
+
+        return $body;
     }
 }

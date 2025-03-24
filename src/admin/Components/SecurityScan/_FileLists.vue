@@ -27,9 +27,14 @@
                         </el-tag>
                         <el-tag v-if="file.isIgnored" size="small" type="info" class="fls_file_icon">
                             <MuteNotification/>
-                            <span>Ignored</span>
+                            <span>{{ $t('Ignored') }}</span>
                         </el-tag>
                         <span>{{ file.relativeName }}</span>
+                        <el-button v-if="file.status != 'deleted'" @click="viewFile(file)" text size="small">
+                            <el-icon>
+                                <View/>
+                            </el-icon>
+                        </el-button>
                     </div>
                     <div v-loading="workingFile == file.file" class="fls_file_status">
                         <el-dropdown @command="handleCommand" trigger="click">
@@ -56,13 +61,28 @@
             </div>
         </div>
     </div>
+
+    <el-dialog
+        :title="$t('View File')"
+        v-model="viewing"
+        width="60%"
+        :append-to-body="true"
+        :before-close="(done) => { viewing = false; viewingFile = null; done(); }"
+        :close-on-click-modal="false">
+        <view-file v-if="viewingFile" :viewing_file="viewingFile" />
+    </el-dialog>
+
 </template>
 
 <script type="text/babel">
 import each from 'lodash/each';
+import ViewFile from './_ViewFile.vue';
 
 export default {
     name: 'FileLists',
+    components: {
+        ViewFile
+    },
     props: {
         files: {
             type: Object,
@@ -75,11 +95,14 @@ export default {
         rootPath: {
             type: String,
             default: ''
-        }
+        },
+        folderType: ''
     },
     data() {
         return {
-            workingFile: ''
+            workingFile: '',
+            viewing: false,
+            viewingFile: null
         }
     },
     computed: {
@@ -142,6 +165,14 @@ export default {
                 .finally(() => {
                     this.workingFile = '';
                 });
+        },
+        viewFile(file) {
+            this.viewing = true;
+            this.viewingFile = {
+                file: file.relativeName,
+                folder: this.folderType,
+                status: file.status,
+            };
         }
     }
 }
