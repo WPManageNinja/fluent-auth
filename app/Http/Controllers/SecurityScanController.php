@@ -159,7 +159,6 @@ class SecurityScanController
             if(realpath($filePath) != $filePath) {
                 return new \WP_Error('invalid_data', __('This file could not be viewed for security reason.', 'fluent-security'), ['status' => 400, 'data' => $file]);
             }
-
         } else {
             $ignoredFiles = [
                 '.git',
@@ -181,15 +180,13 @@ class SecurityScanController
             $filePath = ABSPATH . $file;
         }
 
-
-
         if (!file_exists($filePath)) {
             return new \WP_Error('invalid_data', __('This file could not be viewed.', 'fluent-security'), ['status' => 400, 'data' => $file]);
         }
 
-        // check if the file size is greater than 1MB
+        // check if the file size is greater than 2MB
 
-        $maxFileSize = 1 * 1024 * 1024; // 1MB
+        $maxFileSize = 2 * 1024 * 1024; // 2MB
         if (filesize($filePath) > $maxFileSize) {
             return new \WP_Error('invalid_data', __('This file is too large to be viewed.', 'fluent-security'), ['status' => 400, 'data' => $file]);
         }
