@@ -42,11 +42,12 @@ class SecurityScanController
             return new \WP_Error('invalid_data', __('Please provide a valid email address and full name.', 'fluent-security'), ['status' => 400, 'data' => $infoData]);
         }
 
+        $status = $request->get_param('status');
+
         $settings = IntegrityHelper::getSettings();
         $isConfirmed = false;
-        if ($settings['status'] == 'unregistered') {
+        if ($status == 'unregistered') {
             $apiId = Api::registerSite($infoData);
-
         } else {
             $infoData['api_id'] = $settings['api_id'];
             $apiId = Api::confirmSite($infoData);
@@ -77,16 +78,34 @@ class SecurityScanController
 
     public static function scanSite(\WP_REST_Request $request)
     {
-        $result = (new \FluentAuth\App\Services\IntegrityChecker\CoreIntegrityChecker())->checkAll();
+        $settings = IntegrityHelper::getSettings();
+        $settings['last_checked'] = date('Y-m-d H:i:s');
+        $settings['is_ok'] = 'yes';
+        IntegrityHelper::saveSettings($settings);
+
+        try {
+            $result = (new \FluentAuth\App\Services\IntegrityChecker\CoreIntegrityChecker())->checkAll();
+        } catch (\Exception $e) {
+            return new \WP_Error('invalid_response', __('An error occurred while scanning the site. If you continously get this error, please reconnect the API.', 'fluent-security'), ['status' => 422, 'data' => $e->getMessage()]);
+        }
+
         if (is_wp_error($result)) {
             return $result;
         }
 
         $hasIssues = !!$result;
+        $activeChanges = IntegrityHelper::getActiveModifiedFilesFolders($result);
+
+        $settings['last_checked'] = date('Y-m-d H:i:s');
+        if ($activeChanges) {
+            $settings['is_ok'] = 'no';
+        }
+
+        IntegrityHelper::saveSettings($settings);
 
         return [
             'scan_results'  => $result,
-            'activeChanges' => IntegrityHelper::getActiveModifiedFilesFolders($result),
+            'activeChanges' => $activeChanges,
             'has_issues'    => $hasIssues
         ];
     }
@@ -156,7 +175,7 @@ class SecurityScanController
 
         if ($folder) {
             $filePath = ABSPATH . $folder . '/' . $file;
-            if(realpath($filePath) != $filePath) {
+            if (realpath($filePath) != $filePath) {
                 return new \WP_Error('invalid_data', __('This file could not be viewed for security reason.', 'fluent-security'), ['status' => 400, 'data' => $file]);
             }
         } else {
@@ -212,7 +231,7 @@ class SecurityScanController
 
             $remoteContent = Api::getFileContentFromGithub($originalRelativePath);
 
-            if(is_wp_error($remoteContent)) {
+            if (is_wp_error($remoteContent)) {
                 return new \WP_Error('invalid_data', __('Sorry, we could not compare the changes via Github API.', 'fluent-security'), ['status' => 400]);
             }
         }
@@ -224,5 +243,48 @@ class SecurityScanController
             'originalFileContent' => $remoteContent,
         ];
 
+    }
+
+    public static function updateScheduleScan(\WP_REST_Request $request)
+    {
+        $interval = $request->get_param('scan_interval');
+        $enabled = $request->get_param('auto_scan') == 'yes';
+
+        if (!is_string($interval) || empty($interval)) {
+            return new \WP_Error('invalid_data', __('Please provide a valid interval.', 'fluent-security'), ['status' => 400, 'data' => $interval]);
+        }
+
+        $globalSettings = IntegrityHelper::getSettings();
+
+        $globalSettings['auto_scan'] = $enabled ? 'yes' : 'no';
+        $globalSettings['scan_interval'] = $interval == 'houlry' ? 'hourly' : 'daily';
+
+        IntegrityHelper::saveSettings($globalSettings);
+
+        return [
+            'message'  => __('Schedule scan has been updated.', 'fluent-security'),
+            'settings' => $globalSettings
+        ];
+    }
+
+    public static function resetApi(\WP_REST_Request $request)
+    {
+        Api::disableApi();
+
+        $settings = IntegrityHelper::getSettings();
+
+        $settings['status'] = 'unregistered';
+        $settings['api_id'] = '';
+        $settings['api_key'] = '';
+        $settings['auto_scan'] = 'no';
+        $settings['scan_interval'] = 'daily';
+        $settings['account_email_id'] = '';
+
+        IntegrityHelper::saveSettings($settings);
+
+        return [
+            'message'  => __('API has been reset successfully.', 'fluent-security'),
+            'settings' => $settings
+        ];
     }
 }

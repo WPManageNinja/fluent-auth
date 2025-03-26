@@ -35,6 +35,11 @@ class Activator
         if (!wp_next_scheduled('fluent_auth_daily_tasks')) {
             wp_schedule_event(time(), 'daily', 'fluent_auth_daily_tasks');
         }
+
+        if (!wp_next_scheduled('fluent_auth_hourly_tasks')) {
+            wp_schedule_event(time(), 'hourly', 'fluent_auth_hourly_tasks');
+        }
+
     }
 
     private static function migrateLogsTable()

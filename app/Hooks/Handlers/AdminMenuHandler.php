@@ -95,6 +95,14 @@ class AdminMenuHandler
 
     public function render()
     {
+        if (!wp_next_scheduled('fluent_auth_daily_tasks')) {
+            wp_schedule_event(time(), 'daily', 'fluent_auth_daily_tasks');
+        }
+
+        if (!wp_next_scheduled('fluent_auth_hourly_tasks')) {
+            wp_schedule_event(time(), 'hourly', 'fluent_auth_hourly_tasks');
+        }
+
         add_filter('admin_footer_text', function ($content) {
             return 'Thank you for using <a rel="noopener"  target="_blank" href="https://fluentauth.com">FluentAuth</a> | Write a <a target="_blank" rel="noopener" href="https://wordpress.org/support/plugin/fluent-security/reviews/?filter=5">review for FluentAuth</a>';
         });

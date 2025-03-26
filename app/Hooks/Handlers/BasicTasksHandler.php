@@ -3,6 +3,7 @@
 namespace FluentAuth\App\Hooks\Handlers;
 
 use FluentAuth\App\Helpers\Helper;
+use FluentAuth\App\Services\IntegrityChecker\IntegrityHelper;
 
 class BasicTasksHandler
 {
@@ -84,7 +85,19 @@ class BasicTasksHandler
                 exit;
             }
 
-        }, 100);
+        }, 999);
+
+
+        // Maybe send scan report
+        add_action('fluent_auth_hourly_tasks', function () {
+            $settings = IntegrityHelper::getSettings();
+
+            if ($settings['auto_scan'] != 'yes') {
+                return;
+            }
+
+            IntegrityHelper::maybeSendScanReport();
+        });
 
     }
 

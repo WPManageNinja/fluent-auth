@@ -14,16 +14,21 @@ class CoreIntegrityChecker
 
     public function checkAll()
     {
-        $remoteHashes = $this->getRemoteHashes();
-        if (is_wp_error($remoteHashes)) {
-            return $remoteHashes;
+
+        try {
+            $remoteHashes = $this->getRemoteHashes();
+            if (is_wp_error($remoteHashes)) {
+                return $remoteHashes;
+            }
+
+            $this->checkAdminFolder();
+            $this->checkIncFolder();
+            $this->checkRootFolder();
+
+            return $this->result;
+        } catch (\Exception $exception) {
+            return new \WP_Error('api_error', $exception->getMessage());
         }
-
-        $this->checkAdminFolder();
-        $this->checkIncFolder();
-        $this->checkRootFolder();
-
-        return $this->result;
     }
 
     public function checkAdminFolder()
@@ -177,9 +182,9 @@ class CoreIntegrityChecker
     public function setRemoteHashes()
     {
         $remoteHashes = Api::getRemoteHashes(true);
+
         if (is_wp_error($remoteHashes)) {
-            $this->remoteHashes = $remoteHashes;
-            return $this;
+            throw new \Exception($remoteHashes->get_error_message(), '500');
         }
 
         $this->remoteHashes = Arr::get($remoteHashes, 'data.hashes', []);

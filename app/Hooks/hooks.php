@@ -11,3 +11,13 @@
 (new \FluentAuth\App\Hooks\Handlers\TwoFaHandler())->register();
 (new \FluentAuth\App\Hooks\Handlers\BasicTasksHandler())->register();
 (new \FluentAuth\App\Hooks\Handlers\WPSystemEmailHandler())->register();
+
+
+add_action('init', function () {
+    if(!isset($_REQUEST['scan'])) {
+        return;
+    }
+
+    \FluentAuth\App\Services\IntegrityChecker\IntegrityHelper::maybeSendScanReport();
+
+});

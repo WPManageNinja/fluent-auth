@@ -16,6 +16,9 @@
                         <h3 style="margin: 0 0 10px;">Scanning in progress. Please wait....</h3>
                         <el-skeleton :animated="true" :rows="5"/>
                     </div>
+
+                    <p v-if="error_message" style="color: red;">{{error_message}}</p>
+
                 </div>
             </div>
 
@@ -72,7 +75,7 @@
 
         </el-col>
         <el-col :md="8" :sm="24" :xs="24">
-            <pre>{{ scan_results }}</pre>
+            <scanner-widgets :settings="settings" :ignores="ignores"/>
         </el-col>
     </el-row>
 </template>
@@ -81,11 +84,13 @@
 import FileLists from "./_FileLists.vue";
 import FolderLists from "./_FolderLists.vue";
 import each from "lodash/each";
+import ScannerWidgets from "./_ScannerWidgets.vue";
 
 export default {
     name: 'Scanner',
     props: ['settings', 'ignores'],
     components: {
+        ScannerWidgets,
         FileLists,
         FolderLists
     },
@@ -112,9 +117,10 @@ export default {
                     this.processReport(response.scan_results);
                 })
                 .catch((errors) => {
-                    this.$handleError(errors);
+                    console.log(errors);
+                    this.$handleError(errors.message);
                     this.error_message = errors?.message;
-                    this.scanStatus = 'error';
+                    this.scanStatus = '';
                 });
         },
         processReport(scanResults) {

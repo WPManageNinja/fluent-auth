@@ -61,7 +61,9 @@ class Api
         $payload = [
             'user_display_name' => Arr::get($infoData, 'full_name'),
             'user_email'        => Arr::get($infoData, 'email'),
-            'site_url'          => str_replace(['https://', 'http://'], '', site_url())
+            'site_url'          => str_replace(['https://', 'http://'], '', site_url()),
+            'admin_url' => admin_url('admin.php?page=fluent-auth#/'),
+            'site_title' => get_bloginfo('name'),
         ];
 
         $request = wp_remote_post(self::$apiUrl . 'register/', [
@@ -72,7 +74,6 @@ class Api
             'timeout'   => 30,
             'sslverify' => false,
         ]);
-
         if (is_wp_error($request)) {
             return $request;
         }
@@ -86,6 +87,8 @@ class Api
         if (Arr::get($response, 'status') !== 'success') {
             return new \WP_Error('invalid_response', Arr::get($response, 'message', 'Something went wrong, please try again.'), ['status' => 422]);
         }
+
+        error_log(print_r($response, true));
 
         $apiId = Arr::get($response, 'data.api_id', '');
 
@@ -167,5 +170,37 @@ class Api
         }
 
         return $body;
+    }
+
+    public static function disableApi()
+    {
+        $settings = IntegrityHelper::getSettings();
+
+        $url = self::$apiUrl . 'disable/?api_id=' . $settings['api_id'] . '&api_key=' . $settings['api_key'];
+
+        $request = wp_remote_get($url, [
+            'body'      => [],
+            'headers'   => [
+                'Content-Type' => 'application/json'
+            ],
+            'timeout'   => 30,
+            'sslverify' => false,
+        ]);
+
+        if (is_wp_error($request)) {
+            return $request;
+        }
+
+        $response = json_decode(wp_remote_retrieve_body($request), true);
+
+        if (!$response) {
+            return new \WP_Error('invalid_response', __('Invalid response from the server. Please try again', 'fluent-security'), ['status' => 500]);
+        }
+
+        if (Arr::get($response, 'status') !== 'success') {
+            return new \WP_Error('invalid_response', Arr::get($response, 'message', 'Something went wrong, please try again.'), ['status' => 422]);
+        }
+
+        return $response;
     }
 }

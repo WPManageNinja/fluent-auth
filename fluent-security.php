@@ -45,6 +45,7 @@ class FluentAuthPlugin
     public function deactivatePlugin()
     {
         wp_clear_scheduled_hook('fluent_auth_daily_tasks');
+        wp_clear_scheduled_hook('fluent_auth_hourly_tasks');
     }
 
     private function autoLoad()

@@ -1,9 +1,7 @@
 <template>
     <div class="fls_register_box">
         <h2>Let's Secure your site by checking unauthorized changes of WP Core Files</h2>
-        <p style="border-bottom: 1px solid #dddfe6;padding-bottom: 20px;">Please fill up the form and get a free API key
-            to enable Security Scan. (You need the free API key just
-            once)</p>
+        <p style="border-bottom: 1px solid #dddfe6;padding-bottom: 20px;">Please fill up the form and get a free API key to enable Security Scan. (You need the free API key just once)</p>
 
         <div class="fls_onboard_form">
             <el-form label-position="top" v-model="onboardForm">
@@ -49,7 +47,7 @@
                     </el-form-item>
                     <p style="margin-top: 40px; font-size: 12px;">
                         You should get the API key in your email. If you don't see it, please check your spam folder. If
-                        you still don't see it, please <a href="#" @click.prevent="settings.status = 'unregistered'">start
+                        you still don't see it, please <a href="#" @click.prevent="startOver()">start
                         over with a different email address.</a>.
                     </p>
                     <pre>{{ settings }}</pre>
@@ -83,22 +81,22 @@ export default {
                 return;
             }
 
-            if (this.settings.status == 'pending') {
-                if (!this.onboardForm.api_key) {
-                    this.$notify.error(this.$t('Please provide valid API key'));
-                    return;
-                }
+            if (this.settings.status == 'pending' && !this.onboardForm.api_key) {
+                this.$notify.error(this.$t('Please provide valid API key'));
+                return;
             }
 
             this.submitting = true;
             this.$post('security-scan-settings/register', {
-                info: this.onboardForm
+                info: this.onboardForm,
+                status: this.settings.status
             })
                 .then(response => {
                     this.$notify.success(response.message);
                     this.settings.status = response.settings.status;
                     this.settings.api_key = response.settings.api_key;
                     this.settings.api_id = response.settings.api_id;
+                    this.settings.account_email_id = response.settings.account_email_id;
 
                     if(response.settings.status == 'active') {
                         this.$emit('registered', response.settings);
@@ -110,6 +108,12 @@ export default {
                 .finally(() => {
                     this.submitting = false;
                 });
+        },
+        startOver() {
+            this.settings.status = 'unregistered';
+            this.onboardForm.api_key = '';
+            this.onboardForm.api_id = '';
+            this.settings.api_id = '';
         }
     },
     mounted() {
