@@ -37,6 +37,7 @@
                         </el-button>
                     </div>
                     <div v-loading="workingFile == file.file" class="fls_file_status">
+                        <span title="Modified at (UTC)" style="font-size: 70%; opacity: 0.5;">{{file.modifiedAt}}</span>
                         <el-dropdown @command="handleCommand" trigger="click">
                             <el-button text class="el-dropdown-link">
                                 <el-icon>
@@ -130,12 +131,13 @@ export default {
                 ignoredFiles = [];
             }
 
-            each(this.files, (fileStatus, file) => {
+            each(this.files, (fileData, file) => {
                 let fullName = this.rootPath ? this.rootPath + file : file;
                 formatted.push({
                     file: fullName,
                     relativeName: file,
-                    status: fileStatus,
+                    status: fileData.status,
+                    modifiedAt: fileData.modified_at,
                     isIgnored: ignoredFiles.includes(fullName)
                 });
             });

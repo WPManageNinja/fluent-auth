@@ -835,6 +835,11 @@ ul.fls_listed_data {
         border-color: #f7ba2a;
       }
     }
+
+    .fls_file_status {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 

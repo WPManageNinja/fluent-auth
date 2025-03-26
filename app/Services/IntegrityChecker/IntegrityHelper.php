@@ -126,7 +126,7 @@ class IntegrityHelper
         }
 
         if ($settings['last_report_sent'] && (time() - strtotime($settings['last_report_sent'])) < $interval) {
-            // return;
+            return;
         }
 
         $result = (new \FluentAuth\App\Services\IntegrityChecker\CoreIntegrityChecker())->checkAll();
@@ -178,5 +178,23 @@ class IntegrityHelper
         ]);
 
         return true;
+    }
+
+    public static function assignFileTimes($files, $path = '')
+    {
+        if (!$files) {
+            return [];
+        }
+
+        $fomattedFiles = [];
+        foreach ($files as $file => $status) {
+            $time = filemtime(ABSPATH . $path ? $path . '/' : '' . $file);
+            $fomattedFiles [$file] = [
+                'status' => $status,
+                'modified_at'   => gmdate('Y-m-d H:i:s', $time)
+            ];
+        }
+
+        return $fomattedFiles;
     }
 }

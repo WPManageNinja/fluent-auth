@@ -93,6 +93,23 @@ class SecurityScanController
             return $result;
         }
 
+        $formattedResults = [];
+        if (isset($result['wp_admin'])) {
+            $formattedResults['wp_admin'] = IntegrityHelper::assignFileTimes($result['wp_admin'], 'wp-admin');
+        }
+
+        if (isset($result['wp_includes'])) {
+            $formattedResults['wp_includes'] = IntegrityHelper::assignFileTimes($result['wp_includes'], WPINC);
+        }
+
+        if (isset($result['root'])) {
+            $formattedResults['root'] = IntegrityHelper::assignFileTimes($result['root'], '');
+        }
+
+        if (!empty($result['extra_root_folders'])) {
+            $formattedResults['extra_root_folders'] = $result['extra_root_folders'];
+        }
+
         $hasIssues = !!$result;
         $activeChanges = IntegrityHelper::getActiveModifiedFilesFolders($result);
 
@@ -104,7 +121,7 @@ class SecurityScanController
         IntegrityHelper::saveSettings($settings);
 
         return [
-            'scan_results'  => $result,
+            'scan_results'  => $formattedResults,
             'activeChanges' => $activeChanges,
             'has_issues'    => $hasIssues
         ];
