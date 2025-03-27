@@ -13,11 +13,7 @@
 (new \FluentAuth\App\Hooks\Handlers\WPSystemEmailHandler())->register();
 
 
-add_action('init', function () {
-    if(!isset($_REQUEST['scan'])) {
-        return;
-    }
-
-    \FluentAuth\App\Services\IntegrityChecker\IntegrityHelper::maybeSendScanReport();
-
-});
+if (defined('WP_CLI') && WP_CLI) {
+    // Register CLI Commands
+    \WP_CLI::add_command('fluent_auth', 'FluentAuth\App\Hooks\CLI\Commands');
+}

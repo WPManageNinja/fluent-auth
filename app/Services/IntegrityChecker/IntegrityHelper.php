@@ -58,45 +58,69 @@ class IntegrityHelper
         return update_option('__fls_integrity_ignore_lists', $ignoreLists);
     }
 
-    public static function getActiveModifiedFilesFolders($scanResults)
+    public static function getActiveModifiedFilesFolders($scanResults, $withFileTime = false)
     {
         $ignores = self::getIgnoreLists();
         $allFiles = [];
         if (!empty($scanResults['root'])) {
             foreach ($scanResults['root'] as $file => $status) {
-                $allFiles['/' . $file] = $status;
+                if($withFileTime) {
+                    $allFiles['/' . $file] = [
+                        'status' => $status,
+                        'modified_at' => file_exists(ABSPATH . $file) ? gmdate('Y-m-d H:i:s', filemtime(ABSPATH . $file)) : ''
+                    ];
+                } else {
+                    $allFiles['/' . $file] = $status;
+                }
             }
         }
 
         if (!empty($scanResults['wp_admin'])) {
             foreach ($scanResults['wp_admin'] as $file => $status) {
-                $allFiles['/wp-admin/' . $file] = $status;
+                if($withFileTime) {
+                    $allFiles['/wp-admin/' . $file] = [
+                        'status' => $status,
+                        'modified_at' => file_exists(ABSPATH . 'wp-admin/' . $file) ? gmdate('Y-m-d H:i:s', filemtime(ABSPATH . 'wp-admin/' . $file)) : ''
+                    ];
+                } else {
+                    $allFiles['/wp-admin/' . $file] = $status;
+                }
             }
         }
 
         if (!empty($scanResults['wp_includes'])) {
             foreach ($scanResults['wp_includes'] as $file => $status) {
-                $allFiles['/wp-includes/' . $file] = $status;
+                if($withFileTime) {
+                    $allFiles[WPINC . '/' . $file] = [
+                        'status' => $status,
+                        'modified_at' => file_exists(ABSPATH . '/'.WPINC.'/' . $file) ? gmdate('Y-m-d H:i:s', filemtime(ABSPATH . '/'.WPINC.'/' . $file)) : ''
+                    ];
+                } else {
+                    $allFiles['/wp-includes/' . $file] = $status;
+                }
             }
         }
 
         if ($ignores['files']) {
-            $allFiles = array_filter($allFiles, function ($file) use ($ignores) {
-                return !in_array($file, $ignores['files']);
-            });
+            $allFiles = Arr::except($allFiles, $ignores['files']);
         }
 
         $folders = [];
         if (!empty($scanResults['extra_root_folders'])) {
             foreach ($scanResults['extra_root_folders'] as $folder) {
-                $folders['/' . $folder] = 'new';
+                if($withFileTime) {
+                    $folders['/' . $folder] = [
+                        'status' => 'new',
+                        'modified_at' => ''
+                    ];
+                } else {
+                    $folders['/' . $folder] = 'new';
+                }
             }
         }
 
         if ($ignores['folders']) {
-            $folders = array_filter($folders, function ($folder) use ($ignores) {
-                return in_array($folder, $ignores['folders']);
-            });
+            $folders = Arr::except($folders, $ignores['folders']);
         }
 
         return [
