@@ -7,10 +7,6 @@ use FluentAuth\App\Helpers\Arr;
 
 class IntegrityHelper
 {
-
-    //protected static $apiUrl = 'https://api.fluentauth.com/';
-    protected static $apiUrl = 'http://localhost:8787/';
-
     public static function getSettings()
     {
         $defaults = [
@@ -167,17 +163,7 @@ class IntegrityHelper
             'modified_folders' => array_keys($modifiedFolders),
         ];
 
-        // Send the remote request now
-        wp_remote_post(self::$apiUrl . 'send-security-email/', [
-            'body'      => json_encode($payload),
-            'headers'   => [
-                'Content-Type' => 'application/json'
-            ],
-            'timeout'   => 30,
-            'sslverify' => false,
-        ]);
-
-        return true;
+        return Api::sendPostRequest('send-security-email/', $payload);
     }
 
     public static function assignFileTimes($files, $path = '')

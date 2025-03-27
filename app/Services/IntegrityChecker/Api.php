@@ -6,8 +6,8 @@ use FluentAuth\App\Helpers\Arr;
 
 class Api
 {
-    //protected static $apiUrl = 'https://api.fluentauth.com/';
-    protected static $apiUrl = 'http://localhost:8787/';
+    protected static $apiUrl = 'https://wp-version-hashes.techjewel.workers.dev/';
+//    protected static $apiUrl = 'http://localhost:8787/';
 
     public static function getRemoteHashes($extended = false, $wpVersion = null)
     {
@@ -200,6 +200,21 @@ class Api
         if (Arr::get($response, 'status') !== 'success') {
             return new \WP_Error('invalid_response', Arr::get($response, 'message', 'Something went wrong, please try again.'), ['status' => 422]);
         }
+
+        return $response;
+    }
+
+    public static function sendPostRequest($route, $payload = [])
+    {
+        // Send the remote request now
+        $response = wp_remote_post(self::$apiUrl . $route, [
+            'body'      => json_encode($payload),
+            'headers'   => [
+                'Content-Type' => 'application/json'
+            ],
+            'timeout'   => 30,
+            'sslverify' => false,
+        ]);
 
         return $response;
     }
