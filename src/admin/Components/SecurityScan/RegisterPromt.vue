@@ -1,7 +1,8 @@
 <template>
     <div class="fls_register_box">
         <h2>Let's Secure your site by checking unauthorized changes of WP Core Files</h2>
-        <p style="border-bottom: 1px solid #dddfe6;padding-bottom: 20px;">Please fill up the form and get a free API key to enable Security Scan. (You need the free API key just once)</p>
+        <p style="border-bottom: 1px solid #dddfe6;padding-bottom: 20px;">Please fill up the form and get a free API key
+            to enable Security Scan. (You need the free API key just once)</p>
 
         <div class="fls_onboard_form">
             <el-form label-position="top" v-model="onboardForm">
@@ -27,7 +28,7 @@
                         </el-button>
                     </el-form-item>
                     <p style="margin-top: 40px; font-size: 12px;">Provide a valid email to receive your free API key and
-                        security notifications. By submitting, you agree to our <a style="color:#3c434a;"
+                        security notifications. By submitting, you agree to our <a target="_blank" rel="noopener"  style="color:#3c434a;"
                                                                                    href="https://fluentauth.com/privacy-policy/">privacy
                             policy and terms and conditions</a>. Your email will only be used for API key generation and
                         security updates.</p>
@@ -50,7 +51,6 @@
                         you still don't see it, please <a href="#" @click.prevent="startOver()">start
                         over with a different email address.</a>.
                     </p>
-                    <pre>{{ settings }}</pre>
                 </template>
             </el-form>
         </div>
@@ -97,8 +97,8 @@ export default {
                     this.settings.api_key = response.settings.api_key;
                     this.settings.api_id = response.settings.api_id;
                     this.settings.account_email_id = response.settings.account_email_id;
-
-                    if(response.settings.status == 'active') {
+                    if (response.settings.status == 'active') {
+                        this.$router.push({name: 'security_scans', query: {auto_scan: 'yes'}});
                         this.$emit('registered', response.settings);
                     }
                 })

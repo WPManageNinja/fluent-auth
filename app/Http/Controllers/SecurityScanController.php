@@ -284,6 +284,18 @@ class SecurityScanController
         ];
     }
 
+    public static function resetIgnores(\WP_REST_Request $request)
+    {
+        IntegrityHelper::updateIgnoreLists([
+            'files'   => [],
+            'folders' => []
+        ]);
+
+        return [
+            'message' => __('Ignore lists have been reset successfully.', 'fluent-security')
+        ];
+    }
+
     public static function resetApi(\WP_REST_Request $request)
     {
         Api::disableApi();

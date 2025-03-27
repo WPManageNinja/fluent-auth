@@ -87,7 +87,6 @@ class BasicTasksHandler
 
         }, 999);
 
-
         // Maybe send scan report
         add_action('fluent_auth_hourly_tasks', function () {
             $settings = IntegrityHelper::getSettings();

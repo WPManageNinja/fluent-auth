@@ -19,6 +19,9 @@
 
                     <p v-if="error_message" style="color: red;">{{error_message}}</p>
 
+                    <p style="color: red;" v-else-if="settings.is_ok == 'no' && !scanStatus">
+                        Your last scan found some file changes <b>{{settings.last_checked_human}} ago</b>. Please run a check now to view the un-authorized changes.
+                    </p>
                 </div>
             </div>
 
@@ -168,6 +171,11 @@ export default {
             } else {
                 this.willAlert = false;
             }
+        }
+    },
+    mounted() {
+        if(this.settings.status == 'active' && this.$route.query.auto_scan == 'yes') {
+            this.startScanning();
         }
     }
 }

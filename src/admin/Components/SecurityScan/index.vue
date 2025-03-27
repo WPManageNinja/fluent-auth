@@ -19,8 +19,6 @@
 
                 <scanner :ignores="ignores" v-if="settings.status == 'active'" :settings="settings"/>
 
-                <pre v-else>{{ settings }}</pre>
-
             </template>
 
             <el-empty :description="$t('Sorry! Settings could not be loaded. Please reload the page.')" v-else/>
