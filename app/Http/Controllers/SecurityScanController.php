@@ -25,7 +25,6 @@ class SecurityScanController
 
     public static function registerSite(\WP_REST_Request $request)
     {
-
         if ($request->get_param('status') == 'self') {
             $defaults = [
                 'status'           => 'self',
@@ -42,7 +41,7 @@ class SecurityScanController
             IntegrityHelper::saveSettings($defaults);
 
             return [
-                'message' => __('Your settings has been savedR successfully.', 'fluent-security'),
+                'message' => __('Your settings has been saved successfully.', 'fluent-security'),
             ];
 
         }

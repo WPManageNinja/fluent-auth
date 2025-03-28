@@ -7,7 +7,7 @@
 
         <div v-if="settings" class="fls_onboard_form">
             <el-form label-position="top" v-model="onboardForm">
-                <template v-if="settings.status == 'unregistered'">
+                <template v-if="settings.status == 'unregistered' || settings.status == 'self'">
                     <el-row :gutter="30">
                         <el-col :md="12" sm="12" xs="24">
                             <el-form-item label="Your Name" prop="full_name">
@@ -114,6 +114,10 @@ export default {
             if (this.settings.status == 'pending' && !this.onboardForm.api_key) {
                 this.$notify.error(this.$t('Please provide valid API key'));
                 return;
+            }
+
+            if(this.settings.status == 'self') {
+                this.settings.status = 'unregistered';
             }
 
             this.submitting = true;
