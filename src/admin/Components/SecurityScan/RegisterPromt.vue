@@ -28,7 +28,8 @@
                         </el-button>
                     </el-form-item>
                     <p style="margin-top: 40px; font-size: 12px;">Provide a valid email to receive your free API key and
-                        security notifications. By submitting, you agree to our <a target="_blank" rel="noopener"  style="color:#3c434a;"
+                        security notifications. By submitting, you agree to our <a target="_blank" rel="noopener"
+                                                                                   style="color:#3c434a;"
                                                                                    href="https://fluentauth.com/privacy-policy/">privacy
                             policy and terms and conditions</a>. Your email will only be used for API key generation and
                         security updates.</p>
@@ -53,6 +54,14 @@
                     </p>
                 </template>
             </el-form>
+
+            <template v-if="is_main">
+                <hr style="margin-top: 20px"/>
+                <p>Or if you don't want to automatic scan with API service, <a
+                    @click.prevent="processRegularScanService()" href="#">click here</a> to use regula scan service.</p>
+            </template>
+
+
         </div>
 
     </div>
@@ -61,7 +70,7 @@
 <script type="text/babel">
 export default {
     name: 'RegisterPrompt',
-    props: ['settings'],
+    props: ['settings', 'is_main'],
     emits: ['registered'],
     data() {
         return {
@@ -114,6 +123,23 @@ export default {
             this.onboardForm.api_key = '';
             this.onboardForm.api_id = '';
             this.settings.api_id = '';
+        },
+        processRegularScanService() {
+            this.submitting = true;
+            this.$post('security-scan-settings/register', {
+                status: 'self'
+            })
+                .then(response => {
+                    this.$notify.success(response.message);
+                    // reload the page
+                    window.location.reload();
+                })
+                .catch((errors) => {
+                    this.$handleError(errors);
+                })
+                .finally(() => {
+                    this.submitting = false;
+                });
         }
     },
     mounted() {

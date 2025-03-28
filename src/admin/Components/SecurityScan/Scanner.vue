@@ -54,20 +54,20 @@
                     </p>
                 </template>
 
-                <div v-if="scan_results.extra_root_folders">
-                    <folder-lists :ignored-files="ignores.folders" root-path="/" :files="scan_results.extra_root_folders"/>
+                <div v-if="scan_results.folders">
+                    <folder-lists :ignored-files="ignores.folders" root-path="/" :files="scan_results.folders"/>
                 </div>
 
-                <div v-if="scan_results.root">
-                    <file-lists folderType="" :ignored-files="ignores.files" :files="scan_results.root" root-path="/"/>
+                <div v-if="scan_results.files.root">
+                    <file-lists folderType="" :ignored-files="ignores.files" :files="scan_results.files.root" root-path="/"/>
                 </div>
 
-                <div v-if="scan_results.wp_admin">
-                    <file-lists folderType="wp-admin" :ignored-files="ignores.files" :files="scan_results.wp_admin" root-path="/wp-admin/"/>
+                <div v-if="scan_results.files['wp-admin']">
+                    <file-lists folderType="wp-admin" :ignored-files="ignores.files" :files="scan_results.files['wp-admin']" root-path="/wp-admin/"/>
                 </div>
 
-                <div v-if="scan_results.wp_includes">
-                    <file-lists folderType="wp-includes" :ignored-files="ignores.files" :files="scan_results.wp_includes"
+                <div v-if="scan_results.files['wp-includes']">
+                    <file-lists folderType="wp-includes" :ignored-files="ignores.files" :files="scan_results.files['wp-includes']"
                                 root-path="/wp-includes/"/>
                 </div>
 
@@ -114,10 +114,10 @@ export default {
 
             this.$get('security-scan-settings/scan')
                 .then(response => {
-                    this.hasIssues = response.has_issues;
+                    this.willAlert = response.willAlert,
+                    this.hasIssues = response.hasIssues;
                     this.scan_results = response.scan_results;
                     this.scanStatus = 'scanned';
-                    this.processReport(response.scan_results);
                 })
                 .catch((errors) => {
                     console.log(errors);
@@ -125,52 +125,6 @@ export default {
                     this.error_message = errors?.message;
                     this.scanStatus = '';
                 });
-        },
-        processReport(scanResults) {
-            if (!this.ignores.files.length && !this.ignores.folders.length) {
-                return;
-            }
-
-            let allFiles = [];
-
-            if (scanResults.root) {
-                each(scanResults.root, (fileStatus, file) => {
-                    allFiles.push('/' + file);
-                });
-            }
-
-            if (scanResults.wp_admin) {
-                each(scanResults.wp_admin, (fileStatus, file) => {
-                    allFiles.push('/wp-admin/' + file);
-                });
-            }
-
-            if (scanResults.wp_includes) {
-                each(scanResults.wp_includes, (fileStatus, file) => {
-                    allFiles.push('/wp-includes/' + file);
-                });
-            }
-
-            if(scanResults.extra_root_folders) {
-                each(scanResults.extra_root_folders, (folder) => {
-                    allFiles.push('/' + folder);
-                });
-            }
-
-            // find the difference between allFiles and this.ignores.files
-            allFiles = allFiles.filter(file => {
-                return !this.ignores.files.includes(file);
-            });
-
-            allFiles = allFiles.filter(file => {
-                return !this.ignores.folders.includes(file);
-            });
-
-            if (allFiles.length) {
-                this.willAlert = true;
-            } else {
-                this.willAlert = false;
-            }
         }
     },
     mounted() {

@@ -13,11 +13,13 @@
             <el-skeleton v-if="loading" :animated="true" :rows="5"/>
 
             <template v-else-if="settings">
-                <register-promt @registered="getSettings()"
+                <register-promt :is_main="true" @registered="getSettings()"
                                 v-if="settings.status == 'unregistered' || settings.status == 'pending'"
                                 :settings="settings"/>
 
-                <scanner :ignores="ignores" v-if="settings.status == 'active'" :settings="settings"/>
+                <scanner :ignores="ignores"
+                         v-else-if="settings.status == 'active' || settings.status == 'self'"
+                         :settings="settings"/>
 
             </template>
 

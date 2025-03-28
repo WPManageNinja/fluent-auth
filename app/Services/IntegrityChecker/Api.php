@@ -7,54 +7,6 @@ use FluentAuth\App\Helpers\Arr;
 class Api
 {
     protected static $apiUrl = 'https://wp-version-hashes.techjewel.workers.dev/';
-//    protected static $apiUrl = 'http://localhost:8787/';
-
-    public static function getRemoteHashes($extended = false, $wpVersion = null)
-    {
-        if (!$wpVersion) {
-            global $wp_version;
-            $wpVersion = $wp_version;
-        }
-
-        $settings = IntegrityHelper::getSettings();
-
-        if ($settings['status'] != 'active') {
-            return new \WP_Error('invalid_response', __('Site is not registered. Please register the site first.', 'fluent-security'), ['status' => 422]);
-        }
-
-        $apiUrl = self::$apiUrl . 'info/?version=' . $wpVersion . '&api_key=' . $settings['api_key'];
-
-        if ($extended) {
-            $apiUrl .= '&action=get_all_hashes';
-        }
-
-        $response = wp_remote_get($apiUrl, [
-            'timeout' => 15,
-            'headers' => [
-                'Accept' => 'application/json'
-            ]
-        ]);
-
-        if (is_wp_error($response)) {
-            return $response;
-        }
-
-        $body = wp_remote_retrieve_body($response);
-
-        if (empty($body)) {
-            return [];
-        }
-
-        $responseCode = wp_remote_retrieve_response_code($response);
-        if ($responseCode !== 200) {
-            return new \WP_Error('invalid_response', __('Invalid response from the server. Please try again', 'fluent-security'), [
-                'status' => $responseCode,
-                'data'   => json_decode($body, true)
-            ]);
-        }
-
-        return json_decode($body, true);
-    }
 
     public static function registerSite($infoData)
     {

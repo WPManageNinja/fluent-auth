@@ -4,6 +4,7 @@ namespace FluentAuth\App\Http\Controllers;
 
 use FluentAuth\App\Helpers\Arr;
 use FluentAuth\App\Services\IntegrityChecker\Api;
+use FluentAuth\App\Services\IntegrityChecker\CheckerService;
 use FluentAuth\App\Services\IntegrityChecker\IntegrityHelper;
 
 class SecurityScanController
@@ -24,6 +25,28 @@ class SecurityScanController
 
     public static function registerSite(\WP_REST_Request $request)
     {
+
+        if ($request->get_param('status') == 'self') {
+            $defaults = [
+                'status'           => 'self',
+                'api_id'           => '',
+                'api_key'          => '',
+                'last_checked'     => '',
+                'account_email_id' => '',
+                'is_ok'            => 'yes',
+                'auto_scan'        => 'no',
+                'scan_interval'    => 'daily',
+                'last_report_sent' => ''
+            ];
+
+            IntegrityHelper::saveSettings($defaults);
+
+            return [
+                'message' => __('Your settings has been savedR successfully.', 'fluent-security'),
+            ];
+
+        }
+
         $info = $request->get_param('info');
 
         if (!is_array($info)) {
@@ -84,46 +107,27 @@ class SecurityScanController
         IntegrityHelper::saveSettings($settings);
 
         try {
-            $result = (new \FluentAuth\App\Services\IntegrityChecker\CoreIntegrityChecker())->checkAll();
+            $checkerService = new CheckerService();
         } catch (\Exception $e) {
             return new \WP_Error('invalid_response', __('An error occurred while scanning the site. If you continously get this error, please reconnect the API.', 'fluent-security'), ['status' => 422, 'data' => $e->getMessage()]);
         }
 
-        if (is_wp_error($result)) {
-            return $result;
-        }
+        $scanResults = $checkerService->getScanResults(false);
+        $activeChanges = $checkerService->getScanResults(true);
 
-        $formattedResults = [];
-        if (isset($result['wp_admin'])) {
-            $formattedResults['wp_admin'] = IntegrityHelper::assignFileTimes($result['wp_admin'], 'wp-admin');
-        }
-
-        if (isset($result['wp_includes'])) {
-            $formattedResults['wp_includes'] = IntegrityHelper::assignFileTimes($result['wp_includes'], WPINC);
-        }
-
-        if (isset($result['root'])) {
-            $formattedResults['root'] = IntegrityHelper::assignFileTimes($result['root'], '');
-        }
-
-        if (!empty($result['extra_root_folders'])) {
-            $formattedResults['extra_root_folders'] = $result['extra_root_folders'];
-        }
-
-        $hasIssues = !!$result;
-        $activeChanges = IntegrityHelper::getActiveModifiedFilesFolders($result);
-
+        $hasIssues = array_filter($activeChanges);
         $settings['last_checked'] = date('Y-m-d H:i:s');
-        if ($activeChanges) {
+        if ($hasIssues) {
             $settings['is_ok'] = 'no';
         }
 
         IntegrityHelper::saveSettings($settings);
 
         return [
-            'scan_results'  => $formattedResults,
+            'scan_results'  => $scanResults,
             'activeChanges' => $activeChanges,
-            'has_issues'    => $hasIssues
+            'hasIssues'     => !!array_filter($scanResults),
+            'willAlert'     => !!array_filter($activeChanges)
         ];
     }
 

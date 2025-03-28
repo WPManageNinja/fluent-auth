@@ -86,11 +86,10 @@ export default {
             }
 
             each(this.files, (file) => {
-                let fullName = this.rootPath ? this.rootPath + file : file;
                 formatted.push({
-                    file: fullName,
+                    file: file,
                     relativeName: file,
-                    isIgnored: ignoredFiles.includes(fullName),
+                    isIgnored: ignoredFiles.includes(file),
                 });
             });
 

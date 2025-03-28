@@ -90,7 +90,7 @@ class BasicTasksHandler
         // Maybe send scan report
         add_action('fluent_auth_hourly_tasks', function () {
             $settings = IntegrityHelper::getSettings();
-            if ($settings['auto_scan'] != 'yes') {
+            if ($settings['auto_scan'] != 'yes' || $settings['status'] != 'active') {
                 return;
             }
             IntegrityHelper::maybeSendScanReport();

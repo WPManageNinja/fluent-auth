@@ -9,28 +9,28 @@
                     <div v-if="settings.auto_scan != 'yes'">
                         <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently disabled') }}</p>
                         <p>
-                            {{
-                                $t('Enable auto-scanning of your Core WordPress files and get emails if there has any un-authorized file changes.')
-                            }}
+                            {{ $t('Enable auto-scanning of your Core WordPress files and get emails if there has any un-authorized file changes.') }}
                         </p>
-                        <el-button v-loading="saving" :disabled="saving" v-if="scheduling.auto_scan != 'yes'"
-                                   type="primary"
-                                   @click="scheduling.auto_scan = 'yes'">{{ $t('Enable Auto Scanning') }}
-                        </el-button>
-                        <div v-else>
-                            <el-form label-position="top" v-model="scheduling">
-                                <el-form-item :label="$t('Scanning Interval')">
-                                    <el-select v-model="scheduling.scan_interval" placeholder="Select Interval">
-                                        <el-option label="Every Hour" value="hourly"></el-option>
-                                        <el-option label="Daily" value="daily"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item>
-                                    <el-button type="success" @click="saveSchedulingSettings">{{ $t('Save') }}
-                                    </el-button>
-                                </el-form-item>
-                            </el-form>
-                        </div>
+                        <template v-if="settings.status == 'active'">
+                            <el-button v-loading="saving" :disabled="saving" v-if="scheduling.auto_scan != 'yes'"
+                                       type="primary"
+                                       @click="scheduling.auto_scan = 'yes'">{{ $t('Enable Auto Scanning') }}
+                            </el-button>
+                            <div v-else>
+                                <el-form label-position="top" v-model="scheduling">
+                                    <el-form-item :label="$t('Scanning Interval')">
+                                        <el-select v-model="scheduling.scan_interval" placeholder="Select Interval">
+                                            <el-option label="Every Hour" value="hourly"></el-option>
+                                            <el-option label="Daily" value="daily"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <el-button type="success" @click="saveSchedulingSettings">{{ $t('Save') }}
+                                        </el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                        </template>
                     </div>
                     <div v-else>
                         <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently enabled') }}</p>
@@ -49,17 +49,18 @@
                 </div>
             </div>
 
-
-            <div class="box dashboard_box">
+            <div v-if="settings.status == 'active'" class="box dashboard_box">
                 <div class="box_header" style="padding: 10px 15px; font-weight: bold; font-size: 16px;">
                     {{ $t('Scanner Status') }}
                 </div>
                 <div class="box_body" style="padding: 20px 15px 20px;">
                     <p style="font-weight: bold;">{{ $t('Scanner Status') }}: {{ settings.status }}</p>
-                    <p style="font-weight: bold;">{{ $t('Last Scanned') }}: {{ settings.last_checked_human }} ago</p>
-                    <p style="font-weight: bold;">{{ $t('Last Scanned Status') }}:
-                        {{ settings.is_ok == 'yes' ? 'OK' : 'Found changes' }}</p>
-                    <p>If you want to change the notification email address or disable scanning service, <a
+                    <template v-if="settings.last_checked_human">
+                        <p style="font-weight: bold;">{{ $t('Last Scanned') }}: {{ settings.last_checked_human }} ago</p>
+                        <p style="font-weight: bold;">{{ $t('Last Scanned Status') }}:
+                            {{ settings.is_ok == 'yes' ? 'OK' : 'Found changes' }}</p>
+                    </template>
+                    <p v-if="settings.status == 'active'">If you want to change the notification email address or disable scanning service, <a
                         v-loading="saving" @click.prevent="resetApi()" href="#">please click here</a>.</p>
                 </div>
             </div>
