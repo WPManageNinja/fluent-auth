@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * @var $template_config array
  * @var $body string

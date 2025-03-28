@@ -1,3 +1,4 @@
+<?php defined('ABSPATH') || exit; ?>
 </td>
 </tr>
 </table>

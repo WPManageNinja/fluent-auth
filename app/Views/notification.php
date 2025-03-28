@@ -1,3 +1,4 @@
+<?php defined('ABSPATH') || exit; ?>
 <!doctype html>
 <html>
 <head>

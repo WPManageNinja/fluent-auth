@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 $router = new \FluentAuth\App\Services\Router('fluent-auth');
 
