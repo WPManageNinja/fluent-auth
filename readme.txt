@@ -121,7 +121,7 @@ FluentAuth has been designed to provide light-weight security solution while add
 
 
 == CONTRIBUTE ==
-If you want to contribute to this project or just report a bug, you are more than welcome. Please check repository from <a href="https://github.com/WPManageNinja/fluent-auth/">Github</a>.
+If you want to contribute to this project or just report a bug, you are more than welcome. Please check repository from <a href="https://github.com/WPManageNinja/fluent-security/">Github</a>.
 
 
 == Installation ==
