@@ -4,15 +4,18 @@
             <div class="box_header" style="padding: 15px;font-size: 16px;">
                 <div style="padding-top: 5px;" class="box_head">
                     {{ $t('Customize Default WordPress System Emails') }}
-                    <p style="font-weight: 500; margin: 10px 0 0;">Custimize your default system emails sent by
-                        WordPress. Make it beautiful, use your own contents.</p>
+                    <p style="font-weight: 500; margin: 10px 0 0;">
+                        {{$t('Custimize your default system emails sent by WordPress. Make it beautiful, use your own contents.')}}
+                    </p>
                 </div>
                 <div style="display: flex;" class="box_actions">
-                    <el-button @click="$router.push({name: 'template_settings'})" type="primary">Template Settings</el-button>
+                    <el-button @click="$router.push({name: 'template_settings'})" type="primary">
+                        {{$t('Template Settings')}}
+                    </el-button>
                 </div>
             </div>
             <div v-loading="loading" class="box_body_x">
-                <h3>System Emails send to User</h3>
+                <h3>{{$t('System Emails send to User')}}</h3>
                 <el-table :data="formattedIndexes.user_emails" stripe>
                     <el-table-column min-width="300" prop="name" :label="$t('Description')">
                         <template #default="scope">
@@ -41,7 +44,7 @@
                     </el-table-column>
                 </el-table>
 
-                <h3 style="margin-top: 30px;">System Emails send to Site Admin</h3>
+                <h3 style="margin-top: 30px;">{{$t('System Emails send to Site Admin')}}</h3>
                 <el-table :data="formattedIndexes.admin_emails" stripe>
                     <el-table-column min-width="300" prop="name" :label="$t('Description')">
                         <template #default="scope">
@@ -62,8 +65,7 @@
                     </el-table-column>
                     <el-table-column width="100" :label="$t('Actions')">
                         <template #default="scope">
-                            <el-button size="small" type="primary"
-                                       @click="$router.push({ name: 'edit_wp_email', params: { email_id: scope.row.name } })">
+                            <el-button size="small" type="primary" @click="$router.push({ name: 'edit_wp_email', params: { email_id: scope.row.name } })">
                                 {{ $t('Edit') }}
                             </el-button>
                         </template>

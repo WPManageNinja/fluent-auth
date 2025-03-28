@@ -4,47 +4,48 @@
             <div class="box_header" style="padding: 15px;font-size: 16px;">
                 <div v-if="email" style="padding-top: 5px;" class="box_head">
                     <el-tag type="success">
-                        To: {{ email.recipient }}
+                        {{$t('To:')}} {{ email.recipient }}
                     </el-tag>
                     {{ email.title }}
                     <p style="margin: 5px 0 0 0; font-weight: 500;">{{ email.description }}</p>
                 </div>
                 <div style="display: flex;" class="box_actions">
-                    <el-button :disabled="saving" :loading="saving" @click="saveEmail" type="success">Save Settings</el-button>
+                    <el-button :disabled="saving" :loading="saving" @click="saveEmail" type="success">
+                        {{$t('Save Settings')}}
+                    </el-button>
                 </div>
             </div>
             <div v-loading="loading" class="box_body">
                 <div v-if="email && settings">
                     <el-form v-model="settings" label-position="top" class="fls_email_form">
-                        <el-form-item label="Email Content Status">
+                        <el-form-item :label="$t('Email Content Status')">
                             <el-radio-group v-model="settings.status">
-                                <el-radio value="active">Customized Content</el-radio>
-                                <el-radio value="system">System Default</el-radio>
-                                <el-radio v-if="email.can_disable == 'yes'" value="disabled">Disable</el-radio>
+                                <el-radio value="active" :label="$t('Customized Content')"></el-radio>
+                                <el-radio value="system" :label="$t('System Default')"></el-radio>
+                                <el-radio v-if="email.can_disable == 'yes'" value="disabled" :label="$t('Disabled')"></el-radio>
                             </el-radio-group>
                         </el-form-item>
                         <div v-if="settings.status == 'system'" style="padding: 10px 20px;" class="text-bg-warning">
                             <p style="margin: 0; font-size: 14px;">
-                                <strong>System Default</strong>
+                                <strong>{{$t('System Default')}}</strong>
                             </p>
                             <p style="margin: 0; font-size: 13px;">
-                                This email will use the system default content. If you want to customize the email
-                                subject and body please switch to "Custimized Content".
+                                {{$t('__email_default_system_desc__')}}
                             </p>
                         </div>
                         <div v-else-if="settings.status == 'disabled'" style="padding: 10px 20px;" class="text-bg-warning">
                             <p style="margin: 0; font-size: 14px;">
-                                <strong>Notification is disabled</strong>
+                                <strong>{{$t('Notification is disabled')}}</strong>
                             </p>
                             <p style="margin: 0; font-size: 13px;">
-                                This email notification is disabled. So no email notification will be sent for this event.
+                                {{$t('This email notification is disabled. So no email notification will be sent for this event.')}}
                             </p>
                         </div>
                         <template v-else-if="settings.status == 'active'">
-                            <el-form-item label="Email Subject">
+                            <el-form-item :label="$t('Email Subject')">
                                 <input-popover input_size="large" :input_placeholder="$t('Your Email Subject')" v-model="settings.email.subject" :data="smartcodes" />
                             </el-form-item>
-                            <el-form-item label="Email Body">
+                            <el-form-item :label="$t('Email Body')">
                                 <WpEditor v-if="!disableEditor" :editorShortcodes="smartcodes" v-model="settings.email.body"/>
                                 <div v-if="default_content?.email?.body" style="margin-top: 10px;">
                                     <el-button @click="setDefaultContent()" size="small">
@@ -55,7 +56,9 @@
                             </el-form-item>
                         </template>
                         <el-form-item style="text-align: right; margin-top: 40px;">
-                            <el-button :disabled="saving" :loading="saving" @click="saveEmail" type="success">Save Settings</el-button>
+                            <el-button :disabled="saving" :loading="saving" @click="saveEmail" type="success">
+                                {{$t('Save Settings')}}
+                            </el-button>
                         </el-form-item>
 
                     </el-form>
@@ -90,7 +93,7 @@
             <template #footer>
                 <div class="dialog-footer">
                     <el-button type="primary" @click="showPreview = false">
-                        Close
+                        {{$t('Close')}}
                     </el-button>
                 </div>
             </template>

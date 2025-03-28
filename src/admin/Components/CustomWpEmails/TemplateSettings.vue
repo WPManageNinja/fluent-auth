@@ -10,25 +10,24 @@
                 </div>
             </div>
             <div v-loading="loading" class="box_body">
-
                 <template v-if="settings">
                     <el-form v-model="settings" label-position="top">
                         <el-row :gutter="20">
                             <el-col :md="8" :sm="8" :xs="24">
-                                <el-form-item label="Body Background Color">
+                                <el-form-item :label="$t('Body Background Color')">
                                     <el-color-picker @active-change="(color) => { settings.body_bg = color; }"
                                                      v-model="settings.body_bg" :show-alpha="false"></el-color-picker>
                                 </el-form-item>
                             </el-col>
                             <el-col :md="8" :sm="8" :xs="24">
-                                <el-form-item label="Content Background Color">
+                                <el-form-item :label="$t('Content Background Color')">
                                     <el-color-picker @active-change="(color) => { settings.content_bg = color; }"
                                                      v-model="settings.content_bg"
                                                      :show-alpha="false"></el-color-picker>
                                 </el-form-item>
                             </el-col>
                             <el-col :md="8" :sm="8" :xs="24">
-                                <el-form-item label="Content Text Color">
+                                <el-form-item :label="$t('Content Text Color')">
                                     <el-color-picker @active-change="(color) => { settings.content_color = color; }"
                                                      v-model="settings.content_color"
                                                      :show-alpha="false"></el-color-picker>
@@ -37,21 +36,21 @@
                         </el-row>
                         <el-row :gutter="20">
                             <el-col :md="8" :sm="8" :xs="24">
-                                <el-form-item label="Highlight Background">
+                                <el-form-item :label="$t('Highlight Background')">
                                     <el-color-picker @active-change="(color) => { settings.highlight_bg = color; }"
                                                      v-model="settings.highlight_bg"
                                                      :show-alpha="false"></el-color-picker>
                                 </el-form-item>
                             </el-col>
                             <el-col :md="8" :sm="8" :xs="24">
-                                <el-form-item label="Highlight Text Color">
+                                <el-form-item :label="$t('Highlight Text Color')">
                                     <el-color-picker @active-change="(color) => { settings.highlight_color = color; }"
                                                      v-model="settings.highlight_color"
                                                      :show-alpha="false"></el-color-picker>
                                 </el-form-item>
                             </el-col>
                             <el-col :md="8" :sm="8" :xs="24">
-                                <el-form-item label="Footer Text Color">
+                                <el-form-item :label="$t('Footer Text Color')">
                                     <el-color-picker
                                         @active-change="(color) => { settings.footer_content_color = color; }"
                                         v-model="settings.footer_content_color" :show-alpha="false"></el-color-picker>
@@ -65,7 +64,8 @@
                                 <span v-if="!showingPreview">{{ $t('Show Preview') }}</span>
                                 <span v-else>{{ $t('Hide Preview') }}</span>
                             </el-button>
-                            <el-button @click="setDefaultColors()" style="float: right;" size="small">Set Default
+                            <el-button @click="setDefaultColors()" style="float: right;" size="small">
+                                {{$t('Set Default')}}
                             </el-button>
                         </h3>
                         <emailbody-container v-if="defaultContent && showingPreview" :style_config="settings"
@@ -77,13 +77,13 @@
 
                         <el-row :gutter="20">
                             <el-col :md="12" :sm="12" :xs="24">
-                                <el-form-item label="Send from email (optional)">
+                                <el-form-item :label="$t('Send from email (optional)')">
                                     <el-input v-model="settings.from_email"
                                               :placeholder="$t('Enter email address')"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :md="12" :sm="12" :xs="24">
-                                <el-form-item label="Send from name (optional)">
+                                <el-form-item :label="$t('Send from name (optional)')">
                                     <el-input type="text" v-model="settings.from_name"
                                               :placeholder="$t('Enter from name')"></el-input>
                                 </el-form-item>
@@ -91,13 +91,13 @@
                         </el-row>
                         <el-row :gutter="20">
                             <el-col :md="12" :sm="12" :xs="24">
-                                <el-form-item label="Reply to email (optional)">
+                                <el-form-item :label="$t('Reply to email (optional)')">
                                     <el-input v-model="settings.reply_to_email"
                                               :placeholder="$t('Enter reply email address')"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :md="12" :sm="12" :xs="24">
-                                <el-form-item label="Send from name (optional)">
+                                <el-form-item :label="$t('Send from name (optional)')">
                                     <el-input type="text" v-model="settings.reply_to_name"
                                               :placeholder="$t('Enter reply to name')"></el-input>
                                 </el-form-item>

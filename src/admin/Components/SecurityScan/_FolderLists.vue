@@ -1,7 +1,7 @@
 <template>
     <div class="box dashboard_box">
         <div class="box_header" style="padding: 10px 15px; font-weight: bold; font-size: 16px;">
-            Extra Folders in Root
+            {{$t('Extra Folders in Root')}}
         </div>
         <div class="box_body">
             <div class="fls_file_lists">
@@ -21,7 +21,7 @@
                         <span>{{ file.file }}</span>
                         <el-tag v-if="file.isIgnored" size="small" type="info" class="fls_file_icon">
                             <MuteNotification/>
-                            <span>Ignored</span>
+                            <span>{{$t('Ignored')}}</span>
                         </el-tag>
                     </div>
                     <div v-loading="workingFile == file.file" class="fls_file_status">

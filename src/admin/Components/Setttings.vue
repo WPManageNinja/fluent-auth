@@ -4,7 +4,7 @@
             <div v-loading="loading" class="box_header" style="padding: 15px;font-size: 16px;">
                 {{ $t('Settings') }}
                 <div class="box_actions">
-                    <el-button @click="applyRecommended()" size="small">{{ $t('apply_recommended') }}</el-button>
+                    <el-button @click="applyRecommended()" size="small">{{ $t('Apply recommended settings') }}</el-button>
                 </div>
             </div>
             <div v-if="settings" class="box_body">
@@ -13,17 +13,17 @@
                         <h3>{{ $t('Core Security Settings') }}</h3>
                         <el-form-item>
                             <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_xmlrpc">
-                                {{ $t('disable_xmlrpc') }}
+                                {{ $t('Disable XML-RPC (Most of the sites don\'t need XMLRPC)') }}
                             </el-checkbox>
                         </el-form-item>
                         <el-form-item>
                             <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_app_login">
-                                {{ $t('disable_app_login') }}
+                                {{ $t('Disable App Login (Rest API) for Remote Access. (Recommended: Disable)') }}
                             </el-checkbox>
                         </el-form-item>
                         <el-form-item>
                             <el-checkbox true-label="yes" false-label="no" v-model="settings.disable_users_rest">
-                                {{ $t('disable_rest_user') }}
+                                {{ $t('Disable REST Endpoint for wp users query for public (Recommended: Disable)') }}
                             </el-checkbox>
                         </el-form-item>
                     </div>
@@ -32,25 +32,26 @@
                         <h3>{{ $t('Login Security Settings') }}</h3>
                         <el-form-item class="fls_switch">
                             <el-switch v-model="settings.enable_auth_logs" active-value="yes" inactive-value="no"/>
-                            {{ $t('enable_login_security') }}
+                            {{ $t('Enable Login Security and Login Limit (recommended)') }}
                         </el-form-item>
                         <p v-if="settings.enable_auth_logs !== 'yes'" style="color: red;">
-                            {{ $t('login_logs_recommendation') }}</p>
+                            {{ $t('We recommend to enable login logs as well as set login try limit') }}
+                        </p>
 
                         <template v-else>
                             <el-row :gutter="30">
                                 <el-col :md="12" :sm="24">
                                     <el-form-item :label="$t('Login Try Limit per IP address in certain defined minutes')">
                                         <el-input type="number" v-model="settings.login_try_limit"/>
-                                        <p>{{ $t('login_how_many') }} {{ settings.login_try_timing }} {{ $t('minutes') }}</p>
+                                        <p>{{ $t('How many times user can try login in') }} {{ settings.login_try_timing }} {{ $t('minutes') }}</p>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :md="12" :sm="24">
                                     <el-form-item :label="$t('Time limit for login try in minutes')">
                                         <el-input type="number" v-model="settings.login_try_timing"/>
-                                        <p>{{ $t('user_fails_to_login') }} {{ settings.login_try_limit }} {{ $t('times_within') }}
-                                            {{ settings.login_try_timing }} {{ $t('minutes') }} {{ $t('system_will_block') }}
-                                            {{ settings.login_try_timing }} {{ $t('minutes') }}.</p>
+                                        <p>
+                                            {{$t('If a user fails to log in %1s times within %2s minutes minutes, the system will block the user for %3s minutes.', settings.login_try_limit, settings.login_try_timing, settings.login_try_timing)}}
+                                        </p>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
@@ -58,18 +59,18 @@
                     </div>
 
                     <div class="fls_login_settings" v-if="settings.enable_auth_logs == 'yes'">
-                        <h3>{{ $t('extended_login_options') }}</h3>
+                        <h3>{{ $t('Extended Login Options') }}</h3>
 
                         <div class="fls_inner_group" :class="'fls_inner_group_' + settings.magic_login">
                             <el-form-item>
                                 <el-checkbox v-model="settings.magic_login" true-label="yes" false-label="no">
-                                    {{ $t('enable_magic_login') }}
+                                    {{ $t('Enable Magic Login (User can login via url sent to email)') }}
                                 </el-checkbox>
                             </el-form-item>
                             <template v-if="settings.magic_login == 'yes'">
                                 <el-form-item style="background: white; padding: 10px 20px;">
                                     <template #label>
-                                        {{ $t('user_role_magic_disable') }}
+                                        {{ $t('Disable Magic Login for specific user roles (Leave blank to enable magic login for all users)') }}
                                     </template>
                                     <el-select :placeholder="$t('Select disable roles')" clearable
                                                v-model="settings.magic_restricted_roles" :multiple="true">
@@ -88,15 +89,15 @@
                         <div class="fls_inner_group" :class="'fls_inner_group_' + settings.email2fa">
                             <el-form-item>
                                 <el-checkbox v-model="settings.email2fa" true-label="yes" false-label="no">
-                                    {{ $t('enable_2fa_via_email') }}
+                                    {{ $t('Enable Two-Factor Authentication via Email') }}
                                 </el-checkbox>
                             </el-form-item>
                             <el-form-item style="background: white; padding: 10px 20px;"
                                           v-if="settings.email2fa == 'yes'">
                                 <template #label>
-                                    {{ $t('select_roles_for_2fa') }}
+                                    {{ $t('Select Roles that requires Two-Factor Authentication') }}
                                 </template>
-                                <el-select placeholder="{{ $t('enabled_for_all_user_roles') }}" clearable
+                                <el-select :placeholder="$t('Enabled for all user roles')" clearable
                                            v-model="settings.email2fa_roles" :multiple="true">
                                     <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
                                                :key="role.id"></el-option>
@@ -113,7 +114,7 @@
                             <el-col :sm="24" :md="12">
                                 <el-form-item>
                                     <template #label>
-                                        {{ $t('login_notification_label') }}
+                                        {{ $t('Send Email notification if any of the following user roles login') }}
                                     </template>
                                     <el-select clearable v-model="settings.notification_user_roles" :multiple="true">
                                         <el-option v-for="role in user_roles" :value="role.id" :label="role.title"
@@ -125,11 +126,11 @@
                                 <el-form-item
                                     v-if="settings.notification_user_roles.length || settings.notify_on_blocked == 'yes' || settings.digest_summary">
                                     <template #label>
-                                        {{ $t('notification_email') }}
+                                        {{ $t('Notification Send to Email Address') }}
                                         <el-tooltip
                                             class="box-item"
                                             effect="dark"
-                                            content="For multiple emails, please use comma separated values"
+                                            :content="$t('For multiple emails, please use comma separated values')"
                                             placement="top"
                                         >
                                             <el-icon>
@@ -148,11 +149,11 @@
                                 <el-form-item class="fls_switch">
                                     <el-switch v-model="settings.notify_on_blocked" active-value="yes"
                                                inactive-value="no"/>
-                                    {{ $t('notification_blocked') }}
+                                    {{ $t('Send email notification when a user get blocked') }}
                                 </el-form-item>
-                                <el-form-item label="Send Digest Email Report Summary">
+                                <el-form-item :label="$t('Send Digest Email Report Summary')">
                                     <el-select v-model="settings.digest_summary">
-                                        <el-option value="" label="Do not send digest email summary"></el-option>
+                                        <el-option value="" :label="$t('Do not send digest email summary')"></el-option>
                                         <el-option v-for="(day, dayName) in digest_items" :value="dayName" :label="day"></el-option>
                                     </el-select>
                                 </el-form-item>
@@ -160,11 +161,11 @@
                             <el-col :sm="24" :md="12">
                                 <el-form-item>
                                     <template #label>
-                                        {{ $t('delete_logs_label') }}
+                                        {{ $t('Automatically delete logs older than (in days)') }}
                                         <el-tooltip
                                             class="box-item"
                                             effect="dark"
-                                            :content="$t('delete_logs_desc')"
+                                            :content="$t('Use 0 if you do not want to delete the logs')"
                                             placement="top"
                                         >
                                             <el-icon>
@@ -184,13 +185,13 @@
                                 <el-form-item class="fls_switch fls_checkbox">
                                     <el-switch v-model="settings.disable_admin_bar" active-value="yes"
                                                inactive-value="no"/>
-                                    <span v-html="$t('disable_admin_bar_label')"></span>
+                                    <span v-html="$t('Disable admin bar and %s access for selected user roles.', '<code>/wp-admin/</code>')"></span>
                                 </el-form-item>
                             </el-col>
                             <el-col :sm="24" :md="12">
                                 <el-form-item v-if="settings.disable_admin_bar == 'yes'">
                                     <template #label>
-                                        <span v-html="$t('disable_admin_bar_roles_label')"></span>
+                                        <span v-html="$t('Roles to disable %s access and hide admin bar', '<code>wp-admin</code>')"></span>
                                     </template>
                                     <el-select clearable v-model="settings.disable_bar_roles" :multiple="true">
                                         <el-option v-for="(role, roleId) in low_level_roles" :value="roleId"

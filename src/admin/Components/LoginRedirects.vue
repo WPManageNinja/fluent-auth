@@ -22,14 +22,14 @@
                         <div class="fls_login_settings">
                             <el-row :gutter="20">
                                 <el-col :md="12" :xs="24">
-                                    <el-form-item label="Default Login Redirect URL">
-                                        <el-input type="url" placeholder="Default Login Redirect URL"
+                                    <el-form-item :label="$t('Default Login Redirect URL')">
+                                        <el-input type="url" :placeholder="$t('Default Login Redirect URL')"
                                                   v-model="settings.default_login_redirect"/>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :md="12" :xs="24">
-                                    <el-form-item label="Default Logout Redirect URL">
-                                        <el-input type="url" placeholder="Default Logout Redirect URL"
+                                    <el-form-item :label="$t('Default Logout Redirect URL')">
+                                        <el-input type="url" :placeholder="$t('Default Logout Redirect URL')"
                                                   v-model="settings.default_logout_redirect"/>
                                     </el-form-item>
                                 </el-col>
@@ -49,17 +49,16 @@
                                                :roles="roles"
                                                :capabilities="user_capabilities"
                                                :key="ruleItemIndex"/>
-                                <div class="fls_then_arrow">then</div>
+                                <div class="fls_then_arrow">{{$t('then')}}</div>
                                 <el-row style="margin-top: 20px;" :gutter="20">
                                     <el-col :md="12" :xs="24">
-                                        <el-form-item label="Login Redirect URL">
-                                            <el-input type="url" placeholder="Login Redirect URL"
-                                                      v-model="rule.login"/>
+                                        <el-form-item :label="$t('Login Redirect URL')">
+                                            <el-input type="url" :placeholder="$t('Login Redirect URL')" v-model="rule.login"/>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :md="12" :xs="24">
-                                        <el-form-item label="Logout Redirect URL">
-                                            <el-input type="url" placeholder="Logout Redirect URL"
+                                        <el-form-item :label="$t('Logout Redirect URL')">
+                                            <el-input type="url" :placeholder="$t('Logout Redirect URL')"
                                                       v-model="rule.logout"/>
                                         </el-form-item>
                                     </el-col>

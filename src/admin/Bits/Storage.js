@@ -1,4 +1,4 @@
-const generator = key => 'fcart-' + key;
+const generator = key => 'fauth-' + key;
 
 export default class Storage {
     static get(key, defaultValue = '') {

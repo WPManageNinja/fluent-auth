@@ -2,13 +2,13 @@
     <el-skeleton v-if="previewLoading" :animated="true" :rows="10" />
     <template v-else-if="rendered_email">
         <div>
-            <strong>Subject: </strong> {{ rendered_email.subject }}
+            <strong>{{$t('Subject:')}} </strong> {{ rendered_email.subject }}
         </div>
         <emailbody-container
             :content="rendered_email.body"></emailbody-container>
     </template>
     <div v-else>
-        <el-empty description="Sorry! we could not load this preview" />
+        <el-empty :description="$t('Sorry! we could not load this preview')" />
     </div>
 </template>
 

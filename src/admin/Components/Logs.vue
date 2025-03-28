@@ -8,14 +8,12 @@
                 </div>
                 <div style="display: flex;" class="box_actions">
                     <el-radio-group @change="fetchLogs()" v-model="status">
-                        <el-radio-button size="default" label="all">{{$t('All')}}</el-radio-button>
+                        <el-radio-button value="all" size="default" :label="$t('All')"></el-radio-button>
                         <el-radio-button size="default" v-for="(status, statusKey) in statuses" :key="statusKey"
-                                         :label="statusKey">
-                            {{ status }}
-                        </el-radio-button>
+                                         :value="statusKey" :label="status"></el-radio-button>
                     </el-radio-group>
                     <el-input clearable @keyup.native.enter="fetchLogs()" style="width: 200px; margin-left: 10px;"
-                              size="small" type="text" v-model="search" placeholder="Search">
+                              size="small" type="text" v-model="search" :placeholder="$t('Search')">
                         <template #append>
                             <el-button @click="fetchLogs()" :icon="SearchIcon"/>
                         </template>
@@ -82,7 +80,7 @@
                 <el-row style="margin-top: 20px;" :gutter="30">
                     <el-col :md="12" :xs="24">
                         <el-popconfirm :width="200" @confirm="deleteAllLogs()"
-                                       :title="$t('confirm_log_delete')">
+                                       :title="$t('Are you sure to delete all the logs?')">
                             <template #reference>
                                 <el-button v-loading="deleting" size="small" type="danger">{{$t('Delete All Logs')}}</el-button>
                             </template>

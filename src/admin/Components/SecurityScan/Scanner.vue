@@ -6,14 +6,12 @@
                     {{ $t('Site Scan') }}
                 </div>
                 <div class="box_body" style="padding: 10px 30px 30px;">
-                    <p>You can scan your site to find any unauthorized files changes for WordPress core files. After
-                        scanning FluentAuth will show if there has any security issues.</p>
-                    <el-button v-if="!scanStatus" :disabled="scanStatus == 'scanning'"
-                               :loading="scanStatus == 'scanning'" @click="startScanning" size="large" type="primary">
+                    <p>{{$t('__scanner_desc__')}}</p>
+                    <el-button v-if="!scanStatus" :disabled="scanStatus == 'scanning'" :loading="scanStatus == 'scanning'" @click="startScanning" size="large" type="primary">
                         {{ $t('Start Scan for WP Core Files') }}
                     </el-button>
                     <div v-else>
-                        <h3 style="margin: 0 0 10px;">Scanning in progress. Please wait....</h3>
+                        <h3 style="margin: 0 0 10px;">{{$t('Scanning in progress. Please wait....')}}</h3>
                         <el-skeleton :animated="true" :rows="5"/>
                     </div>
 
@@ -30,9 +28,8 @@
                     {{ $t('Scan Result') }}
                 </div>
                 <div class="box_body" style="padding: 10px 30px 30px;">
-                    <h3></h3>
                     <el-alert title="Awesome! All looks good!" type="success" :closable="false" show-icon/>
-                    <p>FluentAuth has scanned your site and found no unauthorized changes in WordPress core files.</p>
+                    <p>{{$t('FluentAuth has scanned your site and found no unauthorized changes in WordPress core files.')}}</p>
                     <el-button @click="startScanning" size="large" type="primary">
                         {{ $t('Scan Again') }}
                     </el-button>
@@ -42,15 +39,15 @@
             <div v-else-if="hasIssues" class="box dashboard_box">
                 <template v-if="willAlert">
                     <el-alert title="ALERT: Please review the file changes!" type="error" :closable="false" show-icon/>
-                    <p style="font-size: 16px;">Look like there has some file changes has been detected. Please review
-                        individual files and take necesarry actions.</p>
+                    <p style="font-size: 16px;">
+                        {{$t('__file_change_detected__')}}
+                    </p>
                 </template>
                 <template v-else>
-                    <el-alert title="FluentAuth found some file changes but you marked them as ignored them previously"
+                    <el-alert :title="$t('FluentAuth found some file changes but you marked them as ignored them previously')"
                               type="warnning" :closable="false" show-icon/>
                     <p>
-                        All the file changes are marked as ignored previously. You can review the files and check if you
-                        want to keep them on ignored lists or not.
+                        {{$t('__scanner_result_dec_normal__')}}
                     </p>
                 </template>
 

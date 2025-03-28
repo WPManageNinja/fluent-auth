@@ -8,25 +8,31 @@
                 <div class="box_body" style="padding: 0px 15px 20px;">
                     <template v-if="settings.status == 'active'">
                         <div v-if="settings.auto_scan != 'yes'">
-                            <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently disabled') }}</p>
+                            <p style="font-weight: bold;">
+                                {{ $t('Scheduled scanning is currently disabled') }}
+                            </p>
                             <p>
-                                {{ $t('Enable auto-scanning of your Core WordPress files and get emails if there has any un-authorized file changes.') }}
+                                {{
+                                    $t('Enable auto-scanning of your Core WordPress files and get emails if there has any un-authorized file changes.')
+                                }}
                             </p>
                             <template v-if="settings.status == 'active'">
                                 <el-button v-loading="saving" :disabled="saving" v-if="scheduling.auto_scan != 'yes'"
                                            type="primary"
-                                           @click="scheduling.auto_scan = 'yes'">{{ $t('Enable Auto Scanning') }}
+                                           @click="scheduling.auto_scan = 'yes'">{
+                                    { $t('Enable Auto Scanning') }}
                                 </el-button>
                                 <div v-else>
                                     <el-form label-position="top" v-model="scheduling">
                                         <el-form-item :label="$t('Scanning Interval')">
-                                            <el-select v-model="scheduling.scan_interval" placeholder="Select Interval">
-                                                <el-option label="Every Hour" value="hourly"></el-option>
-                                                <el-option label="Daily" value="daily"></el-option>
+                                            <el-select v-model="scheduling.scan_interval" :placeholder="$t('Select Interval')">
+                                                <el-option :label="$t('Every Hour')" value="hourly"></el-option>
+                                                <el-option :label="$t('Daily')" value="daily"></el-option>
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item>
-                                            <el-button type="success" @click="saveSchedulingSettings">{{ $t('Save') }}
+                                            <el-button type="success" @click="saveSchedulingSettings">
+                                                {{ $t('Save') }}
                                             </el-button>
                                         </el-form-item>
                                     </el-form>
@@ -50,7 +56,8 @@
                     </template>
                     <template v-else-if="settings.status == 'self'">
                         <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently disabled') }}</p>
-                        <p>Please get free API to enable Scheduled Scan and get notifed when FleuntAuth detect file changes.</p>
+                        <p>
+                            {{ $t('Please get free API to enable Scheduled Scan and get notifed when FleuntAuth detect file changes.') }}</p>
                         <el-button type="primary" @click="$router.push({name: 'security_scan_register'})">
                             {{ $t('Setup Auto Scanning') }}
                         </el-button>
@@ -65,12 +72,13 @@
                 <div class="box_body" style="padding: 20px 15px 20px;">
                     <p style="font-weight: bold;">{{ $t('Scanner Status') }}: {{ settings.status }}</p>
                     <template v-if="settings.last_checked_human">
-                        <p style="font-weight: bold;">{{ $t('Last Scanned') }}: {{ settings.last_checked_human }} ago</p>
+                        <p style="font-weight: bold;">{{ $t('Last Scanned %s ago', settings.last_checked_human) }}</p>
                         <p style="font-weight: bold;">{{ $t('Last Scanned Status') }}:
-                            {{ settings.is_ok == 'yes' ? 'OK' : 'Found changes' }}</p>
+                            {{ settings.is_ok == 'yes' ? 'OK' : $t('Found changes') }}</p>
                     </template>
-                    <p v-if="settings.status == 'active'">If you want to change the notification email address or disable scanning service, <a
-                        v-loading="saving" @click.prevent="resetApi()" href="#">please click here</a>.</p>
+                    <p v-if="settings.status == 'active'">
+                        {{ $t('If you want to change the notification email address or disable scanning service,') }} <a
+                        v-loading="saving" @click.prevent="resetApi()" href="#">{{ $t('please click here') }}</a>.</p>
                 </div>
             </div>
 
@@ -78,7 +86,9 @@
                 <div class="box_header"
                      style="padding: 10px 15px; font-weight: bold; font-size: 16px;display: flex;align-items: center;justify-content: space-between;">
                     <span>{{ $t('Ignored Files & Folders') }}</span>
-                    <el-button @click="resetIgnores()" text type="info">Reset</el-button>
+                    <el-button @click="resetIgnores()" text type="info">
+                        {{ $t('Reset') }}
+                    </el-button>
                 </div>
                 <div class="box_body" style="padding: 20px 15px 20px;">
                     <div class="fls_file_lists">
@@ -196,9 +206,10 @@ export default {
                     .finally(() => {
                         this.saving = false;
                     });
-            }).catch(() => {
-                // do nothing
-            });
+            })
+                .catch(() => {
+                    // do nothing
+                });
         }
     }
 }

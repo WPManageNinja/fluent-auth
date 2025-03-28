@@ -2,7 +2,7 @@
     <div class="dashboard box_wrapper">
         <div class="box_narrow">
             <div style="font-size: 16px; margin-bottom: 20px;">
-                Hello {{ me.full_name }}, {{$t('dashboard_message')}}
+                {{$t('Hello %s, view your security config and recent login activities', me.full_name)}}
             </div>
 
             <quick-stat-bar />
@@ -11,7 +11,7 @@
                 <el-col :md="12" :sm="24">
                     <div class="box dashboard_box">
                         <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
-                            {{$t('dashboard_recent_failed')}}
+                            {{$t('Recent Failed & Blocked Logins')}}
                         </div>
                         <div style="padding: 0;" class="box_body">
                             <div style="padding: 15px;" v-if="fetching_failed_logs">
@@ -19,7 +19,7 @@
                             </div>
                             <log-table v-else-if="failed_logs.length" :logs="failed_logs" />
                             <div v-else style="padding: 15px">
-                                <el-empty :description="$t('not_enough_failed')" />
+                                <el-empty :description="$t('Not enough data. This section will show recent failed login attempts')" />
                             </div>
                         </div>
                     </div>
@@ -27,17 +27,17 @@
                         <div class="box_header" style="padding: 10px 15px;font-weight: normal; font-size: 16px;">
                             {{$t('Settings Overview')}}
                             <div class="box_actions">
-                                <span @click="$router.push({ name: 'settings' })" style="cursor: pointer" title="Go to Settings" class="dashicons dashicons-admin-settings"></span>
+                                <span @click="$router.push({ name: 'settings' })" style="cursor: pointer" :title="$t('Go to Settings')" class="dashicons dashicons-admin-settings"></span>
                             </div>
                         </div>
                         <div style="padding: 0;" class="box_body">
                             <ul class="fls_listed_data">
                                 <li>
-                                    <span class="fls_label">{{$t('disable_xml_heading')}}</span>
+                                    <span class="fls_label">{{$t('Disable XML-RPC Requests')}}</span>
                                     <span class="fls_value">{{settings.disable_xmlrpc}}</span>
                                 </li>
                                 <li>
-                                    <span class="fls_label">{{$t('disable_rest_heading')}}</span>
+                                    <span class="fls_label">{{$t('Disable Rest Remote App Login')}}</span>
                                     <span class="fls_value">{{settings.disable_app_login}}</span>
                                 </li>
                                 <li>
@@ -67,13 +67,12 @@
                             </div>
                             <log-table v-else-if="success_logs.length" :logs="success_logs" />
                             <div v-else style="padding: 15px">
-                                <el-empty :description="$t('not_enough_success_logs')" />
+                                <el-empty :description="$t('Not enough data. This section will show recent successful logins')" />
                             </div>
                         </div>
                     </div>
                 </el-col>
             </el-row>
-
         </div>
     </div>
 </template>

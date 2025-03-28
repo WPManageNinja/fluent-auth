@@ -3,7 +3,7 @@
     <div class="dashboard box_wrapper">
         <div class="box dashboard_box box_narrow">
             <div v-loading="loading" class="box_header" style="padding: 15px;font-size: 16px;">
-                {{$t('auth_short_heading')}}
+                {{$t('Login or Signup Forms and Login Redirects')}}
                 <div class="box_actions">
                     <el-button size="small" v-loading="saving" :disabled="saving" @click="saveSettings()" type="success">
                         {{$t('Save Settings')}}
@@ -12,38 +12,37 @@
             </div>
             <div v-if="settings" class="box_body">
                 <el-form :data="settings" label-position="top">
-
                     <el-form-item class="fls_switch">
                         <el-switch v-model="settings.enabled" active-value="yes" inactive-value="no"/>
-                        {{$t('enable_short_check')}}
+                        {{$t('Enable Custom Login / Signup Shortcodes')}}
                     </el-form-item>
 
                     <div v-if="settings.enabled == 'yes'" class="fls_login_settings">
                         <div class="fls_shortcode_section">
-                            <h3>{{$t('full_auth_short')}}</h3>
+                            <h3>{{$t('Full Authentication Flow ShortCode (includes Login Form, Registration Form and Password Reset Form)')}}</h3>
                             <textarea readonly>[fluent_auth]</textarea>
-                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_auth redirect_to="your_URL"]</code></p>
+                            <p class="help">{{$t('If you want to define customized redirect URL then use shortcode:')}} <code>[fluent_auth redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
-                            <h3>{{$t('regi_short')}}</h3>
+                            <h3>{{$t('Only Registration Form ShortCode')}}</h3>
                             <textarea readonly>[fluent_auth_signup]</textarea>
-                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_auth_signup redirect_to="your_URL"]</code></p>
+                            <p class="help">{{$t('If you want to define customized redirect URL then use shortcode:')}} <code>[fluent_auth_signup redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
-                            <h3>{{$t('login_short')}}</h3>
+                            <h3>{{$t('Only Login Form ShortCode')}}</h3>
                             <textarea readonly>[fluent_auth_login]</textarea>
-                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_auth_login redirect_to="your_URL"]</code></p>
+                            <p class="help">{{$t('If you want to define customized redirect URL then use shortcode:')}} <code>[fluent_auth_login redirect_to="your_URL"]</code></p>
                         </div>
                         <div class="fls_shortcode_section">
-                            <h3>{{$t('pass_reset_short')}}</h3>
+                            <h3>{{$t('Password Reset Form ShortCode')}}</h3>
                             <textarea readonly>[fluent_auth_reset_password]</textarea>
-                            <p class="help">If you want to define customized redirect URL then use shortcode: <code>[fluent_auth_reset_password redirect_to="your_URL"]</code></p>
+                            <p class="help">{{$t('If you want to define customized redirect URL then use shortcode:')}} <code>[fluent_auth_reset_password redirect_to="your_URL"]</code></p>
                         </div>
 
                         <div class="fls_shortcode_section">
                             <h3>{{$t('Magic Login Form Shortcode')}}</h3>
                             <textarea readonly>[fluent_auth_magic_login]<h3>Type your email address to get login</h3>[/fluent_auth_magic_login]</textarea>
-                            <p class="help">You may remove the h3 content or change it. If you want to define customized redirect URL then use shortcode: <code>[fluent_auth_magic_login redirect_to="your_URL"]</code></p>
+                            <p class="help">{{$t('You may remove the h3 content or change it. If you want to define customized redirect URL then use shortcode:')}} <code>[fluent_auth_magic_login redirect_to="your_URL"]</code></p>
                         </div>
                     </div>
 

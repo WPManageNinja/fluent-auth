@@ -1,8 +1,8 @@
 <template>
     <div class="fls_register_box">
-        <h2>Let's Secure your site by checking unauthorized changes of WP Core Files</h2>
+        <h2>{{$t('Let\'s Secure your site by checking unauthorized changes of WP Core Files')}}</h2>
         <p style="border-bottom: 1px solid #dddfe6;padding-bottom: 20px;">
-            Please fill up the form and get a free API key to enable Security Scan and Automatted Notification. (You need the free API key just once)
+            {{$t('__free_api_desc__')}}
         </p>
 
         <div v-if="settings" class="fls_onboard_form">
@@ -10,13 +10,13 @@
                 <template v-if="settings.status == 'unregistered' || settings.status == 'self'">
                     <el-row :gutter="30">
                         <el-col :md="12" sm="12" xs="24">
-                            <el-form-item label="Your Name" prop="full_name">
+                            <el-form-item :label="$t('Your Name')" prop="full_name">
                                 <el-input size="large" v-model="onboardForm.full_name" type="text"
                                           :placeholder="$t('Your Full Name')"/>
                             </el-form-item>
                         </el-col>
                         <el-col :md="12" sm="12" xs="24">
-                            <el-form-item label="Your Email Address" prop="email">
+                            <el-form-item :label="$t('Your Email Address')" prop="email">
                                 <el-input size="large" v-model="onboardForm.email" type="text"
                                           :placeholder="$t('Your Email')"/>
                             </el-form-item>
@@ -36,7 +36,7 @@
                         security updates.</p>
                 </template>
                 <template v-else>
-                    <h3>The Last Step!</h3>
+                    <h3>{{$t('The Last Step!')}}</h3>
                     <p>We just sent you an email with API key. Please check your <b>email
                         ({{ settings.account_email_id }}) inbox</b> and provide the API key</p>
                     <el-form-item>
