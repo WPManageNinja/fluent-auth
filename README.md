@@ -21,6 +21,9 @@ Super Simple Auth Security Plugin for WordPress
 - For development `npx mix watch`
 - For Build `npx mix --production`
 
+**Build for WP Org**
+- `sh build.sh --loco --node-build`
+
 **Libraries Used**
 - Vue3
 - Element Plus

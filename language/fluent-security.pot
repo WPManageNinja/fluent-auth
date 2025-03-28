@@ -1,9 +1,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Fluent Auth\n"
+"Project-Id-Version: FluentAuth - Auth Security Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-28 20:32+0000\n"
+"POT-Creation-Date: 2025-03-28 21:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.6.2; wp-6.0.1\n"
+"X-Loco-Version: 2.7.1; wp-6.7.2\n"
 "X-Domain: fluent-security"
 
 #: app/Hooks/Handlers/SocialAuthHandler.php:507
