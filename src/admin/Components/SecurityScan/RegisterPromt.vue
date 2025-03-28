@@ -1,10 +1,11 @@
 <template>
     <div class="fls_register_box">
         <h2>Let's Secure your site by checking unauthorized changes of WP Core Files</h2>
-        <p style="border-bottom: 1px solid #dddfe6;padding-bottom: 20px;">Please fill up the form and get a free API key
-            to enable Security Scan. (You need the free API key just once)</p>
+        <p style="border-bottom: 1px solid #dddfe6;padding-bottom: 20px;">
+            Please fill up the form and get a free API key to enable Security Scan and Automatted Notification. (You need the free API key just once)
+        </p>
 
-        <div class="fls_onboard_form">
+        <div v-if="settings" class="fls_onboard_form">
             <el-form label-position="top" v-model="onboardForm">
                 <template v-if="settings.status == 'unregistered'">
                     <el-row :gutter="30">
@@ -60,30 +61,50 @@
                 <p>Or if you don't want to automatic scan with API service, <a
                     @click.prevent="processRegularScanService()" href="#">click here</a> to use regula scan service.</p>
             </template>
-
-
         </div>
-
+        <div v-else-if="loading">
+            <el-skeleton :animated="true" :rows="5"/>
+        </div>
+        <div v-else>
+            <el-empty :description="$t('Sorry! Settings could not be loaded. Please reload the page')"/>
+        </div>
     </div>
 </template>
 
 <script type="text/babel">
 export default {
     name: 'RegisterPrompt',
-    props: ['settings', 'is_main'],
+    props: ['pre_settings', 'is_main'],
     emits: ['registered'],
     data() {
         return {
             onboardForm: {
                 full_name: '',
                 email: '',
-                api_key: this.settings.api_key,
-                api_id: this.settings.api_id
+                api_key: '',
+                api_id: ''
             },
-            submitting: false
+            submitting: false,
+            settings: null,
+            loading: false
         }
     },
     methods: {
+        getSettings() {
+            this.loading = true;
+            this.$get('security-scan-settings')
+                .then(response => {
+                    this.settings = response.settings;
+                    this.onboardForm.api_key = response.settings.api_key;
+                    this.onboardForm.api_id = response.settings.api_id;
+                })
+                .catch((errors) => {
+                    this.$handleError(errors)
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
         registerSite() {
             if (!this.onboardForm.full_name || !this.onboardForm.email) {
                 this.$notify.error(this.$t('Please provide valid name and email address'));
@@ -143,6 +164,14 @@ export default {
         }
     },
     mounted() {
+        if (this.pre_settings) {
+            this.settings = this.pre_settings;
+            this.onboardForm.api_key = this.pre_settings.api_key;
+            this.onboardForm.api_id = this.pre_settings.api_id;
+        } else {
+            this.getSettings();
+        }
+
         this.onboardForm.full_name = this.appVars.me.full_name
         this.onboardForm.email = this.appVars.me.email
     }

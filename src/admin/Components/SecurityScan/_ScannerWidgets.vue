@@ -6,46 +6,55 @@
                     {{ $t('Scheduled Scanning') }}
                 </div>
                 <div class="box_body" style="padding: 0px 15px 20px;">
-                    <div v-if="settings.auto_scan != 'yes'">
-                        <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently disabled') }}</p>
-                        <p>
-                            {{ $t('Enable auto-scanning of your Core WordPress files and get emails if there has any un-authorized file changes.') }}
-                        </p>
-                        <template v-if="settings.status == 'active'">
-                            <el-button v-loading="saving" :disabled="saving" v-if="scheduling.auto_scan != 'yes'"
-                                       type="primary"
-                                       @click="scheduling.auto_scan = 'yes'">{{ $t('Enable Auto Scanning') }}
+                    <template v-if="settings.status == 'active'">
+                        <div v-if="settings.auto_scan != 'yes'">
+                            <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently disabled') }}</p>
+                            <p>
+                                {{ $t('Enable auto-scanning of your Core WordPress files and get emails if there has any un-authorized file changes.') }}
+                            </p>
+                            <template v-if="settings.status == 'active'">
+                                <el-button v-loading="saving" :disabled="saving" v-if="scheduling.auto_scan != 'yes'"
+                                           type="primary"
+                                           @click="scheduling.auto_scan = 'yes'">{{ $t('Enable Auto Scanning') }}
+                                </el-button>
+                                <div v-else>
+                                    <el-form label-position="top" v-model="scheduling">
+                                        <el-form-item :label="$t('Scanning Interval')">
+                                            <el-select v-model="scheduling.scan_interval" placeholder="Select Interval">
+                                                <el-option label="Every Hour" value="hourly"></el-option>
+                                                <el-option label="Daily" value="daily"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                        <el-form-item>
+                                            <el-button type="success" @click="saveSchedulingSettings">{{ $t('Save') }}
+                                            </el-button>
+                                        </el-form-item>
+                                    </el-form>
+                                </div>
+                            </template>
+                        </div>
+                        <div v-else>
+                            <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently enabled') }}</p>
+                            <p>
+                                {{ $t('You will get email alerts if there has any un-authorized file changes.') }}
+                            </p>
+                            <p>
+                                <b>{{ $t('Scanning Interval') }}:</b> {{ scheduling.scan_interval }} <br/>
+                                <b>{{ $t('Notification Email') }}:</b> {{ settings.account_email_id }}
+                            </p>
+                            <el-button v-loading="saving" :disabled="saving" style="margin-bottom: 15px;"
+                                       @click="disableSchedule">
+                                {{ $t('Disable/Change Auto Scanning') }}
                             </el-button>
-                            <div v-else>
-                                <el-form label-position="top" v-model="scheduling">
-                                    <el-form-item :label="$t('Scanning Interval')">
-                                        <el-select v-model="scheduling.scan_interval" placeholder="Select Interval">
-                                            <el-option label="Every Hour" value="hourly"></el-option>
-                                            <el-option label="Daily" value="daily"></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                    <el-form-item>
-                                        <el-button type="success" @click="saveSchedulingSettings">{{ $t('Save') }}
-                                        </el-button>
-                                    </el-form-item>
-                                </el-form>
-                            </div>
-                        </template>
-                    </div>
-                    <div v-else>
-                        <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently enabled') }}</p>
-                        <p>
-                            {{ $t('You will get email alerts if there has any un-authorized file changes.') }}
-                        </p>
-                        <p>
-                            <b>{{ $t('Scanning Interval') }}:</b> {{ scheduling.scan_interval }} <br/>
-                            <b>{{ $t('Notification Email') }}:</b> {{ settings.account_email_id }}
-                        </p>
-                        <el-button v-loading="saving" :disabled="saving" style="margin-bottom: 15px;"
-                                   @click="disableSchedule">
-                            {{ $t('Disable/Change Auto Scanning') }}
+                        </div>
+                    </template>
+                    <template v-else-if="settings.status == 'self'">
+                        <p style="font-weight: bold;">{{ $t('Scheduled scanning is currently disabled') }}</p>
+                        <p>Please get free API to enable Scheduled Scan and get notifed when FleuntAuth detect file changes.</p>
+                        <el-button type="primary" @click="$router.push({name: 'security_scan_register'})">
+                            {{ $t('Setup Auto Scanning') }}
                         </el-button>
-                    </div>
+                    </template>
                 </div>
             </div>
 

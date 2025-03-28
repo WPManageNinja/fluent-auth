@@ -15,7 +15,7 @@
             <template v-else-if="settings">
                 <register-promt :is_main="true" @registered="getSettings()"
                                 v-if="settings.status == 'unregistered' || settings.status == 'pending'"
-                                :settings="settings"/>
+                                :pre_settings="settings"/>
 
                 <scanner :ignores="ignores"
                          v-else-if="settings.status == 'active' || settings.status == 'self'"

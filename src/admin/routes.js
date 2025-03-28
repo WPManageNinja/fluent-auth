@@ -9,6 +9,7 @@ import CustomWpEmails from './Components/CustomWpEmails/AllEmails.vue';
 import EditWpEmail from './Components/CustomWpEmails/EditWpEmail.vue';
 import TemplateSettings from "./Components/CustomWpEmails/TemplateSettings.vue";
 import SecurityScans from "./Components/SecurityScan/index.vue";
+import RegisterPromt from "./Components/SecurityScan/RegisterPromt.vue";
 
 export var routes = [
     {
@@ -97,6 +98,15 @@ export var routes = [
         path: '/security-scans',
         name: 'security_scans',
         component: SecurityScans,
+        meta: {
+            active: 'security_scans',
+            title: 'Security Scans'
+        }
+    },
+    {
+        path: '/security-scans/register',
+        name: 'security_scan_register',
+        component: RegisterPromt,
         meta: {
             active: 'security_scans',
             title: 'Security Scans'
