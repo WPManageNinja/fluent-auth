@@ -281,4 +281,38 @@ class AuthService
 
         return $errors;
     }
+
+    public static function verifyTokenHash($verificationHash, $token)
+    {
+        $logHash = flsDb()->table('fls_login_hashes')
+            ->where('login_hash', $verificationHash)
+            ->where('status', 'issued')
+            ->where('use_type', 'signup_verification')
+            ->first();
+
+        if (!$logHash) {
+            return new \WP_Error('invalid_verification_code', __('Please provide a valid vefification code that sent to your email address', 'fluent-security'));
+        }
+
+        // check if it got expired or not
+        if ($logHash->used_count > 5 || strtotime($logHash->valid_till) < current_time('timestamp')) {
+            return new \WP_Error('verification_code_expired', __('Your verification code has beeen expired. Please try again', 'fluent-security'));
+        }
+
+        if (!wp_check_password($token, $logHash->two_fa_code_hash)) {
+            flsDb()->table('fls_login_hashes')->where('id', $logHash->id)
+                ->update([
+                    'used_count' => $logHash->used_count + 1
+                ]);
+            return new \WP_Error('invalid_verification_code', __('Please provide a valid vefification code that sent to your email address', 'fluent-security'));
+        }
+
+        flsDb()->table('fls_login_hashes')->where('id', $logHash->id)
+            ->update([
+                'used_count' => $logHash->used_count + 1,
+                'status'     => 'used'
+            ]);
+
+        return true;
+    }
 }

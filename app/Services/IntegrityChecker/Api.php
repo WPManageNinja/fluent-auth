@@ -40,8 +40,6 @@ class Api
             return new \WP_Error('invalid_response', Arr::get($response, 'message', 'Something went wrong, please try again.'), ['status' => 422]);
         }
 
-        error_log(print_r($response, true));
-
         $apiId = Arr::get($response, 'data.api_id', '');
 
         if (!$apiId) {
