@@ -20,7 +20,7 @@
                                 <el-button v-loading="saving" :disabled="saving" v-if="scheduling.auto_scan != 'yes'"
                                            type="primary"
                                            @click="scheduling.auto_scan = 'yes'">{
-                                    { $t('Enable Auto Scanning') }}
+                                    {{ $t('Enable Auto Scanning') }}
                                 </el-button>
                                 <div v-else>
                                     <el-form label-position="top" v-model="scheduling">

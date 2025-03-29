@@ -51,7 +51,7 @@
                     </p>
                 </template>
 
-                <div v-if="scan_results.folders">
+                <div v-if="scan_results.folders && scan_results.folders.length">
                     <folder-lists :ignored-files="ignores.folders" root-path="/" :files="scan_results.folders"/>
                 </div>
 
